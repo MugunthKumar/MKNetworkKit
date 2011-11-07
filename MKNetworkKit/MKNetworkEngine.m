@@ -149,6 +149,7 @@
 
 -(void) queueRequest:(MKRequest*) request {
     
+    DLog(@"%@", request);
     [self.networkQueue addOperation:request];
 }
 @end
