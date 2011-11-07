@@ -19,4 +19,5 @@ typedef void (^ErrorBlock)(NSError* requestError);
 
 -(void) onCompletion:(ResponseBlock) response onError:(ErrorBlock) error;
 -(void) setUsername:(NSString*) name password:(NSString*) password;
+-(void) addFile:(NSString*) filePath forKey:(NSString*) key;
 @end

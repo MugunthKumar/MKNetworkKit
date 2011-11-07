@@ -81,7 +81,8 @@
     }
     
     // knock off the trailing &
-    [bodyString deleteCharactersInRange:NSMakeRange([bodyString length] - 1, 1)];
+    if([bodyString length] > 0)
+        [bodyString deleteCharactersInRange:NSMakeRange([bodyString length] - 1, 1)];
     
 	if (([method isEqualToString:@"GET"] ||
          [method isEqualToString:@"DELETE"]) && (body && [body count] > 0)) {
@@ -135,7 +136,12 @@
     return displayString;
 }
 
+-(void) addFile:(NSString*) filePath forKey:(NSString*) key {
+    
+}
+
 #pragma mark -
+#pragma Main method
 - (void)main 
 {
     @autoreleasepool {

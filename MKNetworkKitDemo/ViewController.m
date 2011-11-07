@@ -7,6 +7,7 @@
 //
 
 #import "ViewController.h"
+#import "MKNetworkEngine+YahooCurrency.h"
 
 @implementation ViewController
 
@@ -38,6 +39,15 @@
 
 - (void)viewDidAppear:(BOOL)animated
 {
+    MKNetworkEngine *engine = [MKNetworkEngine sharedEngine];
+    [engine currencyRateFor:@"SGD" 
+                 inCurrency:@"INR" 
+               onCompletion:^(double rate) {
+                   DLog(@"%f", rate);
+               } 
+                    onError:^(NSError* error) {
+                        DLog(@"%@", error);
+                    }];
     [super viewDidAppear:animated];
 }
 

@@ -10,6 +10,19 @@
 
 #import <Foundation/Foundation.h>
 
+@class MKRequest;
 @interface MKNetworkEngine : NSObject
 + (MKNetworkEngine*) sharedEngine;
+-(void) setHostName:(NSString*) hostName customHeaderFields:(NSDictionary*) headers;
+
+-(MKRequest*) requestWithPath:(NSString*) path
+                         body:(NSMutableDictionary*) body
+                   httpMethod:method;
+
+-(MKRequest*) requestWithPath:(NSString*) path
+                         body:(NSMutableDictionary*) body
+                   httpMethod:method 
+                          ssl:(BOOL) useSSL;
+
+-(void) queueRequest:(MKRequest*) request;
 @end

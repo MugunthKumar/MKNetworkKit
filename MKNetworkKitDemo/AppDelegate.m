@@ -15,6 +15,11 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
+    NSMutableDictionary *headerFields = [NSMutableDictionary dictionary]; 
+    [headerFields setValue:@"x-client-identifier" forKey:@"iOS"];
+
+    [[MKNetworkEngine sharedEngine] setHostName:@"download.finance.yahoo.com" customHeaderFields:headerFields];
+    
     return YES;
 }
 							
