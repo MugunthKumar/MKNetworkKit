@@ -95,12 +95,12 @@
         DLog(@"Reachable via WiFi");
         [self.networkQueue setMaxConcurrentOperationCount:6];
     }
-    else if([self.reachability currentReachabilityStatus] == kReachableViaWWAN)
+    else if([self.reachability currentReachabilityStatus] == ReachableViaWWAN)
     {
         DLog(@"Reachable via 3G");
         [self.networkQueue setMaxConcurrentOperationCount:2];
     }
-    else if([self.reachability currentReachabilityStatus] == kNotReachable)
+    else if([self.reachability currentReachabilityStatus] == NotReachable)
     {
         DLog(@"Server not reachable");
         [self.networkQueue setMaxConcurrentOperationCount:0];
@@ -109,7 +109,7 @@
 
 -(BOOL) isReachable {
     
-    return ([self.reachability currentReachabilityStatus] != kNotReachable);
+    return ([self.reachability currentReachabilityStatus] != NotReachable);
 }
 
 @end
