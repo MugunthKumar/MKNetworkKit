@@ -15,6 +15,11 @@
 		AB74B0D21467CC120088BF09 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = AB74B0D11467CC120088BF09 /* AppDelegate.m */; };
 		AB74B0D51467CC120088BF09 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AB74B0D31467CC120088BF09 /* MainStoryboard.storyboard */; };
 		AB74B0D81467CC120088BF09 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB74B0D71467CC120088BF09 /* ViewController.m */; };
+		AB74B0F31467D0210088BF09 /* MKNetworkEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = AB74B0F21467D0210088BF09 /* MKNetworkEngine.m */; };
+		AB74B1001467DF520088BF09 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = AB74B0FF1467DF520088BF09 /* Reachability.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		AB74B1071467E0A40088BF09 /* MKRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = AB74B1061467E0A40088BF09 /* MKRequest.m */; };
+		AB74B1111467E5790088BF09 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB74B1101467E5790088BF09 /* CFNetwork.framework */; };
+		AB74B1131467E5850088BF09 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB74B1121467E5850088BF09 /* SystemConfiguration.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,15 +27,24 @@
 		AB74B0C11467CC120088BF09 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		AB74B0C31467CC120088BF09 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		AB74B0C51467CC120088BF09 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		AB74B0C91467CC120088BF09 /* MKNetworkKit-Info.plist */ = {isa = PBXFileReference; path = "MKNetworkKit-Info.plist"; sourceTree = "<group>"; };
+		AB74B0C91467CC120088BF09 /* MKNetworkKit-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "MKNetworkKit-Info.plist"; sourceTree = "<group>"; };
 		AB74B0CB1467CC120088BF09 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		AB74B0CD1467CC120088BF09 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		AB74B0CF1467CC120088BF09 /* MKNetworkKit-Prefix.pch */ = {isa = PBXFileReference; path = "MKNetworkKit-Prefix.pch"; sourceTree = "<group>"; };
-		AB74B0D01467CC120088BF09 /* AppDelegate.h */ = {isa = PBXFileReference; path = AppDelegate.h; sourceTree = "<group>"; };
+		AB74B0CF1467CC120088BF09 /* MKNetworkKit-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MKNetworkKit-Prefix.pch"; sourceTree = "<group>"; };
+		AB74B0D01467CC120088BF09 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		AB74B0D11467CC120088BF09 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		AB74B0D41467CC120088BF09 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
-		AB74B0D61467CC120088BF09 /* ViewController.h */ = {isa = PBXFileReference; path = ViewController.h; sourceTree = "<group>"; };
+		AB74B0D61467CC120088BF09 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		AB74B0D71467CC120088BF09 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		AB74B0F11467D0210088BF09 /* MKNetworkEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKNetworkEngine.h; sourceTree = "<group>"; };
+		AB74B0F21467D0210088BF09 /* MKNetworkEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKNetworkEngine.m; sourceTree = "<group>"; };
+		AB74B0FE1467DF520088BF09 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
+		AB74B0FF1467DF520088BF09 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
+		AB74B1011467E0310088BF09 /* MKNetworkKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKNetworkKit.h; sourceTree = "<group>"; };
+		AB74B1051467E0A40088BF09 /* MKRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKRequest.h; sourceTree = "<group>"; };
+		AB74B1061467E0A40088BF09 /* MKRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKRequest.m; sourceTree = "<group>"; };
+		AB74B1101467E5790088BF09 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		AB74B1121467E5850088BF09 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -38,6 +52,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AB74B1131467E5850088BF09 /* SystemConfiguration.framework in Frameworks */,
+				AB74B1111467E5790088BF09 /* CFNetwork.framework in Frameworks */,
 				AB74B0C21467CC120088BF09 /* UIKit.framework in Frameworks */,
 				AB74B0C41467CC120088BF09 /* Foundation.framework in Frameworks */,
 				AB74B0C61467CC120088BF09 /* CoreGraphics.framework in Frameworks */,
@@ -50,6 +66,9 @@
 		AB74B0B21467CC120088BF09 = {
 			isa = PBXGroup;
 			children = (
+				AB74B1121467E5850088BF09 /* SystemConfiguration.framework */,
+				AB74B1101467E5790088BF09 /* CFNetwork.framework */,
+				AB74B0DE1467CC2A0088BF09 /* MKNetworkKit */,
 				AB74B0C71467CC120088BF09 /* MKNetworkKit */,
 				AB74B0C01467CC120088BF09 /* Frameworks */,
 				AB74B0BE1467CC120088BF09 /* Products */,
@@ -96,6 +115,20 @@
 				AB74B0CF1467CC120088BF09 /* MKNetworkKit-Prefix.pch */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		AB74B0DE1467CC2A0088BF09 /* MKNetworkKit */ = {
+			isa = PBXGroup;
+			children = (
+				AB74B1051467E0A40088BF09 /* MKRequest.h */,
+				AB74B1061467E0A40088BF09 /* MKRequest.m */,
+				AB74B1011467E0310088BF09 /* MKNetworkKit.h */,
+				AB74B0FE1467DF520088BF09 /* Reachability.h */,
+				AB74B0FF1467DF520088BF09 /* Reachability.m */,
+				AB74B0F11467D0210088BF09 /* MKNetworkEngine.h */,
+				AB74B0F21467D0210088BF09 /* MKNetworkEngine.m */,
+			);
+			name = MKNetworkKit;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -164,6 +197,9 @@
 				AB74B0CE1467CC120088BF09 /* main.m in Sources */,
 				AB74B0D21467CC120088BF09 /* AppDelegate.m in Sources */,
 				AB74B0D81467CC120088BF09 /* ViewController.m in Sources */,
+				AB74B0F31467D0210088BF09 /* MKNetworkEngine.m in Sources */,
+				AB74B1001467DF520088BF09 /* Reachability.m in Sources */,
+				AB74B1071467E0A40088BF09 /* MKRequest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -275,6 +311,7 @@
 				AB74B0DD1467CC120088BF09 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
