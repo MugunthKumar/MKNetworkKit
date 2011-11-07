@@ -73,36 +73,37 @@
              httpMethod:(NSString *)method
 
 {	
-	NSURL *finalURL = nil;
-    NSMutableString *bodyString = [NSMutableString string];
-    
-    for (NSString *key in body) {
-        [bodyString appendFormat:@"%@=%@&", key, [body valueForKey:key]];	
-    }
-    
-    // knock off the trailing &
-    if([bodyString length] > 0)
-        [bodyString deleteCharactersInRange:NSMakeRange([bodyString length] - 1, 1)];
-    
-	if (([method isEqualToString:@"GET"] ||
-         [method isEqualToString:@"DELETE"]) && (body && [body count] > 0)) {
+    if((self = [super init])) {
+        NSURL *finalURL = nil;
+        NSMutableString *bodyString = [NSMutableString string];
         
-		finalURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@?%@", aURLString, bodyString]];
-	} else {
-		finalURL = [NSURL URLWithString:aURLString];
-	}
-	
-    self.request = [NSMutableURLRequest requestWithURL:finalURL                                                           
-                                           cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData                                            
-                                       timeoutInterval:30.0f];
-    
-    [self.request setHTTPMethod:method];
-
-	[self.request addValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
-    
-    if ([method isEqualToString:@"POST"] || [method isEqualToString:@"PUT"]) {
+        for (NSString *key in body) {
+            [bodyString appendFormat:@"%@=%@&", key, [body valueForKey:key]];	
+        }
         
-        [self.request setHTTPBody:[bodyString dataUsingEncoding:NSUTF8StringEncoding]];
+        if([bodyString length] > 0)
+            [bodyString deleteCharactersInRange:NSMakeRange([bodyString length] - 1, 1)];
+        
+        if (([method isEqualToString:@"GET"] ||
+             [method isEqualToString:@"DELETE"]) && (body && [body count] > 0)) {
+            
+            finalURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@?%@", aURLString, bodyString]];
+        } else {
+            finalURL = [NSURL URLWithString:aURLString];
+        }
+        
+        self.request = [NSMutableURLRequest requestWithURL:finalURL                                                           
+                                               cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData                                            
+                                           timeoutInterval:30.0f];
+        
+        [self.request setHTTPMethod:method];
+        
+        [self.request addValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+        
+        if ([method isEqualToString:@"POST"] || [method isEqualToString:@"PUT"]) {
+            
+            [self.request setHTTPBody:[bodyString dataUsingEncoding:NSUTF8StringEncoding]];
+        }
     }
     
 	return self;
@@ -142,14 +143,22 @@
 
 #pragma mark -
 #pragma Main method
-- (void)main 
-{
+-(void) main {
+    
     @autoreleasepool {
-        
-        self.connection = [[NSURLConnection alloc] initWithRequest:self.request 
-                                                          delegate:self 
-                                                  startImmediately:YES];        
-    }    
+        [self start];
+    }
+}
+
+- (void) start
+{
+    if(![NSThread isMainThread]){
+        [self performSelectorOnMainThread:@selector(start) withObject:nil waitUntilDone:NO];
+        return;
+    }
+    self.connection = [[NSURLConnection alloc] initWithRequest:self.request 
+                                                      delegate:self 
+                                              startImmediately:YES]; 
 }
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
@@ -191,7 +200,7 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
-        
+    
     self.responseString = [[NSString alloc] initWithData:self.responseData encoding:NSUTF8StringEncoding];
     self.responseBlock(self.responseString);
 }

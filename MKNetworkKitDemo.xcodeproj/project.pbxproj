@@ -287,10 +287,12 @@
 		AB74B0DC1467CC120088BF09 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MKNetworkKitDemo/MKNetworkKitDemo-Prefix.pch";
 				INFOPLIST_FILE = "MKNetworkKitDemo/MKNetworkKitDemo-Info.plist";
 				PRODUCT_NAME = MKNetworkKitDemo;
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -298,10 +300,12 @@
 		AB74B0DD1467CC120088BF09 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MKNetworkKitDemo/MKNetworkKitDemo-Prefix.pch";
 				INFOPLIST_FILE = "MKNetworkKitDemo/MKNetworkKitDemo-Info.plist";
 				PRODUCT_NAME = MKNetworkKitDemo;
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

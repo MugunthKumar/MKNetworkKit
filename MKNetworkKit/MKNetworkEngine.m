@@ -105,6 +105,7 @@
 
 -(void) setHostName:(NSString*) hostName customHeaderFields:(NSDictionary*) headers {
     
+    self.hostName = hostName;
     self.networkQueue = [[NSOperationQueue alloc] init];
     [self.networkQueue setMaxConcurrentOperationCount:6];
     [[NSNotificationCenter defaultCenter] addObserver:self 
@@ -133,7 +134,7 @@
                         httpMethod:method 
                           ssl:(BOOL) useSSL {
     
-    NSString *urlString = [NSString stringWithFormat:@"%@://%@/", useSSL ? @"https" : @"http", self.hostName, path];
+    NSString *urlString = [NSString stringWithFormat:@"%@://%@/%@", useSSL ? @"https" : @"http", self.hostName, path];
     MKRequest *request = [MKRequest requestWithURLString:urlString body:body httpMethod:method];
     // add other relevant app specific code here
     
