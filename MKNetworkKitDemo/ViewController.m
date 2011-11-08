@@ -7,7 +7,7 @@
 //
 
 #import "ViewController.h"
-#import "MKNetworkEngine+YahooCurrency.h"
+#import "YahooEngine.h"
 
 @implementation ViewController
 
@@ -39,14 +39,21 @@
 
 - (void)viewDidAppear:(BOOL)animated
 {
-    MKNetworkEngine *engine = [MKNetworkEngine sharedEngine];
+    NSMutableDictionary *headerFields = [NSMutableDictionary dictionary]; 
+    [headerFields setValue:@"x-client-identifier" forKey:@"iOS"];
+    YahooEngine *engine = [[YahooEngine alloc] initWithHostName:@"download.finance.yahoo.com" 
+                       customHeaderFields:headerFields];
+
     [engine currencyRateFor:@"SGD" 
                  inCurrency:@"INR" 
                onCompletion:^(double rate) {
                    DLog(@"%f", rate);
                } 
                     onError:^(NSError* error) {
-                        DLog(@"%@", error);
+                        
+                        
+                        DLog(@"%@\t%@\t%@\t%@", [error localizedDescription], [error localizedFailureReason], 
+                             [error localizedRecoveryOptions], [error localizedRecoverySuggestion]);
                     }];
     [super viewDidAppear:animated];
 }

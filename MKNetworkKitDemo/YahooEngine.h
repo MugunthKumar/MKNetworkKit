@@ -1,5 +1,5 @@
 //
-//  MKNetworkEngine+YahooCurrency.h
+//  YahooEngine.h
 //  MKNetworkKitDemo
 //
 //  Created by Mugunth Kumar on 7/11/11.
@@ -8,13 +8,13 @@
 
 #import "MKNetworkEngine.h"
 
-@interface MKNetworkEngine (YahooCurrency)
+@interface YahooEngine : MKNetworkEngine
 
 typedef void (^CurrencyResponseBlock)(double rate);
 
 -(MKRequest*) currencyRateFor:(NSString*) sourceCurrency 
                    inCurrency:(NSString*) targetCurrency 
                  onCompletion:(CurrencyResponseBlock) completion
-                      onError:(NSError*) error;
+                      onError:(ErrorBlock) error;
 
 @end

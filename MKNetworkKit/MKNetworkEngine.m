@@ -4,9 +4,6 @@
 //
 //  Created by Mugunth Kumar on 7/11/11.
 //  Copyright 2011 Steinlogic. All rights reserved.
-//	File created using Singleton XCode Template by Mugunth Kumar (http://blog.mugunthkumar.com)
-//  More information about this template on the post http://mk.sg/89	
-//  Permission granted to do anything, commercial/non-commercial with this file apart from removing the line/URL above
 
 #import "MKNetworkEngine.h"
 #import "Reachability.h"
@@ -15,65 +12,46 @@
 // this should be added before implementation 
 @interface MKNetworkEngine (/*Private Methods*/)
 
-@property (strong, nonatomic) NSOperationQueue *networkQueue;
 @property (strong, nonatomic) NSString *hostName;
 @property (strong, nonatomic) Reachability *reachability;
 
 @end
 
+static NSOperationQueue *_sharedNetworkQueue;
 
 @implementation MKNetworkEngine
-@synthesize networkQueue = _networkQueue;
 @synthesize hostName = _hostName;
 @synthesize reachability = _reachability;
 
-#pragma mark -
-#pragma mark Singleton Methods
+// Network Queue is a shared singleton object.
+// no matter how many instances of MKNetworkEngine is created, there is one and only one network queue
+// In theory any app contains as many network engines as domains
 
-+ (MKNetworkEngine*)sharedEngine {
+- (id) initWithHostName:(NSString*) hostName customHeaderFields:(NSDictionary*) headers {
     
-	static MKNetworkEngine *_sharedInstance;
-	if(!_sharedInstance) {
-		static dispatch_once_t oncePredicate;
-		dispatch_once(&oncePredicate, ^{
-			_sharedInstance = [[super allocWithZone:nil] init];
-        });
+    if((self = [super init])) {
+        
+        if(!_sharedNetworkQueue) {
+            static dispatch_once_t oncePredicate;
+            dispatch_once(&oncePredicate, ^{
+                _sharedNetworkQueue = [[NSOperationQueue alloc] init];
+                [_sharedNetworkQueue setMaxConcurrentOperationCount:6];
+
+            });
+        }        
     }
     
-    return _sharedInstance;
-}
-
-
-+ (id)allocWithZone:(NSZone *)zone {	
+    self.hostName = hostName;
+    [[NSNotificationCenter defaultCenter] addObserver:self 
+                                             selector:@selector(reachabilityChanged:) 
+                                                 name:kReachabilityChangedNotification 
+                                               object:nil];
     
-	return [self sharedEngine];
+    self.reachability = [Reachability reachabilityWithHostName:self.hostName];
+    [self.reachability startNotifier];
+
+    return self;
 }
-
-
-- (id)copyWithZone:(NSZone *)zone {
-	return self;	
-}
-
-#if (!__has_feature(objc_arc))
-
-- (id)retain {	
-    
-	return self;	
-}
-
-- (unsigned)retainCount {
-	return UINT_MAX;  //denotes an object that cannot be released
-}
-
-- (void)release {
-	//do nothing
-}
-
-- (id)autorelease {
-    
-	return self;	
-}
-#endif
 
 
 #pragma mark -
@@ -83,18 +61,18 @@
 {
     if([self.reachability currentReachabilityStatus] == ReachableViaWiFi)
     {
-        DLog(@"Reachable via WiFi");
-        [self.networkQueue setMaxConcurrentOperationCount:6];
+        DLog(@"Server [%@] is reachable via Wifi", self.hostName);
+        [_sharedNetworkQueue setMaxConcurrentOperationCount:6];
     }
     else if([self.reachability currentReachabilityStatus] == ReachableViaWWAN)
     {
-        DLog(@"Reachable via 3G");
-        [self.networkQueue setMaxConcurrentOperationCount:2];
+        DLog(@"Server [%@] is reachable only via cellular data", self.hostName);
+        [_sharedNetworkQueue setMaxConcurrentOperationCount:2];
     }
     else if([self.reachability currentReachabilityStatus] == NotReachable)
     {
-        DLog(@"Server not reachable");
-        [self.networkQueue setMaxConcurrentOperationCount:0];
+        DLog(@"Server [%@] is not reachable", self.hostName);
+        [_sharedNetworkQueue setMaxConcurrentOperationCount:0];
     }        
 }
 
@@ -102,21 +80,7 @@
     
     return ([self.reachability currentReachabilityStatus] != NotReachable);
 }
-
--(void) setHostName:(NSString*) hostName customHeaderFields:(NSDictionary*) headers {
     
-    self.hostName = hostName;
-    self.networkQueue = [[NSOperationQueue alloc] init];
-    [self.networkQueue setMaxConcurrentOperationCount:6];
-    [[NSNotificationCenter defaultCenter] addObserver:self 
-                                             selector:@selector(reachabilityChanged:) 
-                                                 name:kReachabilityChangedNotification 
-                                               object:nil];
-    
-    self.reachability = [Reachability reachabilityWithHostName:self.hostName];
-    [self.reachability startNotifier];
-}
-
 -(void) dealloc {
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kReachabilityChangedNotification object:nil];
@@ -150,6 +114,6 @@
 -(void) queueRequest:(MKRequest*) request {
     
     DLog(@"%@", request);
-    [self.networkQueue addOperation:request];
+    [_sharedNetworkQueue addOperation:request];
 }
 @end
