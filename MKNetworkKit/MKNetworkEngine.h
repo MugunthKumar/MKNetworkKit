@@ -12,14 +12,23 @@
 
 - (id) initWithHostName:(NSString*) hostName customHeaderFields:(NSDictionary*) headers;
 
+-(MKRequest*) requestWithPath:(NSString*) path;
+
 -(MKRequest*) requestWithPath:(NSString*) path
-                         body:(NSMutableDictionary*) body
-                   httpMethod:method;
+                         body:(NSMutableDictionary*) body;
 
 -(MKRequest*) requestWithPath:(NSString*) path
                          body:(NSMutableDictionary*) body
-                   httpMethod:method 
+                   httpMethod:(NSString*)method;
+
+-(MKRequest*) requestWithPath:(NSString*) path
+                         body:(NSMutableDictionary*) body
+                   httpMethod:(NSString*)method 
                           ssl:(BOOL) useSSL;
+
+-(MKRequest*) requestWithURLString:(NSString*) urlString
+                              body:(NSMutableDictionary*) body
+                        httpMethod:(NSString*) method;
 
 -(void) queueRequest:(MKRequest*) request;
 @end

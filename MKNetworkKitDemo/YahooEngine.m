@@ -22,17 +22,41 @@
                                           body:nil 
                                     httpMethod:@"GET"];
     
-    [request onCompletion:^(NSString* responseString)
+    [request onCompletion:^(MKRequest *completedRequest)
      {
-         DLog(@"%@", responseString);
+         DLog(@"%@", [completedRequest responseString]);
          completionBlock(5.0f);
      }onError:^(NSError* error) {
 
          errorBlock(error);
      }];
     
-    [self queueRequest:request];
+    //[self queueRequest:request];
     
+    return request;
+}
+
+-(MKRequest*) uploadImage {
+    
+    MKRequest *request = [self requestWithURLString:@"http://twitpic.com/api/upload" 
+                                               body:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                     @"mksg", @"username",
+                                                     @"HelloMKSG", @"password",
+                                                     nil]
+                                         httpMethod:@"POST"];
+
+    [request addFile:@"/Users/mugunth/Desktop/transit.png" forKey:@"media" mimeType:@"image/png"];
+ 
+    [request onCompletion:^(MKRequest* completedRequest) {
+
+        DLog(@"%@", completedRequest);        
+    }
+                  onError:^(NSError* error) {
+                     
+                      DLog(@"%@", error);
+                  }];
+    
+    [self queueRequest:request];
     return request;
 }
 @end

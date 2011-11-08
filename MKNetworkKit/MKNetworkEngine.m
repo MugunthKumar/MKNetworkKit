@@ -8,8 +8,6 @@
 #import "MKNetworkEngine.h"
 #import "Reachability.h"
 
-// Private Methods
-// this should be added before implementation 
 @interface MKNetworkEngine (/*Private Methods*/)
 
 @property (strong, nonatomic) NSString *hostName;
@@ -36,7 +34,7 @@ static NSOperationQueue *_sharedNetworkQueue;
             dispatch_once(&oncePredicate, ^{
                 _sharedNetworkQueue = [[NSOperationQueue alloc] init];
                 [_sharedNetworkQueue setMaxConcurrentOperationCount:6];
-
+                [_sharedNetworkQueue addObserver:self forKeyPath:@"operations" options:0 context:NULL];
             });
         }        
     }
@@ -53,6 +51,22 @@ static NSOperationQueue *_sharedNetworkQueue;
     return self;
 }
 
+#pragma mark -
+#pragma mark KVO for network Queue
+
+- (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object 
+                         change:(NSDictionary *)change context:(void *)context
+{
+    if (object == _sharedNetworkQueue && [keyPath isEqualToString:@"operations"]) {
+        
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = 
+        ([_sharedNetworkQueue.operations count] == 0);        
+    }
+    else {
+        [super observeValueForKeyPath:keyPath ofObject:object 
+                               change:change context:context];
+    }
+}
 
 #pragma mark -
 #pragma mark Reachability related methods
@@ -84,36 +98,54 @@ static NSOperationQueue *_sharedNetworkQueue;
 -(void) dealloc {
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kReachabilityChangedNotification object:nil];
+    
+    [_sharedNetworkQueue removeObserver:self forKeyPath:@"operations"];
+}
+
+-(MKRequest*) requestWithPath:(NSString*) path {
+    
+    return [self requestWithPath:path body:nil];
+}
+
+-(MKRequest*) requestWithPath:(NSString*) path
+                         body:(NSMutableDictionary*) body {
+
+    return [self requestWithPath:path 
+                     body:body 
+               httpMethod:@"GET"];
 }
 
 -(MKRequest*) requestWithPath:(NSString*) path
                          body:(NSMutableDictionary*) body
-                   httpMethod:method  {
+                   httpMethod:(NSString*)method  {
     
     return [self requestWithPath:path body:body httpMethod:method ssl:NO];
 }
 
 -(MKRequest*) requestWithPath:(NSString*) path
-                              body:(NSMutableDictionary*) body
-                        httpMethod:method 
+                         body:(NSMutableDictionary*) body
+                   httpMethod:(NSString*)method 
                           ssl:(BOOL) useSSL {
     
     NSString *urlString = [NSString stringWithFormat:@"%@://%@/%@", useSSL ? @"https" : @"http", self.hostName, path];
+    
+    return [self requestWithURLString:urlString body:body httpMethod:method];
+}
+
+-(MKRequest*) requestWithURLString:(NSString*) urlString
+                         body:(NSMutableDictionary*) body
+                   httpMethod:(NSString*)method {
+
     MKRequest *request = [MKRequest requestWithURLString:urlString body:body httpMethod:method];
+
+#warning possibly incomplete
     // add other relevant app specific code here
     
-    [request onCompletion:^(NSString* responseString) {
-        
-    }
-                  onError:^(NSError* error) {
-                      
-                  }];
     return request;
 }
 
 -(void) queueRequest:(MKRequest*) request {
     
-    DLog(@"%@", request);
     [_sharedNetworkQueue addOperation:request];
 }
 @end

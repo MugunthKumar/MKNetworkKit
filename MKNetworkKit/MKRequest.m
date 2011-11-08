@@ -8,42 +8,101 @@
 
 #import "MKRequest.h"
 
-// Private Methods
-// this should be added before implementation 
+typedef enum {
+    MKRequestOperationStateReady = 1,
+    MKRequestOperationStateExecuting = 2,
+    MKRequestOperationStateFinished = 3
+} MKRequestOperationState;
+
 @interface MKRequest (/*Private Methods*/)
 @property (strong, nonatomic) NSURLConnection *connection;
 @property (strong, nonatomic) NSMutableURLRequest *request;
 @property (strong, nonatomic) NSURLResponse *response;
-@property (strong, nonatomic) NSString *responseString;
-@property (strong, nonatomic) NSMutableData *responseData;
-
+@property (strong, nonatomic) NSMutableData *mutableData;
+@property (strong, nonatomic) NSMutableDictionary *fieldsToBePosted;
+@property (strong, nonatomic) NSMutableArray *filesToBePosted;
+@property (strong, nonatomic) NSMutableArray *dataToBePosted;
 @property (strong, nonatomic) NSString *username;
 @property (strong, nonatomic) NSString *password;
 
 @property (nonatomic, copy) ResponseBlock responseBlock;
 @property (nonatomic, copy) ErrorBlock errorBlock;
 
+@property (nonatomic, assign) MKRequestOperationState state;
+@property (nonatomic, assign) BOOL isCancelled;
+
 - (id)initWithURLString:(NSString *)aURLString
                    body:(NSMutableDictionary *)body
              httpMethod:(NSString *)method;
+-(NSData*) postBody;
 @end
 
 @implementation MKRequest
 @synthesize connection = _connection;
 @synthesize request = _request;
 @synthesize response = _response;
-@synthesize responseString = _responseString;
-@synthesize responseData = _responseData;
+@synthesize mutableData = _mutableData;
+@synthesize fieldsToBePosted = _fieldsToBePosted;
+@synthesize filesToBePosted = _filesToBePosted;
+@synthesize dataToBePosted = _dataToBePosted;
+
+
+@synthesize uploadProgressChangedHandler = _uploadProgressChangedHandler;
+@synthesize downloadProgressChangedHandler = _downloadProgressChangedHandler;
+
+@synthesize stringEncoding = _stringEncoding;
 
 @synthesize username = _username;
 @synthesize password = _password;
 
 @synthesize responseBlock = _responseBlock;
 @synthesize errorBlock = _errorBlock;
+@synthesize isCancelled = _isCancelled;
+
+-(MKRequestOperationState) state {
+    
+    return _state;
+}
+
+-(void) setState:(MKRequestOperationState)newState {
+    
+    switch (newState) {
+        case MKRequestOperationStateReady:
+            [self willChangeValueForKey:@"isReady"];
+            break;
+        case MKRequestOperationStateExecuting:
+            DLog(@"%@", self);
+            [self willChangeValueForKey:@"isReady"];
+            [self willChangeValueForKey:@"isExecuting"];
+            break;
+        case MKRequestOperationStateFinished:
+            DLog(@"%@", self);
+            [self willChangeValueForKey:@"isExecuting"];
+            [self willChangeValueForKey:@"isFinished"];
+            break;
+    }
+    
+    _state = newState;
+    
+    switch (newState) {
+        case MKRequestOperationStateReady:
+            [self didChangeValueForKey:@"isReady"];
+            break;
+        case MKRequestOperationStateExecuting:
+            [self didChangeValueForKey:@"isReady"];
+            [self didChangeValueForKey:@"isExecuting"];
+            break;
+        case MKRequestOperationStateFinished:
+            [self didChangeValueForKey:@"isExecuting"];
+            [self didChangeValueForKey:@"isFinished"];
+            break;
+    }
+}
 
 -(void) dealloc {
     
     [_connection cancel];
+    _mutableData = nil;
     _connection = nil;
 }
 
@@ -74,9 +133,14 @@
 
 {	
     if((self = [super init])) {
+        
+        self.stringEncoding = NSUTF8StringEncoding; // use a delegate to get these values later
         NSURL *finalURL = nil;
         NSMutableString *bodyString = [NSMutableString string];
-        
+        self.filesToBePosted = [NSMutableArray array];
+        self.dataToBePosted = [NSMutableArray array];
+        self.fieldsToBePosted = body;
+
         for (NSString *key in body) {
             [bodyString appendFormat:@"%@=%@&", key, [body valueForKey:key]];	
         }
@@ -98,12 +162,20 @@
         
         [self.request setHTTPMethod:method];
         
-        [self.request addValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+        NSString *charset = (__bridge NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(self.stringEncoding));
+        
+        [self.request addValue:
+         [NSString stringWithFormat:@"application/x-www-form-urlencoded; charset=%@", charset]
+            forHTTPHeaderField:@"Content-Type"];
         
         if ([method isEqualToString:@"POST"] || [method isEqualToString:@"PUT"]) {
             
-            [self.request setHTTPBody:[bodyString dataUsingEncoding:NSUTF8StringEncoding]];
+            // in case of multi-part form request, 
+            // this will be automatically over written later
+            self.request.HTTPBody = [[bodyString dataUsingEncoding:self.stringEncoding] mutableCopy];
         }
+        
+        self.state = MKRequestOperationStateReady;
     }
     
 	return self;
@@ -123,15 +195,14 @@
     [displayString appendFormat:@" \"%@\"",  [self.request.URL absoluteString]];
     
     if ([self.request.HTTPMethod isEqualToString:@"POST"] || [self.request.HTTPMethod isEqualToString:@"PUT"]) {
-        NSString *bodyString = [[NSString alloc] initWithData:self.request.HTTPBody 
-                                                     encoding:NSUTF8StringEncoding];
+        NSString *bodyString = [[NSString alloc] initWithData:self.request.HTTPBody
+                                                     encoding:self.stringEncoding];
         [displayString appendFormat:@" -d \"%@\"", bodyString];        
     }
     
     
-    if(self.responseData) {
-        [displayString appendFormat:@"\n--------\nResponse\n--------\n%@\n", 
-         [[NSString alloc] initWithData:self.responseData encoding:NSUTF8StringEncoding]];
+    if(self.mutableData) {
+        [displayString appendFormat:@"\n--------\nResponse\n--------\n%@\n", [self responseString]];
     }
     
     return displayString;
@@ -139,6 +210,69 @@
 
 -(void) addFile:(NSString*) filePath forKey:(NSString*) key {
     
+    [self addFile:filePath forKey:key mimeType:@"application/octet-stream"];
+}
+
+-(void) addFile:(NSString*) filePath forKey:(NSString*) key mimeType:(NSString*) mimeType {
+
+    [self.request setHTTPMethod:@"POST"];
+
+    NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
+     filePath, @"filepath",
+     key, @"name",
+     mimeType, @"mimetype",     
+     nil];
+    
+    [self.filesToBePosted addObject:dict];    
+}
+
+-(NSData*) postBody {
+
+    /*
+     --0xKhTmLbOuNdArY
+     Content-Disposition: form-data; name="Submit"
+     
+     yes
+     */
+    NSString *boundary = @"0xKhTmLbOuNdArY";
+    NSMutableData *body = [NSMutableData data];
+
+    [self.fieldsToBePosted enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+        
+        NSString *thisFieldString = [NSString stringWithFormat:
+                                     @"--%@\r\nContent-Disposition: form-data; name=\"%@\"\r\n\r\n%@\r\n",
+                                     boundary, key, obj];
+        
+        [body appendData:[thisFieldString dataUsingEncoding:[self stringEncoding]]];        
+    }];
+     
+     
+    [self.filesToBePosted enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        
+        NSDictionary *thisFile = (NSDictionary*) obj;
+        NSString *thisFieldString = [NSString stringWithFormat:
+                                     @"--%@\r\nContent-Disposition: form-data; name=\"%@\"; filename=\"%@\"\r\nContent-Type: %@\r\nContent-Transfer-Encoding: binary\r\n\r\n",
+                                     boundary, 
+                                     [thisFile objectForKey:@"name"], 
+                                     [[thisFile objectForKey:@"filepath"] lastPathComponent], 
+                                     [thisFile objectForKey:@"mimetype"]];
+        
+        [body appendData:[thisFieldString dataUsingEncoding:[self stringEncoding]]];         
+        [body appendData: [NSData dataWithContentsOfFile:[thisFile objectForKey:@"filepath"]]];
+    }];
+        
+   
+    [body appendData: [[NSString stringWithFormat:@"\r\n--%@--\r\n", boundary] dataUsingEncoding:self.stringEncoding]];
+
+    NSLog(@"%@", [[NSString alloc] initWithData:body encoding:NSUTF8StringEncoding]);
+    
+        NSString *charset = (__bridge NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(self.stringEncoding));
+
+    if([self.filesToBePosted count] > 0)
+     [self.request setValue:[NSString stringWithFormat:@"multipart/form-data; charset=%@; boundary=%@", charset, boundary] 
+         forHTTPHeaderField:@"Content-Type"];
+     
+    return body;
 }
 
 #pragma mark -
@@ -156,16 +290,74 @@
         [self performSelectorOnMainThread:@selector(start) withObject:nil waitUntilDone:NO];
         return;
     }
-    self.connection = [[NSURLConnection alloc] initWithRequest:self.request 
-                                                      delegate:self 
-                                              startImmediately:YES]; 
+    if(!self.isCancelled) {
+        
+        if ([self.request.HTTPMethod isEqualToString:@"POST"] || [self.request.HTTPMethod isEqualToString:@"PUT"]) {
+            
+            [self.request setHTTPBody:[self postBody]];
+        }
+        
+        self.connection = [[NSURLConnection alloc] initWithRequest:self.request 
+                                                          delegate:self 
+                                                  startImmediately:YES]; 
+        self.state = MKRequestOperationStateExecuting;
+    }
+    else {
+        self.state = MKRequestOperationStateFinished;
+    }
 }
+
+#pragma -
+#pragma mark NSOperation stuff
+
+- (BOOL)isConcurrent
+{
+    return YES;
+}
+
+- (BOOL)isReady {
+    
+    return (self.state == MKRequestOperationStateReady);
+}
+
+- (BOOL)isFinished 
+{
+	return (self.state == MKRequestOperationStateFinished);
+}
+
+- (BOOL)isExecuting {
+    
+	return (self.state == MKRequestOperationStateExecuting);
+}
+
+-(void) cancel {
+    
+    if([self isFinished]) return;
+    
+    [super cancel];
+    [self.connection cancel];
+    
+    self.mutableData = nil;
+    self.isCancelled = YES;
+    
+    if(self.uploadProgressChangedHandler) {
+        self.uploadProgressChangedHandler(0.0f);
+    }
+    if(self.downloadProgressChangedHandler) {
+        self.downloadProgressChangedHandler(0.0f);
+    }
+}
+
+#pragma mark -
+#pragma mark NSURLConnection delegates
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
     
+    self.mutableData = nil;
+
+    self.state = MKRequestOperationStateFinished;
     self.errorBlock(error);    
 }
-
 
 - (void)connection:(NSURLConnection *)connection 
 willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
@@ -184,25 +376,69 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
     
+    NSUInteger size = [self.response expectedContentLength] < 0 ? 0 : [self.response expectedContentLength];
     self.response = response;
-    self.responseData = [NSMutableData dataWithCapacity:[self.response expectedContentLength]];
+    self.mutableData = [NSMutableData dataWithCapacity:size];
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
     
-    [self.responseData appendData:data];
+    [self.mutableData appendData:data];
+    
+    if(self.downloadProgressChangedHandler && [self.response expectedContentLength] > 0) {
+        
+        double progress = [self.mutableData length] / [self.response expectedContentLength];
+        self.downloadProgressChangedHandler(progress);
+    }    
 }
 
 - (void)connection:(NSURLConnection *)connection didSendBodyData:(NSInteger)bytesWritten 
  totalBytesWritten:(NSInteger)totalBytesWritten
 totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
     
+    if(self.uploadProgressChangedHandler && totalBytesExpectedToWrite > 0) {
+        self.uploadProgressChangedHandler(((double)totalBytesWritten/(double)totalBytesExpectedToWrite));
+    }
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
     
-    self.responseString = [[NSString alloc] initWithData:self.responseData encoding:NSUTF8StringEncoding];
-    self.responseBlock(self.responseString);
+    self.state = MKRequestOperationStateFinished;
+    self.responseBlock(self);
 }
+
+#pragma mark -
+#pragma mark Our methods to get data
+
+-(NSData*) responseData {
+    
+    if([self isFinished])
+        return [self.mutableData copy];
+    else
+        return nil;
+}
+
+-(NSString*)responseString {
+    
+    return [self responseStringWithEncoding:self.stringEncoding];
+}
+
+-(NSString*) responseStringWithEncoding:(NSStringEncoding) encoding {
+    
+    if([self isFinished])
+        return [[NSString alloc] initWithData:self.mutableData encoding:encoding];
+    else
+        return nil;
+}
+
+#ifdef __IPHONE_5_0
+-(id) responseJSON {
+    
+    NSError *error = nil;
+    id returnValue = [NSJSONSerialization JSONObjectWithData:self.mutableData options:0 error:&error];    
+    DLog(@"JSON Parsing Error: %@", error);
+    return returnValue;
+}
+#endif
 
 @end

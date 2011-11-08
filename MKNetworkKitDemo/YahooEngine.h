@@ -17,4 +17,5 @@ typedef void (^CurrencyResponseBlock)(double rate);
                  onCompletion:(CurrencyResponseBlock) completion
                       onError:(ErrorBlock) error;
 
+-(MKRequest*) uploadImage;
 @end
