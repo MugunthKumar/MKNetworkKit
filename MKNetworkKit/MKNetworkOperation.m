@@ -8,6 +8,7 @@
 
 #import "MKNetworkOperation.h"
 #import "NSDictionary+RequestEncoding.h"
+#import "NSString+MD5.h"
 
 typedef enum {
     MKRequestOperationStateReady = 1,
@@ -19,7 +20,7 @@ typedef enum {
 @property (strong, nonatomic) NSURLConnection *connection;
 @property (strong, nonatomic) NSMutableURLRequest *request;
 @property (strong, nonatomic) NSMutableDictionary *requestDictionary;
-@property (strong, nonatomic) NSURLResponse *response;
+@property (strong, nonatomic) NSHTTPURLResponse *response;
 
 @property (strong, nonatomic) NSMutableDictionary *fieldsToBePosted;
 @property (strong, nonatomic) NSMutableArray *filesToBePosted;
@@ -35,6 +36,7 @@ typedef enum {
 @property (nonatomic, assign) BOOL isCancelled;
 
 @property (strong, nonatomic) NSMutableData *mutableData;
+@property (nonatomic, copy) CacheBlock cacheHandlingBlock;
 
 - (id)initWithURLString:(NSString *)aURLString
                    body:(NSMutableDictionary *)body
@@ -56,11 +58,24 @@ typedef enum {
 @synthesize errorBlock = _errorBlock;
 @synthesize isCancelled = _isCancelled;
 @synthesize mutableData = _mutableData;
+@synthesize cacheHandlingBlock = _cacheHandlingBlock;
+@synthesize downloadStream = _downloadStream;
 
 @synthesize uploadProgressChangedHandler = _uploadProgressChangedHandler;
 @synthesize downloadProgressChangedHandler = _downloadProgressChangedHandler;
 
 @synthesize stringEncoding = _stringEncoding;
+
+
+-(void) notifyCache {
+    
+    NSString *str = [NSString stringWithFormat:@"%@-%@-%@", [self.request.URL absoluteString], 
+                     self.username ? self.username : @"",
+                     self.password ? self.password : @""];
+
+    if(self.cacheHandlingBlock && [self.response statusCode] >= 200 && [self.response statusCode] < 300)
+        self.cacheHandlingBlock([str md5], [self responseData]);
+}
 
 -(MKRequestOperationState) state {
     
@@ -149,7 +164,8 @@ typedef enum {
         if (([method isEqualToString:@"GET"] ||
              [method isEqualToString:@"DELETE"]) && (body && [body count] > 0)) {
             
-            finalURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@?%@", aURLString, [body urlEncodedKeyValueString]]];
+            finalURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@?%@", aURLString, 
+                                             [body urlEncodedKeyValueString]]];
         } else {
             finalURL = [NSURL URLWithString:aURLString];
         }
@@ -323,6 +339,11 @@ typedef enum {
     return body;
 }
 
+-(void) setCacheHandler:(CacheBlock) cacheHandler {
+
+    self.cacheHandlingBlock = cacheHandler;
+}
+
 #pragma mark -
 #pragma Main method
 -(void) main {
@@ -341,9 +362,10 @@ typedef enum {
     if(!self.isCancelled) {
         
         if ([self.request.HTTPMethod isEqualToString:@"POST"] || [self.request.HTTPMethod isEqualToString:@"PUT"]) {            
+            
             [self.request setHTTPBody:[self bodyData]];
         }
-        
+
         self.connection = [[NSURLConnection alloc] initWithRequest:self.request 
                                                           delegate:self 
                                                   startImmediately:YES]; 
@@ -401,7 +423,7 @@ typedef enum {
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
     
     self.mutableData = nil;
-
+    [self.downloadStream close];
     self.state = MKRequestOperationStateFinished;
     self.errorBlock(error);    
 }
@@ -424,17 +446,22 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
     
     NSUInteger size = [self.response expectedContentLength] < 0 ? 0 : [self.response expectedContentLength];
-    self.response = response;
+    self.response = (NSHTTPURLResponse*) response;
     self.mutableData = [NSMutableData dataWithCapacity:size];
+    [self.downloadStream open];
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
     
     [self.mutableData appendData:data];
+    if (self.downloadStream && [self.downloadStream hasSpaceAvailable]) {
+            const uint8_t *dataBuffer = [data bytes];
+            [self.downloadStream write:&dataBuffer[0] maxLength:[data length]];
+    }
     
     if(self.downloadProgressChangedHandler && [self.response expectedContentLength] > 0) {
         
-        double progress = [self.mutableData length] / [self.response expectedContentLength];
+        double progress = (double)[self.mutableData length] / (double)[self.response expectedContentLength];
         self.downloadProgressChangedHandler(progress);
     }    
 }
@@ -450,8 +477,11 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
     
+    [self.downloadStream close];
+    
     self.state = MKRequestOperationStateFinished;
     self.responseBlock(self);
+    [self notifyCache];
 }
 
 #pragma mark -

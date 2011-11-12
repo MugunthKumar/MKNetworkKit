@@ -37,4 +37,8 @@
 -(int) cacheMemoryCost;
 
 -(void) initializeCache;
+
+- (NSString *)fileNameForKey:(NSString *)key;
+-(void) saveCache;
+-(void) saveCacheData:(NSData*) data forKey:(NSString*) cacheDataKey;
 @end

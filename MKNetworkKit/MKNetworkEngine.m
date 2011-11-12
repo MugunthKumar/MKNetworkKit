@@ -33,6 +33,9 @@ static NSOperationQueue *_sharedNetworkQueue;
 // no matter how many instances of MKNetworkEngine is created, there is one and only one network queue
 // In theory any app contains as many network engines as domains
 
+#pragma mark -
+#pragma mark Initialization
+
 +(void) initialize {
     
     if(!_sharedNetworkQueue) {
@@ -63,48 +66,18 @@ static NSOperationQueue *_sharedNetworkQueue;
     return self;
 }
 
--(NSString*) cacheDirectoryName {
+#pragma mark -
+#pragma mark Memory Mangement
 
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = [paths objectAtIndex:0];
-    NSString *cacheDirectoryName = [documentsDirectory stringByAppendingPathComponent:MKNETWORKCACHE_DEFAULT_DIRECTORY];
-    return cacheDirectoryName;
+-(void) dealloc {
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kReachabilityChangedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
 }
 
--(int) cacheMemoryCost {
++(void) dealloc {
     
-    return MKNETWORKCACHE_DEFAULT_COST;
-}
-
--(void) saveCache {
-    
-}
-
--(void) initializeCache {
-    
-    self.memoryCache = [NSMutableDictionary dictionaryWithCapacity:[self cacheMemoryCost]];
-    self.memoryCacheKeys = [NSMutableArray arrayWithCapacity:[self cacheMemoryCost]];
-        
-    NSString *cacheDirectory = [self cacheDirectoryName];
-    BOOL isDirectory = NO;
-    BOOL folderExists = [[NSFileManager defaultManager] fileExistsAtPath:cacheDirectory isDirectory:&isDirectory] && isDirectory;
-    
-    if (!folderExists)
-    {
-        NSError *error = nil;
-        [[NSFileManager defaultManager] createDirectoryAtPath:cacheDirectory withIntermediateDirectories:YES attributes:nil error:&error];
-    }
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveMemoryWarning)
-                                                 name:UIApplicationDidReceiveMemoryWarningNotification
-                                               object:nil];
-}
-
--(void) didReceiveMemoryWarning {
-    
-    [self saveCache];
-    self.memoryCache = nil;
-    self.memoryCacheKeys = nil;
+    [_sharedNetworkQueue removeObserver:[self self] forKeyPath:@"operationCount"];
 }
 
 #pragma mark -
@@ -125,7 +98,7 @@ static NSOperationQueue *_sharedNetworkQueue;
 }
 
 #pragma mark -
-#pragma mark Reachability related methods
+#pragma mark Reachability related
 
 -(void) reachabilityChanged:(NSNotification*) notification
 {
@@ -150,19 +123,9 @@ static NSOperationQueue *_sharedNetworkQueue;
     
     return ([self.reachability currentReachabilityStatus] != NotReachable);
 }
-    
--(void) dealloc {
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kReachabilityChangedNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidReceiveMemoryWarningNotification object:nil];  
 
-}
-
-
-+(void) dealloc {
-    
-    [_sharedNetworkQueue removeObserver:[self self] forKeyPath:@"operationCount"];
-}
+#pragma -
+#pragma Request related
 
 -(MKNetworkOperation*) requestWithPath:(NSString*) path {
     
@@ -205,7 +168,107 @@ static NSOperationQueue *_sharedNetworkQueue;
 
 -(void) queueRequest:(MKNetworkOperation*) request {
     
+    [request setCacheHandler:^(NSString* cacheKey, NSData* cacheData) {
+        
+        [self saveCacheData:cacheData forKey:cacheKey];
+    }];
+    
     [_sharedNetworkQueue addOperation:request];
+}
+
+#pragma -
+#pragma Cache related
+
+-(NSString*) cacheDirectoryName {
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    NSString *cacheDirectoryName = [documentsDirectory stringByAppendingPathComponent:MKNETWORKCACHE_DEFAULT_DIRECTORY];
+    return cacheDirectoryName;
+}
+
+-(int) cacheMemoryCost {
+    
+    return MKNETWORKCACHE_DEFAULT_COST;
+}
+
+- (NSString *)fileNameForKey:(NSString *)key
+{
+    NSString *cacheDirectoryName = [self cacheDirectoryName];
+    return [cacheDirectoryName stringByAppendingPathComponent:key];
+}
+
+     
+-(void) saveCache {
+   
+    for(NSString *cacheKey in [self.memoryCache allKeys])
+    {
+        NSString *filePath = [self fileNameForKey:cacheKey];
+        
+        if(![[NSFileManager defaultManager] fileExistsAtPath:filePath])
+            [[self.memoryCache objectForKey:cacheKey] writeToFile:filePath atomically:YES];
+        
+    }
+}
+
+-(void) saveCacheData:(NSData*) data forKey:(NSString*) cacheDataKey
+{    
+    [self.memoryCache setObject:data forKey:cacheDataKey];
+    
+    NSUInteger index = [self.memoryCacheKeys indexOfObject:cacheDataKey];
+    if(index != NSNotFound)
+        [self.memoryCacheKeys removeObjectAtIndex:index];    
+    
+    [self.memoryCacheKeys insertObject:data atIndex:0]; // remove it and insert it at start
+    
+    if([self.memoryCacheKeys count] > [self cacheMemoryCost])
+    {
+        NSString *lastKey = [self.memoryCacheKeys lastObject];        
+        NSData *data = [self.memoryCache objectForKey:lastKey];        
+        NSString *filePath = [self fileNameForKey:lastKey];
+        
+        if(![[NSFileManager defaultManager] fileExistsAtPath:filePath])
+            [data writeToFile:filePath atomically:YES];
+        
+        [self.memoryCacheKeys removeLastObject];
+        [self.memoryCache removeObjectForKey:lastKey];        
+    }
+}
+
+/*
+- (BOOL) dataOldness:(NSString*) imagePath
+{
+    NSDictionary *attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:imagePath error:nil];
+    NSDate *creationDate = [attributes valueForKey:NSFileCreationDate];
+    
+    return abs([creationDate timeIntervalSinceNow]);
+}*/
+
+-(void) initializeCache {
+    
+    self.memoryCache = [NSMutableDictionary dictionaryWithCapacity:[self cacheMemoryCost]];
+    self.memoryCacheKeys = [NSMutableArray arrayWithCapacity:[self cacheMemoryCost]];
+    
+    NSString *cacheDirectory = [self cacheDirectoryName];
+    BOOL isDirectory = NO;
+    BOOL folderExists = [[NSFileManager defaultManager] fileExistsAtPath:cacheDirectory isDirectory:&isDirectory] && isDirectory;
+    
+    if (!folderExists)
+    {
+        NSError *error = nil;
+        [[NSFileManager defaultManager] createDirectoryAtPath:cacheDirectory withIntermediateDirectories:YES attributes:nil error:&error];
+    }
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveMemoryWarning)
+                                                 name:UIApplicationDidReceiveMemoryWarningNotification
+                                               object:nil];
+}
+
+-(void) didReceiveMemoryWarning {
+    
+    [self saveCache];
+    self.memoryCache = nil;
+    self.memoryCacheKeys = nil;
 }
 
 @end

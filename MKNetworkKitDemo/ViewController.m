@@ -40,11 +40,12 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     NSMutableDictionary *headerFields = [NSMutableDictionary dictionary]; 
-    [headerFields setValue:@"x-client-identifier" forKey:@"iOS"];
+    [headerFields setValue:@"iOS" forKey:@"x-client-identifier"];
+    
     YahooEngine *engine = [[YahooEngine alloc] initWithHostName:@"download.finance.yahoo.com" 
                        customHeaderFields:headerFields];
 
-    
+    /*
     [engine currencyRateFor:@"SGD" 
                  inCurrency:@"INR" 
                onCompletion:^(double rate) {
@@ -56,8 +57,12 @@
                         DLog(@"%@\t%@\t%@\t%@", [error localizedDescription], [error localizedFailureReason], 
                              [error localizedRecoveryOptions], [error localizedRecoverySuggestion]);
                     }];
+     [engine uploadImageFromFile];
+     [engine uploadImageFromData];
+    */
     
-    [engine uploadImage];
+    [engine downloadFatAssFile];
+    
     [super viewDidAppear:animated];
 }
 

@@ -36,7 +36,7 @@
     return request;
 }
 
--(MKNetworkOperation*) uploadImage {
+-(MKNetworkOperation*) uploadImageFromFile {
     
     MKNetworkOperation *request = [self requestWithURLString:@"http://twitpic.com/api/upload" 
                                                body:[NSDictionary dictionaryWithObjectsAndKeys:
@@ -62,6 +62,62 @@
                      
                       DLog(@"%@", error);
                   }];
+    
+    [self queueRequest:request];
+    return request;
+}
+
+-(MKNetworkOperation*) uploadImageFromData {
+    
+    MKNetworkOperation *request = [self requestWithURLString:@"http://twitpic.com/api/upload" 
+                                                        body:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                              @"mksg", @"username",
+                                                              @"HelloMKSG", @"password",
+                                                              nil]
+                                                  httpMethod:@"POST"];
+    
+    [request addData:[NSData dataWithContentsOfFile:@"/Users/mugunth/Desktop/transit.png"] forKey:@"media" mimeType:@"image/png"];
+    
+    request.uploadProgressChangedHandler = ^(double progress) {
+        
+        DLog(@"%.2f", progress*100.0);
+    };
+    
+    [request onCompletion:^(MKNetworkOperation* completedRequest) {
+        
+        DLog(@"%@", completedRequest);        
+    }
+                  onError:^(NSError* error) {
+                      
+                      DLog(@"%@", error);
+                  }];
+    
+    [self queueRequest:request];
+    return request;
+}
+
+
+-(MKNetworkOperation*) downloadFatAssFile {
+    
+    MKNetworkOperation *request = [self requestWithURLString:@"http://developer.apple.com/library/mac/documentation/Cocoa/Reference/Foundation/Classes/NSURLRequest_Class/NSURLRequest_Class.pdf" 
+                                                        body:nil
+                                                  httpMethod:@"GET"];
+
+    request.downloadProgressChangedHandler = ^(double progress) {
+        
+        DLog(@"%.2f", progress*100.0);
+    };
+    
+    [request onCompletion:^(MKNetworkOperation* completedRequest) {
+        
+        DLog(@"%@", completedRequest);        
+    }
+                  onError:^(NSError* error) {
+                      
+                      DLog(@"%@", error);
+                  }];
+    
+    request.downloadStream = [NSOutputStream outputStreamToFileAtPath:@"/Users/mugunth/Desktop/file.pdf" append:YES];
     
     [self queueRequest:request];
     return request;
