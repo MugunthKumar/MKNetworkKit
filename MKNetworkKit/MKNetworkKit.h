@@ -23,4 +23,6 @@
 // ALog always displays output regardless of the DEBUG setting
 #define ALog(fmt, ...) NSLog((@"%s [Line %d] " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__);
 
+#define MKNETWORKCACHE_DEFAULT_COST 50
+#define MKNETWORKCACHE_DEFAULT_DIRECTORY @"MKNetworkCache"
 #endif

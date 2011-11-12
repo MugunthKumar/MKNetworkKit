@@ -13,6 +13,10 @@
 @property (strong, nonatomic) NSString *hostName;
 @property (strong, nonatomic) Reachability *reachability;
 @property (strong, nonatomic) NSDictionary *customHeaders;
+
+@property (nonatomic, strong) NSMutableDictionary *memoryCache;
+@property (nonatomic, strong) NSMutableArray *memoryCacheKeys;
+
 @end
 
 static NSOperationQueue *_sharedNetworkQueue;
@@ -21,6 +25,9 @@ static NSOperationQueue *_sharedNetworkQueue;
 @synthesize hostName = _hostName;
 @synthesize reachability = _reachability;
 @synthesize customHeaders = _customHeaders;
+
+@synthesize memoryCache = _memoryCache;
+@synthesize memoryCacheKeys = _memoryCacheKeys;
 
 // Network Queue is a shared singleton object.
 // no matter how many instances of MKNetworkEngine is created, there is one and only one network queue
@@ -54,6 +61,50 @@ static NSOperationQueue *_sharedNetworkQueue;
     }
 
     return self;
+}
+
+-(NSString*) cacheDirectoryName {
+
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    NSString *cacheDirectoryName = [documentsDirectory stringByAppendingPathComponent:MKNETWORKCACHE_DEFAULT_DIRECTORY];
+    return cacheDirectoryName;
+}
+
+-(int) cacheMemoryCost {
+    
+    return MKNETWORKCACHE_DEFAULT_COST;
+}
+
+-(void) saveCache {
+    
+}
+
+-(void) initializeCache {
+    
+    self.memoryCache = [NSMutableDictionary dictionaryWithCapacity:[self cacheMemoryCost]];
+    self.memoryCacheKeys = [NSMutableArray arrayWithCapacity:[self cacheMemoryCost]];
+        
+    NSString *cacheDirectory = [self cacheDirectoryName];
+    BOOL isDirectory = NO;
+    BOOL folderExists = [[NSFileManager defaultManager] fileExistsAtPath:cacheDirectory isDirectory:&isDirectory] && isDirectory;
+    
+    if (!folderExists)
+    {
+        NSError *error = nil;
+        [[NSFileManager defaultManager] createDirectoryAtPath:cacheDirectory withIntermediateDirectories:YES attributes:nil error:&error];
+    }
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveMemoryWarning)
+                                                 name:UIApplicationDidReceiveMemoryWarningNotification
+                                               object:nil];
+}
+
+-(void) didReceiveMemoryWarning {
+    
+    [self saveCache];
+    self.memoryCache = nil;
+    self.memoryCacheKeys = nil;
 }
 
 #pragma mark -
@@ -103,6 +154,8 @@ static NSOperationQueue *_sharedNetworkQueue;
 -(void) dealloc {
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kReachabilityChangedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidReceiveMemoryWarningNotification object:nil];  
+
 }
 
 

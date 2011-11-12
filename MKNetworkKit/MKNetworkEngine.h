@@ -8,7 +8,7 @@
 #import <Foundation/Foundation.h>
 
 @class MKNetworkOperation;
-@interface MKNetworkEngine : NSObject
+@interface MKNetworkEngine : NSObject <NSCacheDelegate>
 
 - (id) initWithHostName:(NSString*) hostName customHeaderFields:(NSDictionary*) headers;
 
@@ -31,4 +31,10 @@
                         httpMethod:(NSString*) method;
 
 -(void) queueRequest:(MKNetworkOperation*) request;
+
+// Subclasses can override this and provide their own custom caching directory names
+-(NSString*) cacheDirectoryName;
+-(int) cacheMemoryCost;
+
+-(void) initializeCache;
 @end

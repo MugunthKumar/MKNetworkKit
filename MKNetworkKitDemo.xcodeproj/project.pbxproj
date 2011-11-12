@@ -10,6 +10,7 @@
 		AB5EAD67146A14CF000D93DF /* MKImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = AB5EAD64146A14CF000D93DF /* MKImageCache.m */; };
 		AB5EAD68146A14CF000D93DF /* ImageFetchOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = AB5EAD66146A14CF000D93DF /* ImageFetchOperation.m */; };
 		AB66709A146E38FD00FFB407 /* NSDictionary+RequestEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = AB667099146E38FD00FFB407 /* NSDictionary+RequestEncoding.m */; };
+		AB6670A1146E4B8A00FFB407 /* UIAlertView+MKNetworkKitAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = AB6670A0146E4B8A00FFB407 /* UIAlertView+MKNetworkKitAdditions.m */; };
 		AB74B0C21467CC120088BF09 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB74B0C11467CC120088BF09 /* UIKit.framework */; };
 		AB74B0C41467CC120088BF09 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB74B0C31467CC120088BF09 /* Foundation.framework */; };
 		AB74B0C61467CC120088BF09 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB74B0C51467CC120088BF09 /* CoreGraphics.framework */; };
@@ -33,6 +34,8 @@
 		AB5EAD66146A14CF000D93DF /* ImageFetchOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageFetchOperation.m; sourceTree = "<group>"; };
 		AB667098146E38FD00FFB407 /* NSDictionary+RequestEncoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+RequestEncoding.h"; sourceTree = "<group>"; };
 		AB667099146E38FD00FFB407 /* NSDictionary+RequestEncoding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+RequestEncoding.m"; sourceTree = "<group>"; };
+		AB66709F146E4B8A00FFB407 /* UIAlertView+MKNetworkKitAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertView+MKNetworkKitAdditions.h"; sourceTree = "<group>"; };
+		AB6670A0146E4B8A00FFB407 /* UIAlertView+MKNetworkKitAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAlertView+MKNetworkKitAdditions.m"; sourceTree = "<group>"; };
 		AB74B0BD1467CC120088BF09 /* MKNetworkKitDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MKNetworkKitDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB74B0C11467CC120088BF09 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		AB74B0C31467CC120088BF09 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -130,13 +133,15 @@
 				AB5EAD64146A14CF000D93DF /* MKImageCache.m */,
 				AB5EAD65146A14CF000D93DF /* ImageFetchOperation.h */,
 				AB5EAD66146A14CF000D93DF /* ImageFetchOperation.m */,
+				ABF149B61467F312008B20C9 /* MKNetworkKit.h */,
 				ABF149B41467F312008B20C9 /* MKNetworkEngine.h */,
 				ABF149B51467F312008B20C9 /* MKNetworkEngine.m */,
-				ABF149B61467F312008B20C9 /* MKNetworkKit.h */,
 				ABF149B71467F312008B20C9 /* MKNetworkOperation.h */,
 				ABF149B81467F312008B20C9 /* MKNetworkOperation.m */,
 				AB667098146E38FD00FFB407 /* NSDictionary+RequestEncoding.h */,
 				AB667099146E38FD00FFB407 /* NSDictionary+RequestEncoding.m */,
+				AB66709F146E4B8A00FFB407 /* UIAlertView+MKNetworkKitAdditions.h */,
+				AB6670A0146E4B8A00FFB407 /* UIAlertView+MKNetworkKitAdditions.m */,
 			);
 			path = MKNetworkKit;
 			sourceTree = "<group>";
@@ -232,6 +237,7 @@
 				AB5EAD67146A14CF000D93DF /* MKImageCache.m in Sources */,
 				AB5EAD68146A14CF000D93DF /* ImageFetchOperation.m in Sources */,
 				AB66709A146E38FD00FFB407 /* NSDictionary+RequestEncoding.m in Sources */,
+				AB6670A1146E4B8A00FFB407 /* UIAlertView+MKNetworkKitAdditions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
