@@ -36,7 +36,7 @@ typedef enum {
 @property (nonatomic, assign) BOOL isCancelled;
 
 @property (strong, nonatomic) NSMutableData *mutableData;
-@property (nonatomic, copy) CacheBlock cacheHandlingBlock;
+@property (nonatomic, copy) NSMutableArray *cacheHandlingBlocks;
 
 - (id)initWithURLString:(NSString *)aURLString
                    body:(NSMutableDictionary *)body
@@ -58,7 +58,7 @@ typedef enum {
 @synthesize errorBlock = _errorBlock;
 @synthesize isCancelled = _isCancelled;
 @synthesize mutableData = _mutableData;
-@synthesize cacheHandlingBlock = _cacheHandlingBlock;
+@synthesize cacheHandlingBlocks = _cacheHandlingBlocks;
 @synthesize downloadStream = _downloadStream;
 
 @synthesize uploadProgressChangedHandler = _uploadProgressChangedHandler;
@@ -73,8 +73,11 @@ typedef enum {
                      self.username ? self.username : @"",
                      self.password ? self.password : @""];
 
-    if(self.cacheHandlingBlock && [self.response statusCode] >= 200 && [self.response statusCode] < 300)
-        self.cacheHandlingBlock([str md5], [self responseData]);
+    if([self.response statusCode] >= 200 && [self.response statusCode] < 300) {
+        
+        for(CacheBlock cacheHander in self.cacheHandlingBlocks)
+            cacheHander([str md5], [self responseData]);
+    }        
 }
 
 -(MKRequestOperationState) state {
@@ -339,9 +342,12 @@ typedef enum {
     return body;
 }
 
--(void) setCacheHandler:(CacheBlock) cacheHandler {
+-(void) addCacheHandler:(CacheBlock) cacheHandler {
 
-    self.cacheHandlingBlock = cacheHandler;
+    if(!self.cacheHandlingBlocks)
+        self.cacheHandlingBlocks = [NSMutableArray array];
+    
+    [self.cacheHandlingBlocks addObject:cacheHandler];
 }
 
 #pragma mark -

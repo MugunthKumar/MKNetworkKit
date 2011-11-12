@@ -7,9 +7,9 @@
 //
 
 #import "ViewController.h"
-#import "YahooEngine.h"
 
 @implementation ViewController
+@synthesize engine = _engine;
 
 - (void)didReceiveMemoryWarning
 {
@@ -42,7 +42,7 @@
     NSMutableDictionary *headerFields = [NSMutableDictionary dictionary]; 
     [headerFields setValue:@"iOS" forKey:@"x-client-identifier"];
     
-    YahooEngine *engine = [[YahooEngine alloc] initWithHostName:@"download.finance.yahoo.com" 
+    self.engine = [[YahooEngine alloc] initWithHostName:@"download.finance.yahoo.com" 
                        customHeaderFields:headerFields];
 
     /*
@@ -61,13 +61,15 @@
      [engine uploadImageFromData];
     */
     
-    [engine downloadFatAssFile];
-    
+    [self.engine initializeCache];
+    [self.engine downloadFatAssFile];
+
     [super viewDidAppear:animated];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+    self.engine = nil;
 	[super viewWillDisappear:animated];
 }
 

@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		AB5EAD67146A14CF000D93DF /* MKImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = AB5EAD64146A14CF000D93DF /* MKImageCache.m */; };
-		AB5EAD68146A14CF000D93DF /* ImageFetchOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = AB5EAD66146A14CF000D93DF /* ImageFetchOperation.m */; };
 		AB66709A146E38FD00FFB407 /* NSDictionary+RequestEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = AB667099146E38FD00FFB407 /* NSDictionary+RequestEncoding.m */; };
 		AB6670A1146E4B8A00FFB407 /* UIAlertView+MKNetworkKitAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = AB6670A0146E4B8A00FFB407 /* UIAlertView+MKNetworkKitAdditions.m */; };
 		AB6670A4146E64A500FFB407 /* NSString+MD5.m in Sources */ = {isa = PBXBuildFile; fileRef = AB6670A3146E64A500FFB407 /* NSString+MD5.m */; };
@@ -29,10 +27,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		AB5EAD63146A14CF000D93DF /* MKImageCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKImageCache.h; sourceTree = "<group>"; };
-		AB5EAD64146A14CF000D93DF /* MKImageCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKImageCache.m; sourceTree = "<group>"; };
-		AB5EAD65146A14CF000D93DF /* ImageFetchOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageFetchOperation.h; sourceTree = "<group>"; };
-		AB5EAD66146A14CF000D93DF /* ImageFetchOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageFetchOperation.m; sourceTree = "<group>"; };
 		AB667098146E38FD00FFB407 /* NSDictionary+RequestEncoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+RequestEncoding.h"; sourceTree = "<group>"; };
 		AB667099146E38FD00FFB407 /* NSDictionary+RequestEncoding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+RequestEncoding.m"; sourceTree = "<group>"; };
 		AB66709F146E4B8A00FFB407 /* UIAlertView+MKNetworkKitAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertView+MKNetworkKitAdditions.h"; sourceTree = "<group>"; };
@@ -132,10 +126,6 @@
 		ABF149B31467F312008B20C9 /* MKNetworkKit */ = {
 			isa = PBXGroup;
 			children = (
-				AB5EAD63146A14CF000D93DF /* MKImageCache.h */,
-				AB5EAD64146A14CF000D93DF /* MKImageCache.m */,
-				AB5EAD65146A14CF000D93DF /* ImageFetchOperation.h */,
-				AB5EAD66146A14CF000D93DF /* ImageFetchOperation.m */,
 				ABF149B61467F312008B20C9 /* MKNetworkKit.h */,
 				ABF149B41467F312008B20C9 /* MKNetworkEngine.h */,
 				ABF149B51467F312008B20C9 /* MKNetworkEngine.m */,
@@ -239,8 +229,6 @@
 				ABF149CB1467F312008B20C9 /* main.m in Sources */,
 				ABF149CD1467F312008B20C9 /* ViewController.m in Sources */,
 				ABC25179146802B900264474 /* YahooEngine.m in Sources */,
-				AB5EAD67146A14CF000D93DF /* MKImageCache.m in Sources */,
-				AB5EAD68146A14CF000D93DF /* ImageFetchOperation.m in Sources */,
 				AB66709A146E38FD00FFB407 /* NSDictionary+RequestEncoding.m in Sources */,
 				AB6670A1146E4B8A00FFB407 /* UIAlertView+MKNetworkKitAdditions.m in Sources */,
 				AB6670A4146E64A500FFB407 /* NSString+MD5.m in Sources */,

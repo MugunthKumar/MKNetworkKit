@@ -168,7 +168,7 @@ static NSOperationQueue *_sharedNetworkQueue;
 
 -(void) queueRequest:(MKNetworkOperation*) request {
     
-    [request setCacheHandler:^(NSString* cacheKey, NSData* cacheData) {
+    [request addCacheHandler:^(NSString* cacheKey, NSData* cacheData) {
         
         [self saveCacheData:cacheData forKey:cacheKey];
     }];
@@ -197,7 +197,6 @@ static NSOperationQueue *_sharedNetworkQueue;
     NSString *cacheDirectoryName = [self cacheDirectoryName];
     return [cacheDirectoryName stringByAppendingPathComponent:key];
 }
-
      
 -(void) saveCache {
    
@@ -206,9 +205,11 @@ static NSOperationQueue *_sharedNetworkQueue;
         NSString *filePath = [self fileNameForKey:cacheKey];
         
         if(![[NSFileManager defaultManager] fileExistsAtPath:filePath])
-            [[self.memoryCache objectForKey:cacheKey] writeToFile:filePath atomically:YES];
-        
+            [[self.memoryCache objectForKey:cacheKey] writeToFile:filePath atomically:YES];        
     }
+    
+    [self.memoryCache removeAllObjects];
+    [self.memoryCacheKeys removeAllObjects];
 }
 
 -(void) saveCacheData:(NSData*) data forKey:(NSString*) cacheDataKey
@@ -259,16 +260,15 @@ static NSOperationQueue *_sharedNetworkQueue;
         [[NSFileManager defaultManager] createDirectoryAtPath:cacheDirectory withIntermediateDirectories:YES attributes:nil error:&error];
     }
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveMemoryWarning)
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveCache)
                                                  name:UIApplicationDidReceiveMemoryWarningNotification
                                                object:nil];
-}
-
--(void) didReceiveMemoryWarning {
-    
-    [self saveCache];
-    self.memoryCache = nil;
-    self.memoryCacheKeys = nil;
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveCache)
+                                                 name:UIApplicationDidEnterBackgroundNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveCache)
+                                                 name:UIApplicationWillTerminateNotification
+                                               object:nil];
 }
 
 @end

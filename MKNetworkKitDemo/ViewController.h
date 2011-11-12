@@ -7,7 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "YahooEngine.h"
 
 @interface ViewController : UIViewController
 
+@property (strong, nonatomic) YahooEngine *engine;
 @end

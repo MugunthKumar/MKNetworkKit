@@ -21,7 +21,8 @@
                                                                             CFSTR("?!@#$^&%*+,:;='\"`<>()[]{}/\\|~ "), 
                                                                             kCFStringEncodingUTF8);
                                                 
-        [string appendFormat:@"%@=%@&", key, encodedString];	
+        [string appendFormat:@"%@=%@&", key, encodedString];
+        CFRelease(encodedString);
     }
     
     if([string length] > 0)

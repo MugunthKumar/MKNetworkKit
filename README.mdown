@@ -1,8 +1,27 @@
+##TODO
+* GET Requests should be cacheable
+* POST Requests should be serializable (Seamless continue)
+* Background completion
+* Read about cache handling and HTTP request codes
+
+* Multiple encoding types in URL
+* Mac compatibility and XML support (NSXMLDocument)
+
+
 This is version 1 of MKNetworkKit
 Read the <a href="http://mk.sg/98"> blog post</a> for more.
 
-MKStoreKit uses CC-BY-CA Licensing
-And so all of my source code can be used free of charge in your app, provided you attribute it.
+###Why MKNetworkKit?
 
+* Single queue for the whole app
+* Auto queue sizing
+* Auto caching and restoring
+* Single operation for similar requests
+* Background completion
+* Full ARC support
 
+###Documentation
 
+###Licensing
+MKNetworkKit uses CC-BY-CA Licensing
+And so all of my source code can be used free of charge in your app, provided you attribute it in the app.

@@ -33,7 +33,6 @@ typedef void (^DownloadBlock)(NSData* cacheData);
 
 @property (nonatomic, assign) NSStringEncoding stringEncoding;
 
--(void) onCompletion:(ResponseBlock) response onError:(ErrorBlock) error;
 -(void) setUsername:(NSString*) name password:(NSString*) password;
 -(void) addHeaders:(NSDictionary*) headersDictionary;
 
@@ -44,7 +43,9 @@ typedef void (^DownloadBlock)(NSData* cacheData);
 -(void) addData:(NSData*) data forKey:(NSString*) key mimeType:(NSString*) mimeType;
 
 -(NSData*) responseData;
--(void) setCacheHandler:(CacheBlock) cacheHandler;
+
+-(void) onCompletion:(ResponseBlock) response onError:(ErrorBlock) error;
+-(void) addCacheHandler:(CacheBlock) cacheHandler;
 
 -(NSString*)responseString; // defaults to UTF8
 -(NSString*) responseStringWithEncoding:(NSStringEncoding) encoding;
