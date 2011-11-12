@@ -7,28 +7,28 @@
 
 #import <Foundation/Foundation.h>
 
-@class MKRequest;
+@class MKNetworkOperation;
 @interface MKNetworkEngine : NSObject
 
 - (id) initWithHostName:(NSString*) hostName customHeaderFields:(NSDictionary*) headers;
 
--(MKRequest*) requestWithPath:(NSString*) path;
+-(MKNetworkOperation*) requestWithPath:(NSString*) path;
 
--(MKRequest*) requestWithPath:(NSString*) path
+-(MKNetworkOperation*) requestWithPath:(NSString*) path
                          body:(NSMutableDictionary*) body;
 
--(MKRequest*) requestWithPath:(NSString*) path
+-(MKNetworkOperation*) requestWithPath:(NSString*) path
                          body:(NSMutableDictionary*) body
                    httpMethod:(NSString*)method;
 
--(MKRequest*) requestWithPath:(NSString*) path
+-(MKNetworkOperation*) requestWithPath:(NSString*) path
                          body:(NSMutableDictionary*) body
                    httpMethod:(NSString*)method 
                           ssl:(BOOL) useSSL;
 
--(MKRequest*) requestWithURLString:(NSString*) urlString
+-(MKNetworkOperation*) requestWithURLString:(NSString*) urlString
                               body:(NSMutableDictionary*) body
                         httpMethod:(NSString*) method;
 
--(void) queueRequest:(MKRequest*) request;
+-(void) queueRequest:(MKNetworkOperation*) request;
 @end

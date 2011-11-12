@@ -12,10 +12,10 @@
 
 typedef void (^CurrencyResponseBlock)(double rate);
 
--(MKRequest*) currencyRateFor:(NSString*) sourceCurrency 
+-(MKNetworkOperation*) currencyRateFor:(NSString*) sourceCurrency 
                    inCurrency:(NSString*) targetCurrency 
                  onCompletion:(CurrencyResponseBlock) completion
                       onError:(ErrorBlock) error;
 
--(MKRequest*) uploadImage;
+-(MKNetworkOperation*) uploadImage;
 @end

@@ -12,7 +12,7 @@
 
 @property (strong, nonatomic) NSString *hostName;
 @property (strong, nonatomic) Reachability *reachability;
-
+@property (strong, nonatomic) NSDictionary *customHeaders;
 @end
 
 static NSOperationQueue *_sharedNetworkQueue;
@@ -20,33 +20,38 @@ static NSOperationQueue *_sharedNetworkQueue;
 @implementation MKNetworkEngine
 @synthesize hostName = _hostName;
 @synthesize reachability = _reachability;
+@synthesize customHeaders = _customHeaders;
 
 // Network Queue is a shared singleton object.
 // no matter how many instances of MKNetworkEngine is created, there is one and only one network queue
 // In theory any app contains as many network engines as domains
 
++(void) initialize {
+    
+    if(!_sharedNetworkQueue) {
+        static dispatch_once_t oncePredicate;
+        dispatch_once(&oncePredicate, ^{
+            _sharedNetworkQueue = [[NSOperationQueue alloc] init];
+            [_sharedNetworkQueue addObserver:[self self] forKeyPath:@"operationCount" options:0 context:NULL];
+            [_sharedNetworkQueue setMaxConcurrentOperationCount:6];
+        });
+    }        
+    
+}
 - (id) initWithHostName:(NSString*) hostName customHeaderFields:(NSDictionary*) headers {
     
-    if((self = [super init])) {
+    if((self = [super init])) {        
+    
+        [[NSNotificationCenter defaultCenter] addObserver:self 
+                                                 selector:@selector(reachabilityChanged:) 
+                                                     name:kReachabilityChangedNotification 
+                                                   object:nil];
         
-        if(!_sharedNetworkQueue) {
-            static dispatch_once_t oncePredicate;
-            dispatch_once(&oncePredicate, ^{
-                _sharedNetworkQueue = [[NSOperationQueue alloc] init];
-                [_sharedNetworkQueue setMaxConcurrentOperationCount:6];
-                [_sharedNetworkQueue addObserver:self forKeyPath:@"operations" options:0 context:NULL];
-            });
-        }        
+        self.hostName = hostName;
+        self.customHeaders = headers;
+        self.reachability = [Reachability reachabilityWithHostName:self.hostName];
+        [self.reachability startNotifier];
     }
-    
-    self.hostName = hostName;
-    [[NSNotificationCenter defaultCenter] addObserver:self 
-                                             selector:@selector(reachabilityChanged:) 
-                                                 name:kReachabilityChangedNotification 
-                                               object:nil];
-    
-    self.reachability = [Reachability reachabilityWithHostName:self.hostName];
-    [self.reachability startNotifier];
 
     return self;
 }
@@ -54,13 +59,13 @@ static NSOperationQueue *_sharedNetworkQueue;
 #pragma mark -
 #pragma mark KVO for network Queue
 
-- (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object 
++ (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object 
                          change:(NSDictionary *)change context:(void *)context
 {
-    if (object == _sharedNetworkQueue && [keyPath isEqualToString:@"operations"]) {
+    if (object == _sharedNetworkQueue && [keyPath isEqualToString:@"operationCount"]) {
         
         [UIApplication sharedApplication].networkActivityIndicatorVisible = 
-        ([_sharedNetworkQueue.operations count] == 0);        
+        ([_sharedNetworkQueue.operations count] > 0);        
     }
     else {
         [super observeValueForKeyPath:keyPath ofObject:object 
@@ -98,16 +103,20 @@ static NSOperationQueue *_sharedNetworkQueue;
 -(void) dealloc {
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kReachabilityChangedNotification object:nil];
-    
-    [_sharedNetworkQueue removeObserver:self forKeyPath:@"operations"];
 }
 
--(MKRequest*) requestWithPath:(NSString*) path {
+
++(void) dealloc {
+    
+    [_sharedNetworkQueue removeObserver:[self self] forKeyPath:@"operationCount"];
+}
+
+-(MKNetworkOperation*) requestWithPath:(NSString*) path {
     
     return [self requestWithPath:path body:nil];
 }
 
--(MKRequest*) requestWithPath:(NSString*) path
+-(MKNetworkOperation*) requestWithPath:(NSString*) path
                          body:(NSMutableDictionary*) body {
 
     return [self requestWithPath:path 
@@ -115,14 +124,14 @@ static NSOperationQueue *_sharedNetworkQueue;
                httpMethod:@"GET"];
 }
 
--(MKRequest*) requestWithPath:(NSString*) path
+-(MKNetworkOperation*) requestWithPath:(NSString*) path
                          body:(NSMutableDictionary*) body
                    httpMethod:(NSString*)method  {
     
     return [self requestWithPath:path body:body httpMethod:method ssl:NO];
 }
 
--(MKRequest*) requestWithPath:(NSString*) path
+-(MKNetworkOperation*) requestWithPath:(NSString*) path
                          body:(NSMutableDictionary*) body
                    httpMethod:(NSString*)method 
                           ssl:(BOOL) useSSL {
@@ -132,20 +141,18 @@ static NSOperationQueue *_sharedNetworkQueue;
     return [self requestWithURLString:urlString body:body httpMethod:method];
 }
 
--(MKRequest*) requestWithURLString:(NSString*) urlString
+-(MKNetworkOperation*) requestWithURLString:(NSString*) urlString
                          body:(NSMutableDictionary*) body
                    httpMethod:(NSString*)method {
 
-    MKRequest *request = [MKRequest requestWithURLString:urlString body:body httpMethod:method];
-
-#warning possibly incomplete
-    // add other relevant app specific code here
-    
-    return request;
+    MKNetworkOperation *operation = [MKNetworkOperation operationWithURLString:urlString body:body httpMethod:method];
+    [operation addHeaders:self.customHeaders];
+    return operation;
 }
 
--(void) queueRequest:(MKRequest*) request {
+-(void) queueRequest:(MKNetworkOperation*) request {
     
     [_sharedNetworkQueue addOperation:request];
 }
+
 @end

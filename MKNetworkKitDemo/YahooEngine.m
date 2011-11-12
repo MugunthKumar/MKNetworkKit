@@ -13,16 +13,16 @@
 
 @implementation YahooEngine
 
--(MKRequest*) currencyRateFor:(NSString*) sourceCurrency 
+-(MKNetworkOperation*) currencyRateFor:(NSString*) sourceCurrency 
                    inCurrency:(NSString*) targetCurrency 
                  onCompletion:(CurrencyResponseBlock) completionBlock
                       onError:(ErrorBlock) errorBlock {
     
-    MKRequest *request = [self requestWithPath:YAHOO_URL(sourceCurrency, targetCurrency) 
+    MKNetworkOperation *request = [self requestWithPath:YAHOO_URL(sourceCurrency, targetCurrency) 
                                           body:nil 
                                     httpMethod:@"GET"];
     
-    [request onCompletion:^(MKRequest *completedRequest)
+    [request onCompletion:^(MKNetworkOperation *completedRequest)
      {
          DLog(@"%@", [completedRequest responseString]);
          completionBlock(5.0f);
@@ -31,23 +31,30 @@
          errorBlock(error);
      }];
     
-    //[self queueRequest:request];
+    [self queueRequest:request];
     
     return request;
 }
 
--(MKRequest*) uploadImage {
+-(MKNetworkOperation*) uploadImage {
     
-    MKRequest *request = [self requestWithURLString:@"http://twitpic.com/api/upload" 
+    MKNetworkOperation *request = [self requestWithURLString:@"http://twitpic.com/api/upload" 
                                                body:[NSDictionary dictionaryWithObjectsAndKeys:
                                                      @"mksg", @"username",
                                                      @"HelloMKSG", @"password",
                                                      nil]
                                          httpMethod:@"POST"];
 
-    [request addFile:@"/Users/mugunth/Desktop/transit.png" forKey:@"media" mimeType:@"image/png"];
- 
-    [request onCompletion:^(MKRequest* completedRequest) {
+    [request addFile:@"/Users/mugunth/Desktop/transit.png" forKey:@"media"];
+
+    //[request addData:[NSData dataWithContentsOfFile:@"/Users/mugunth/Desktop/transit.png"] forKey:@"media" mimeType:@"image/png"];
+
+    request.uploadProgressChangedHandler = ^(double progress) {
+    
+        DLog(@"%.2f", progress*100.0);
+    };
+    
+    [request onCompletion:^(MKNetworkOperation* completedRequest) {
 
         DLog(@"%@", completedRequest);        
     }

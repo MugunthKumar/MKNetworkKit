@@ -6,7 +6,8 @@
 //  Copyright 2011 Steinlogic. All rights reserved.
 //
 
-#import "MKRequest.h"
+#import "MKNetworkOperation.h"
+#import "NSDictionary+RequestEncoding.h"
 
 typedef enum {
     MKRequestOperationStateReady = 1,
@@ -14,14 +15,16 @@ typedef enum {
     MKRequestOperationStateFinished = 3
 } MKRequestOperationState;
 
-@interface MKRequest (/*Private Methods*/)
+@interface MKNetworkOperation (/*Private Methods*/)
 @property (strong, nonatomic) NSURLConnection *connection;
 @property (strong, nonatomic) NSMutableURLRequest *request;
+@property (strong, nonatomic) NSMutableDictionary *requestDictionary;
 @property (strong, nonatomic) NSURLResponse *response;
-@property (strong, nonatomic) NSMutableData *mutableData;
+
 @property (strong, nonatomic) NSMutableDictionary *fieldsToBePosted;
 @property (strong, nonatomic) NSMutableArray *filesToBePosted;
 @property (strong, nonatomic) NSMutableArray *dataToBePosted;
+
 @property (strong, nonatomic) NSString *username;
 @property (strong, nonatomic) NSString *password;
 
@@ -31,33 +34,33 @@ typedef enum {
 @property (nonatomic, assign) MKRequestOperationState state;
 @property (nonatomic, assign) BOOL isCancelled;
 
+@property (strong, nonatomic) NSMutableData *mutableData;
+
 - (id)initWithURLString:(NSString *)aURLString
                    body:(NSMutableDictionary *)body
              httpMethod:(NSString *)method;
--(NSData*) postBody;
+-(NSData*) bodyData;
 @end
 
-@implementation MKRequest
+@implementation MKNetworkOperation
 @synthesize connection = _connection;
 @synthesize request = _request;
+@synthesize requestDictionary = _requestDictionary;
 @synthesize response = _response;
-@synthesize mutableData = _mutableData;
 @synthesize fieldsToBePosted = _fieldsToBePosted;
 @synthesize filesToBePosted = _filesToBePosted;
 @synthesize dataToBePosted = _dataToBePosted;
-
+@synthesize username = _username;
+@synthesize password = _password;
+@synthesize responseBlock = _responseBlock;
+@synthesize errorBlock = _errorBlock;
+@synthesize isCancelled = _isCancelled;
+@synthesize mutableData = _mutableData;
 
 @synthesize uploadProgressChangedHandler = _uploadProgressChangedHandler;
 @synthesize downloadProgressChangedHandler = _downloadProgressChangedHandler;
 
 @synthesize stringEncoding = _stringEncoding;
-
-@synthesize username = _username;
-@synthesize password = _password;
-
-@synthesize responseBlock = _responseBlock;
-@synthesize errorBlock = _errorBlock;
-@synthesize isCancelled = _isCancelled;
 
 -(MKRequestOperationState) state {
     
@@ -106,7 +109,7 @@ typedef enum {
     _connection = nil;
 }
 
-+ (id)requestWithURLString:(NSString *)urlString
++ (id)operationWithURLString:(NSString *)urlString
                       body:(NSMutableDictionary *)body
 				httpMethod:(NSString *)method
 {
@@ -135,23 +138,18 @@ typedef enum {
     if((self = [super init])) {
         
         self.stringEncoding = NSUTF8StringEncoding; // use a delegate to get these values later
+        self.requestDictionary = body;
+        
         NSURL *finalURL = nil;
-        NSMutableString *bodyString = [NSMutableString string];
+
         self.filesToBePosted = [NSMutableArray array];
         self.dataToBePosted = [NSMutableArray array];
         self.fieldsToBePosted = body;
 
-        for (NSString *key in body) {
-            [bodyString appendFormat:@"%@=%@&", key, [body valueForKey:key]];	
-        }
-        
-        if([bodyString length] > 0)
-            [bodyString deleteCharactersInRange:NSMakeRange([bodyString length] - 1, 1)];
-        
         if (([method isEqualToString:@"GET"] ||
              [method isEqualToString:@"DELETE"]) && (body && [body count] > 0)) {
             
-            finalURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@?%@", aURLString, bodyString]];
+            finalURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@?%@", aURLString, [body urlEncodedKeyValueString]]];
         } else {
             finalURL = [NSURL URLWithString:aURLString];
         }
@@ -172,7 +170,7 @@ typedef enum {
             
             // in case of multi-part form request, 
             // this will be automatically over written later
-            self.request.HTTPBody = [[bodyString dataUsingEncoding:self.stringEncoding] mutableCopy];
+            self.request.HTTPBody = [[[body urlEncodedKeyValueString] dataUsingEncoding:self.stringEncoding] mutableCopy];
         }
         
         self.state = MKRequestOperationStateReady;
@@ -181,31 +179,74 @@ typedef enum {
 	return self;
 }
 
+-(void) addHeaders:(NSDictionary*) headersDictionary {
+    
+    [headersDictionary enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+        [self.request addValue:obj forHTTPHeaderField:key];
+    }];
+}
+
 -(NSString*) description
 {
     __block NSMutableString *displayString = [NSMutableString stringWithFormat:@"%@\nRequest\n-------\ncurl -X %@", 
                                               [[NSDate date] descriptionWithLocale:[NSLocale currentLocale]],
                                               self.request.HTTPMethod];
     
+    if([self.filesToBePosted count] == 0 && [self.dataToBePosted count] == 0) {
     [[self.request allHTTPHeaderFields] enumerateKeysAndObjectsUsingBlock:^(id key, id val, BOOL *stop)
      {
          [displayString appendFormat:@" -H \"%@: %@\"", key, val];
      }];
+    }
     
     [displayString appendFormat:@" \"%@\"",  [self.request.URL absoluteString]];
     
     if ([self.request.HTTPMethod isEqualToString:@"POST"] || [self.request.HTTPMethod isEqualToString:@"PUT"]) {
-        NSString *bodyString = [[NSString alloc] initWithData:self.request.HTTPBody
-                                                     encoding:self.stringEncoding];
-        [displayString appendFormat:@" -d \"%@\"", bodyString];        
+
+        NSString *option = [self.filesToBePosted count] == 0 ? @"-d" : @"-F";
+        [self.requestDictionary enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+            
+            [displayString appendFormat:@" %@ \"%@=%@\"", option, key, obj];
+        }];
+         
+        [self.filesToBePosted enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            
+            NSDictionary *thisFile = (NSDictionary*) obj;
+            [displayString appendFormat:@" -F \"%@=@%@;type=%@\"", [thisFile objectForKey:@"name"],
+             [thisFile objectForKey:@"filepath"], [thisFile objectForKey:@"mimetype"]];
+        }];
+        
+        /* Not sure how to do this via curl
+        [self.dataToBePosted enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            
+            NSDictionary *thisData = (NSDictionary*) obj;
+            [displayString appendFormat:@" --data-binary \"%@\"", [thisData objectForKey:@"data"]];
+        }];*/
     }
-    
     
     if(self.mutableData) {
         [displayString appendFormat:@"\n--------\nResponse\n--------\n%@\n", [self responseString]];
     }
     
     return displayString;
+}
+
+-(void) addData:(NSData*) data forKey:(NSString*) key {
+    
+    [self addData:data forKey:key mimeType:@"application/octet-stream"];
+}
+
+-(void) addData:(NSData*) data forKey:(NSString*) key mimeType:(NSString*) mimeType {
+    
+    [self.request setHTTPMethod:@"POST"];
+    
+    NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
+                          data, @"data",
+                          key, @"name",
+                          mimeType, @"mimetype",     
+                          nil];
+    
+    [self.dataToBePosted addObject:dict];    
 }
 
 -(void) addFile:(NSString*) filePath forKey:(NSString*) key {
@@ -226,14 +267,8 @@ typedef enum {
     [self.filesToBePosted addObject:dict];    
 }
 
--(NSData*) postBody {
+-(NSData*) bodyData {
 
-    /*
-     --0xKhTmLbOuNdArY
-     Content-Disposition: form-data; name="Submit"
-     
-     yes
-     */
     NSString *boundary = @"0xKhTmLbOuNdArY";
     NSMutableData *body = [NSMutableData data];
 
@@ -260,7 +295,20 @@ typedef enum {
         [body appendData:[thisFieldString dataUsingEncoding:[self stringEncoding]]];         
         [body appendData: [NSData dataWithContentsOfFile:[thisFile objectForKey:@"filepath"]]];
     }];
+    
+    [self.dataToBePosted enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         
+        NSDictionary *thisDataObject = (NSDictionary*) obj;
+        NSString *thisFieldString = [NSString stringWithFormat:
+                                     @"--%@\r\nContent-Disposition: form-data; name=\"%@\"; filename=\"%@\"\r\nContent-Type: %@\r\nContent-Transfer-Encoding: binary\r\n\r\n",
+                                     boundary, 
+                                     [thisDataObject objectForKey:@"name"], 
+                                     [thisDataObject objectForKey:@"name"], 
+                                     [thisDataObject objectForKey:@"mimetype"]];
+        
+        [body appendData:[thisFieldString dataUsingEncoding:[self stringEncoding]]];         
+        [body appendData:[thisDataObject objectForKey:@"data"]];
+    }];
    
     [body appendData: [[NSString stringWithFormat:@"\r\n--%@--\r\n", boundary] dataUsingEncoding:self.stringEncoding]];
 
@@ -268,7 +316,7 @@ typedef enum {
     
         NSString *charset = (__bridge NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(self.stringEncoding));
 
-    if([self.filesToBePosted count] > 0)
+    if(([self.filesToBePosted count] > 0) || ([self.dataToBePosted count] > 0))
      [self.request setValue:[NSString stringWithFormat:@"multipart/form-data; charset=%@; boundary=%@", charset, boundary] 
          forHTTPHeaderField:@"Content-Type"];
      
@@ -292,9 +340,8 @@ typedef enum {
     }
     if(!self.isCancelled) {
         
-        if ([self.request.HTTPMethod isEqualToString:@"POST"] || [self.request.HTTPMethod isEqualToString:@"PUT"]) {
-            
-            [self.request setHTTPBody:[self postBody]];
+        if ([self.request.HTTPMethod isEqualToString:@"POST"] || [self.request.HTTPMethod isEqualToString:@"PUT"]) {            
+            [self.request setHTTPBody:[self bodyData]];
         }
         
         self.connection = [[NSURLConnection alloc] initWithRequest:self.request 

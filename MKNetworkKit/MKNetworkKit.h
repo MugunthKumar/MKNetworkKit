@@ -9,8 +9,9 @@
 #ifndef MKNetworkKit_MKNetworkKit_h
 #define MKNetworkKit_MKNetworkKit_h
 
+#import <Foundation/Foundation.h>
 #import "MKNetworkEngine.h"
-#import "MKRequest.h"
+#import "MKNetworkOperation.h"
 #import "Reachability.h"
 
 #ifdef DEBUG
