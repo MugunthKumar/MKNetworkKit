@@ -61,8 +61,11 @@
      [engine uploadImageFromData];
     */
     
-    [self.engine initializeCache];
-    [self.engine downloadFatAssFile];
+    [self.engine useCache];
+    
+    [self.engine downloadFatAssFileTo:@"A.pdf"];
+    [self.engine downloadFatAssFileTo:@"B.pdf"];
+    [self.engine downloadFatAssFileTo:@"C.pdf"];
 
     [super viewDidAppear:animated];
 }

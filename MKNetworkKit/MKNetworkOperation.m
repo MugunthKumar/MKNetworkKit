@@ -29,14 +29,14 @@ typedef enum {
 @property (strong, nonatomic) NSString *username;
 @property (strong, nonatomic) NSString *password;
 
-@property (nonatomic, copy) ResponseBlock responseBlock;
-@property (nonatomic, copy) ErrorBlock errorBlock;
+@property (nonatomic, retain) NSMutableArray *responseBlocks;
+@property (nonatomic, retain) NSMutableArray *errorBlocks;
 
 @property (nonatomic, assign) MKRequestOperationState state;
 @property (nonatomic, assign) BOOL isCancelled;
 
 @property (strong, nonatomic) NSMutableData *mutableData;
-@property (nonatomic, copy) NSMutableArray *cacheHandlingBlocks;
+@property (nonatomic, copy) ResponseBlock cacheHandlingBlock;
 
 - (id)initWithURLString:(NSString *)aURLString
                    body:(NSMutableDictionary *)body
@@ -54,11 +54,11 @@ typedef enum {
 @synthesize dataToBePosted = _dataToBePosted;
 @synthesize username = _username;
 @synthesize password = _password;
-@synthesize responseBlock = _responseBlock;
-@synthesize errorBlock = _errorBlock;
+@synthesize responseBlocks = _responseBlocks;
+@synthesize errorBlocks = _errorBlocks;
 @synthesize isCancelled = _isCancelled;
 @synthesize mutableData = _mutableData;
-@synthesize cacheHandlingBlocks = _cacheHandlingBlocks;
+@synthesize cacheHandlingBlock = _cacheHandlingBlock;
 @synthesize downloadStream = _downloadStream;
 
 @synthesize uploadProgressChangedHandler = _uploadProgressChangedHandler;
@@ -66,18 +66,65 @@ typedef enum {
 
 @synthesize stringEncoding = _stringEncoding;
 
+// A RESTful service should always return the same response for a given URL and it's parameters.
+// this means if these values are correct, you can cache the responses
+// This is another reason why we check only GET methods.
+// even if URL and others are same, POST, DELETE, PUT methods should not be cached and should not be treated equal.
+
+-(BOOL) isCacheable {
+    
+    return [self.request.HTTPMethod isEqualToString:@"GET"];
+}
+
+-(BOOL) isEqual:(id)object {
+
+    if([self isCacheable]) {
+
+        MKNetworkOperation *anotherObject = (MKNetworkOperation*) object;
+        return ([[self uniqueIdentifier] isEqualToString:[anotherObject uniqueIdentifier]]);
+    }
+    
+    return NO;
+}
+
+-(NSString*) uniqueIdentifier {
+
+    NSString *str = [NSString stringWithFormat:@"%@ %@", 
+                     self.request.HTTPMethod,
+                     [self.request.URL absoluteString]];
+
+    if(self.username || self.password) {
+
+        str = [str stringByAppendingFormat:@" [%@:%@]",
+                     self.username ? self.username : @"",
+                     self.password ? self.password : @""];
+    }
+    
+    return [str md5];
+}
+
+-(void) notifySuccess {
+    
+    if(![self isCacheable]) return;
+    if(!([self.response statusCode] >= 200 && [self.response statusCode] < 300)) return;
+    
+    self.cacheHandlingBlock(self);
+}
+
+-(void) notifyFailure {
+    
+    if(![self isCacheable]) return;
+    if(!([self.response statusCode] >= 200 && [self.response statusCode] < 300)) return;
+    
+    self.cacheHandlingBlock(self);
+}
 
 -(void) notifyCache {
     
-    NSString *str = [NSString stringWithFormat:@"%@-%@-%@", [self.request.URL absoluteString], 
-                     self.username ? self.username : @"",
-                     self.password ? self.password : @""];
-
-    if([self.response statusCode] >= 200 && [self.response statusCode] < 300) {
+    if(![self isCacheable]) return;
+    if(!([self.response statusCode] >= 200 && [self.response statusCode] < 300)) return;
         
-        for(CacheBlock cacheHander in self.cacheHandlingBlocks)
-            cacheHander([str md5], [self responseData]);
-    }        
+    self.cacheHandlingBlock(self);
 }
 
 -(MKRequestOperationState) state {
@@ -127,6 +174,12 @@ typedef enum {
     _connection = nil;
 }
 
+-(void) updateHandlersFromOperation:(MKNetworkOperation*) operation {
+
+    [self.responseBlocks addObjectsFromArray:operation.responseBlocks];
+    [self.errorBlocks addObjectsFromArray:operation.errorBlocks];
+}
+
 + (id)operationWithURLString:(NSString *)urlString
                       body:(NSMutableDictionary *)body
 				httpMethod:(NSString *)method
@@ -144,8 +197,8 @@ typedef enum {
 
 -(void) onCompletion:(ResponseBlock) response onError:(ErrorBlock) error {
     
-    self.responseBlock = response;
-    self.errorBlock = error;
+    [self.responseBlocks addObject:[response copy]];
+    [self.errorBlocks addObject:[error copy]];
 }
 
 - (id)initWithURLString:(NSString *)aURLString
@@ -155,14 +208,15 @@ typedef enum {
 {	
     if((self = [super init])) {
         
-        self.stringEncoding = NSUTF8StringEncoding; // use a delegate to get these values later
-        self.requestDictionary = body;
-        
-        NSURL *finalURL = nil;
-
+        self.responseBlocks = [NSMutableArray array];
+        self.errorBlocks = [NSMutableArray array];        
         self.filesToBePosted = [NSMutableArray array];
         self.dataToBePosted = [NSMutableArray array];
+
+        NSURL *finalURL = nil;
+        self.requestDictionary = body;
         self.fieldsToBePosted = body;
+        self.stringEncoding = NSUTF8StringEncoding; // use a delegate to get these values later
 
         if (([method isEqualToString:@"GET"] ||
              [method isEqualToString:@"DELETE"]) && (body && [body count] > 0)) {
@@ -205,6 +259,9 @@ typedef enum {
     }];
 }
 
+/*
+ Printing a MKNetworkOperation object is printed in curl syntax
+ */
 -(NSString*) description
 {
     __block NSMutableString *displayString = [NSMutableString stringWithFormat:@"%@\nRequest\n-------\ncurl -X %@", 
@@ -342,12 +399,9 @@ typedef enum {
     return body;
 }
 
--(void) addCacheHandler:(CacheBlock) cacheHandler {
-
-    if(!self.cacheHandlingBlocks)
-        self.cacheHandlingBlocks = [NSMutableArray array];
+-(void) setCacheHandler:(ResponseBlock) cacheHandler {
     
-    [self.cacheHandlingBlocks addObject:cacheHandler];
+    self.cacheHandlingBlock = cacheHandler;
 }
 
 #pragma mark -
@@ -431,7 +485,9 @@ typedef enum {
     self.mutableData = nil;
     [self.downloadStream close];
     self.state = MKRequestOperationStateFinished;
-    self.errorBlock(error);    
+    
+    for(ErrorBlock errorBlock in self.errorBlocks)
+        errorBlock(error);    
 }
 
 - (void)connection:(NSURLConnection *)connection 
@@ -486,7 +542,10 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
     [self.downloadStream close];
     
     self.state = MKRequestOperationStateFinished;
-    self.responseBlock(self);
+
+    for(ResponseBlock responseBlock in self.responseBlocks)
+        responseBlock(self);    
+
     [self notifyCache];
 }
 

@@ -14,20 +14,20 @@
 @implementation YahooEngine
 
 -(MKNetworkOperation*) currencyRateFor:(NSString*) sourceCurrency 
-                   inCurrency:(NSString*) targetCurrency 
-                 onCompletion:(CurrencyResponseBlock) completionBlock
-                      onError:(ErrorBlock) errorBlock {
+                            inCurrency:(NSString*) targetCurrency 
+                          onCompletion:(CurrencyResponseBlock) completionBlock
+                               onError:(ErrorBlock) errorBlock {
     
     MKNetworkOperation *request = [self requestWithPath:YAHOO_URL(sourceCurrency, targetCurrency) 
-                                          body:nil 
-                                    httpMethod:@"GET"];
+                                                   body:nil 
+                                             httpMethod:@"GET"];
     
     [request onCompletion:^(MKNetworkOperation *completedRequest)
      {
          DLog(@"%@", [completedRequest responseString]);
          completionBlock(5.0f);
      }onError:^(NSError* error) {
-
+         
          errorBlock(error);
      }];
     
@@ -39,27 +39,27 @@
 -(MKNetworkOperation*) uploadImageFromFile {
     
     MKNetworkOperation *request = [self requestWithURLString:@"http://twitpic.com/api/upload" 
-                                               body:[NSDictionary dictionaryWithObjectsAndKeys:
-                                                     @"mksg", @"username",
-                                                     @"HelloMKSG", @"password",
-                                                     nil]
-                                         httpMethod:@"POST"];
-
-    [request addFile:@"/Users/mugunth/Desktop/transit.png" forKey:@"media"];
-
-    //[request addData:[NSData dataWithContentsOfFile:@"/Users/mugunth/Desktop/transit.png"] forKey:@"media" mimeType:@"image/png"];
-
-    request.uploadProgressChangedHandler = ^(double progress) {
+                                                        body:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                              @"mksg", @"username",
+                                                              @"HelloMKSG", @"password",
+                                                              nil]
+                                                  httpMethod:@"POST"];
     
+    [request addFile:@"/Users/mugunth/Desktop/transit.png" forKey:@"media"];
+    
+    //[request addData:[NSData dataWithContentsOfFile:@"/Users/mugunth/Desktop/transit.png"] forKey:@"media" mimeType:@"image/png"];
+    
+    request.uploadProgressChangedHandler = ^(double progress) {
+        
         DLog(@"%.2f", progress*100.0);
     };
     
     [request onCompletion:^(MKNetworkOperation* completedRequest) {
-
+        
         DLog(@"%@", completedRequest);        
     }
                   onError:^(NSError* error) {
-                     
+                      
                       DLog(@"%@", error);
                   }];
     
@@ -97,12 +97,12 @@
 }
 
 
--(MKNetworkOperation*) downloadFatAssFile {
+-(MKNetworkOperation*) downloadFatAssFileTo:(NSString*) fileName {
     
     MKNetworkOperation *request = [self requestWithURLString:@"http://developer.apple.com/library/mac/documentation/Cocoa/Reference/Foundation/Classes/NSURLRequest_Class/NSURLRequest_Class.pdf" 
                                                         body:nil
                                                   httpMethod:@"GET"];
-
+    
     request.downloadProgressChangedHandler = ^(double progress) {
         
         DLog(@"%.2f", progress*100.0);
@@ -117,7 +117,8 @@
                       DLog(@"%@", error);
                   }];
     
-    request.downloadStream = [NSOutputStream outputStreamToFileAtPath:@"/Users/mugunth/Desktop/file.pdf" append:YES];
+    request.downloadStream = [NSOutputStream outputStreamToFileAtPath:[@"/Users/mugunth/Desktop" stringByAppendingPathComponent:fileName]
+                                                               append:YES];
     
     [self queueRequest:request];
     return request;

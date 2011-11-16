@@ -17,6 +17,9 @@
 @property (nonatomic, strong) NSMutableDictionary *memoryCache;
 @property (nonatomic, strong) NSMutableArray *memoryCacheKeys;
 
+-(void) saveCache;
+-(void) saveCacheData:(NSData*) data forKey:(NSString*) cacheDataKey;
+
 @end
 
 static NSOperationQueue *_sharedNetworkQueue;
@@ -157,6 +160,18 @@ static NSOperationQueue *_sharedNetworkQueue;
     return [self requestWithURLString:urlString body:body httpMethod:method];
 }
 
+-(MKNetworkOperation*) requestWithURLString:(NSString*) urlString {
+
+    return [self requestWithURLString:urlString body:nil httpMethod:@"GET"];
+}
+
+-(MKNetworkOperation*) requestWithURLString:(NSString*) urlString
+                                       body:(NSMutableDictionary*) body {
+
+    return [self requestWithURLString:urlString body:body httpMethod:@"GET"];
+}
+
+
 -(MKNetworkOperation*) requestWithURLString:(NSString*) urlString
                          body:(NSMutableDictionary*) body
                    httpMethod:(NSString*)method {
@@ -168,12 +183,24 @@ static NSOperationQueue *_sharedNetworkQueue;
 
 -(void) queueRequest:(MKNetworkOperation*) request {
     
-    [request addCacheHandler:^(NSString* cacheKey, NSData* cacheData) {
+    [request setCacheHandler:^(MKNetworkOperation* completedCacheableRequest) {
         
-        [self saveCacheData:cacheData forKey:cacheKey];
+        // if this is not called, the request would have been a non cacheable request
+        [self saveCacheData:[completedCacheableRequest responseData] 
+                     forKey:[completedCacheableRequest uniqueIdentifier]];
     }];
     
-    [_sharedNetworkQueue addOperation:request];
+    NSUInteger index = [_sharedNetworkQueue.operations indexOfObject:request];
+    if(index == NSNotFound) {
+        [_sharedNetworkQueue addOperation:request];
+    }
+    else {
+        // This operation is already being processed
+        DLog(@"Operation below is already in the queue");
+        DLog(@"%@", request);
+        MKNetworkOperation *queuedOperation = (MKNetworkOperation*) [_sharedNetworkQueue.operations objectAtIndex:index];
+        [queuedOperation updateHandlersFromOperation:request];
+    }
 }
 
 #pragma -
@@ -191,18 +218,12 @@ static NSOperationQueue *_sharedNetworkQueue;
     
     return MKNETWORKCACHE_DEFAULT_COST;
 }
-
-- (NSString *)fileNameForKey:(NSString *)key
-{
-    NSString *cacheDirectoryName = [self cacheDirectoryName];
-    return [cacheDirectoryName stringByAppendingPathComponent:key];
-}
      
 -(void) saveCache {
    
     for(NSString *cacheKey in [self.memoryCache allKeys])
     {
-        NSString *filePath = [self fileNameForKey:cacheKey];
+        NSString *filePath = [[self cacheDirectoryName] stringByAppendingPathComponent:cacheKey];
         
         if(![[NSFileManager defaultManager] fileExistsAtPath:filePath])
             [[self.memoryCache objectForKey:cacheKey] writeToFile:filePath atomically:YES];        
@@ -226,7 +247,7 @@ static NSOperationQueue *_sharedNetworkQueue;
     {
         NSString *lastKey = [self.memoryCacheKeys lastObject];        
         NSData *data = [self.memoryCache objectForKey:lastKey];        
-        NSString *filePath = [self fileNameForKey:lastKey];
+        NSString *filePath = [[self cacheDirectoryName] stringByAppendingPathComponent:lastKey];
         
         if(![[NSFileManager defaultManager] fileExistsAtPath:filePath])
             [data writeToFile:filePath atomically:YES];
@@ -245,7 +266,7 @@ static NSOperationQueue *_sharedNetworkQueue;
     return abs([creationDate timeIntervalSinceNow]);
 }*/
 
--(void) initializeCache {
+-(void) useCache {
     
     self.memoryCache = [NSMutableDictionary dictionaryWithCapacity:[self cacheMemoryCost]];
     self.memoryCacheKeys = [NSMutableArray arrayWithCapacity:[self cacheMemoryCost]];

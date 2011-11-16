@@ -13,7 +13,6 @@
 typedef void (^ProgressBlock)(double progress);
 typedef void (^ResponseBlock)(MKNetworkOperation* request);
 typedef void (^ErrorBlock)(NSError* requestError);
-typedef void (^CacheBlock)(NSString* cacheKey, NSData* cacheData);
 typedef void (^DownloadBlock)(NSData* cacheData);
 
 @interface MKNetworkOperation : NSOperation {
@@ -45,13 +44,15 @@ typedef void (^DownloadBlock)(NSData* cacheData);
 -(NSData*) responseData;
 
 -(void) onCompletion:(ResponseBlock) response onError:(ErrorBlock) error;
--(void) addCacheHandler:(CacheBlock) cacheHandler;
+-(void) setCacheHandler:(ResponseBlock) cacheHandler;
 
 -(NSString*)responseString; // defaults to UTF8
 -(NSString*) responseStringWithEncoding:(NSStringEncoding) encoding;
 
+-(void) updateHandlersFromOperation:(MKNetworkOperation*) operation;
 @property (nonatomic, retain) NSOutputStream *downloadStream;
 
+-(NSString*) uniqueIdentifier;
 #ifdef __IPHONE_5_0
 -(id) responseJSON;
 #endif

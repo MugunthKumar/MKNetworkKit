@@ -26,6 +26,11 @@
                    httpMethod:(NSString*)method 
                           ssl:(BOOL) useSSL;
 
+-(MKNetworkOperation*) requestWithURLString:(NSString*) urlString;
+
+-(MKNetworkOperation*) requestWithURLString:(NSString*) urlString
+                                       body:(NSMutableDictionary*) body;
+
 -(MKNetworkOperation*) requestWithURLString:(NSString*) urlString
                               body:(NSMutableDictionary*) body
                         httpMethod:(NSString*) method;
@@ -36,9 +41,5 @@
 -(NSString*) cacheDirectoryName;
 -(int) cacheMemoryCost;
 
--(void) initializeCache;
-
-- (NSString *)fileNameForKey:(NSString *)key;
--(void) saveCache;
--(void) saveCacheData:(NSData*) data forKey:(NSString*) cacheDataKey;
+-(void) useCache;
 @end
