@@ -49,10 +49,10 @@
     
     //[request addData:[NSData dataWithContentsOfFile:@"/Users/mugunth/Desktop/transit.png"] forKey:@"media" mimeType:@"image/png"];
     
-    request.uploadProgressChangedHandler = ^(double progress) {
+    [request onUploadProgressChanged:^(double progress) {
         
         DLog(@"%.2f", progress*100.0);
-    };
+    }];
     
     [request onCompletion:^(MKNetworkOperation* completedRequest) {
         
@@ -78,10 +78,10 @@
     
     [request addData:[NSData dataWithContentsOfFile:@"/Users/mugunth/Desktop/transit.png"] forKey:@"media" mimeType:@"image/png"];
     
-    request.uploadProgressChangedHandler = ^(double progress) {
+    [request onDownloadProgressChanged:^(double progress) {
         
         DLog(@"%.2f", progress*100.0);
-    };
+    }];
     
     [request onCompletion:^(MKNetworkOperation* completedRequest) {
         
@@ -103,10 +103,10 @@
                                                         body:nil
                                                   httpMethod:@"GET"];
     
-    request.downloadProgressChangedHandler = ^(double progress) {
+    [request onDownloadProgressChanged:^(double progress) {
         
         DLog(@"%.2f", progress*100.0);
-    };
+    }];
     
     [request onCompletion:^(MKNetworkOperation* completedRequest) {
         
@@ -117,8 +117,9 @@
                       DLog(@"%@", error);
                   }];
     
-    request.downloadStream = [NSOutputStream outputStreamToFileAtPath:[@"/Users/mugunth/Desktop" stringByAppendingPathComponent:fileName]
-                                                               append:YES];
+    [request setDownloadStream:[NSOutputStream outputStreamToFileAtPath:
+                                [@"/Users/mugunth/Desktop" stringByAppendingPathComponent:fileName]                                
+                                                                 append:YES]];
     
     [self queueRequest:request];
     return request;

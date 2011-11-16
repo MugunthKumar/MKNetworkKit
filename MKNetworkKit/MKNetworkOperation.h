@@ -27,9 +27,6 @@ typedef void (^DownloadBlock)(NSData* cacheData);
 
 -(void) cancel;
 
-@property (nonatomic, copy) ProgressBlock uploadProgressChangedHandler;
-@property (nonatomic, copy) ProgressBlock downloadProgressChangedHandler;
-
 @property (nonatomic, assign) NSStringEncoding stringEncoding;
 
 -(void) setUsername:(NSString*) name password:(NSString*) password;
@@ -44,13 +41,15 @@ typedef void (^DownloadBlock)(NSData* cacheData);
 -(NSData*) responseData;
 
 -(void) onCompletion:(ResponseBlock) response onError:(ErrorBlock) error;
+-(void) onUploadProgressChanged:(ProgressBlock) uploadProgressBlock;
+-(void) onDownloadProgressChanged:(ProgressBlock) downloadProgressBlock;
+-(void) setDownloadStream:(NSOutputStream*) outputStream;
 -(void) setCacheHandler:(ResponseBlock) cacheHandler;
 
 -(NSString*)responseString; // defaults to UTF8
 -(NSString*) responseStringWithEncoding:(NSStringEncoding) encoding;
 
 -(void) updateHandlersFromOperation:(MKNetworkOperation*) operation;
-@property (nonatomic, retain) NSOutputStream *downloadStream;
 
 -(NSString*) uniqueIdentifier;
 #ifdef __IPHONE_5_0

@@ -36,6 +36,11 @@ typedef enum {
 @property (nonatomic, assign) BOOL isCancelled;
 
 @property (strong, nonatomic) NSMutableData *mutableData;
+
+@property (nonatomic, retain) NSMutableArray *uploadProgressChangedHandlers;
+@property (nonatomic, retain) NSMutableArray *downloadProgressChangedHandlers;
+@property (nonatomic, retain) NSMutableArray *downloadStreams;
+
 @property (nonatomic, copy) ResponseBlock cacheHandlingBlock;
 
 - (id)initWithURLString:(NSString *)aURLString
@@ -59,10 +64,10 @@ typedef enum {
 @synthesize isCancelled = _isCancelled;
 @synthesize mutableData = _mutableData;
 @synthesize cacheHandlingBlock = _cacheHandlingBlock;
-@synthesize downloadStream = _downloadStream;
+@synthesize downloadStreams = _downloadStreams;
 
-@synthesize uploadProgressChangedHandler = _uploadProgressChangedHandler;
-@synthesize downloadProgressChangedHandler = _downloadProgressChangedHandler;
+@synthesize uploadProgressChangedHandlers = _uploadProgressChangedHandlers;
+@synthesize downloadProgressChangedHandlers = _downloadProgressChangedHandlers;
 
 @synthesize stringEncoding = _stringEncoding;
 
@@ -178,6 +183,9 @@ typedef enum {
 
     [self.responseBlocks addObjectsFromArray:operation.responseBlocks];
     [self.errorBlocks addObjectsFromArray:operation.errorBlocks];
+    [self.uploadProgressChangedHandlers addObjectsFromArray:operation.uploadProgressChangedHandlers];
+    [self.downloadProgressChangedHandlers addObjectsFromArray:operation.downloadProgressChangedHandlers];
+    [self.downloadStreams addObjectsFromArray:operation.downloadStreams];
 }
 
 + (id)operationWithURLString:(NSString *)urlString
@@ -201,6 +209,21 @@ typedef enum {
     [self.errorBlocks addObject:[error copy]];
 }
 
+-(void) onUploadProgressChanged:(ProgressBlock) uploadProgressBlock {
+    
+    [self.uploadProgressChangedHandlers addObject:[uploadProgressBlock copy]];
+}
+
+-(void) onDownloadProgressChanged:(ProgressBlock) downloadProgressBlock {
+    
+    [self.downloadProgressChangedHandlers addObject:[downloadProgressBlock copy]];
+}
+
+-(void) setDownloadStream:(NSOutputStream*) outputStream {
+    
+    [self.downloadStreams addObject:outputStream];
+}
+
 - (id)initWithURLString:(NSString *)aURLString
                    body:(NSMutableDictionary *)body
              httpMethod:(NSString *)method
@@ -212,6 +235,9 @@ typedef enum {
         self.errorBlocks = [NSMutableArray array];        
         self.filesToBePosted = [NSMutableArray array];
         self.dataToBePosted = [NSMutableArray array];
+        self.uploadProgressChangedHandlers = [NSMutableArray array];
+        self.downloadProgressChangedHandlers = [NSMutableArray array];
+        self.downloadStreams = [NSMutableArray array];
 
         NSURL *finalURL = nil;
         self.requestDictionary = body;
@@ -467,14 +493,7 @@ typedef enum {
     [self.connection cancel];
     
     self.mutableData = nil;
-    self.isCancelled = YES;
-    
-    if(self.uploadProgressChangedHandler) {
-        self.uploadProgressChangedHandler(0.0f);
-    }
-    if(self.downloadProgressChangedHandler) {
-        self.downloadProgressChangedHandler(0.0f);
-    }
+    self.isCancelled = YES;    
 }
 
 #pragma mark -
@@ -483,7 +502,8 @@ typedef enum {
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
     
     self.mutableData = nil;
-    [self.downloadStream close];
+    for(NSOutputStream *stream in self.downloadStreams)
+        [stream close];
     self.state = MKRequestOperationStateFinished;
     
     for(ErrorBlock errorBlock in self.errorBlocks)
@@ -510,36 +530,49 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
     NSUInteger size = [self.response expectedContentLength] < 0 ? 0 : [self.response expectedContentLength];
     self.response = (NSHTTPURLResponse*) response;
     self.mutableData = [NSMutableData dataWithCapacity:size];
-    [self.downloadStream open];
+    
+    for(NSOutputStream *stream in self.downloadStreams)
+        [stream open];
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
     
     [self.mutableData appendData:data];
-    if (self.downloadStream && [self.downloadStream hasSpaceAvailable]) {
+    
+    for(NSOutputStream *stream in self.downloadStreams) {
+
+        if ([stream hasSpaceAvailable]) {
             const uint8_t *dataBuffer = [data bytes];
-            [self.downloadStream write:&dataBuffer[0] maxLength:[data length]];
+            [stream write:&dataBuffer[0] maxLength:[data length]];
+        }
     }
     
-    if(self.downloadProgressChangedHandler && [self.response expectedContentLength] > 0) {
-        
-        double progress = (double)[self.mutableData length] / (double)[self.response expectedContentLength];
-        self.downloadProgressChangedHandler(progress);
-    }    
+    for(ProgressBlock downloadProgressBlock in self.downloadProgressChangedHandlers) {
+
+        if([self.response expectedContentLength] > 0) {
+            
+            double progress = (double)[self.mutableData length] / (double)[self.response expectedContentLength];
+            downloadProgressBlock(progress);
+        }        
+    }
 }
 
 - (void)connection:(NSURLConnection *)connection didSendBodyData:(NSInteger)bytesWritten 
  totalBytesWritten:(NSInteger)totalBytesWritten
 totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
     
-    if(self.uploadProgressChangedHandler && totalBytesExpectedToWrite > 0) {
-        self.uploadProgressChangedHandler(((double)totalBytesWritten/(double)totalBytesExpectedToWrite));
+    for(ProgressBlock uploadProgressBlock in self.uploadProgressChangedHandlers) {
+
+        if(totalBytesExpectedToWrite > 0) {
+            uploadProgressBlock(((double)totalBytesWritten/(double)totalBytesExpectedToWrite));
+        }
     }
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
     
-    [self.downloadStream close];
+    for(NSOutputStream *stream in self.downloadStreams)
+        [stream close];
     
     self.state = MKRequestOperationStateFinished;
 
