@@ -152,12 +152,10 @@ typedef enum {
             [self willChangeValueForKey:@"isReady"];
             break;
         case MKRequestOperationStateExecuting:
-            DLog(@"%@", self);
             [self willChangeValueForKey:@"isReady"];
             [self willChangeValueForKey:@"isExecuting"];
             break;
         case MKRequestOperationStateFinished:
-            DLog(@"%@", self);
             [self willChangeValueForKey:@"isExecuting"];
             [self willChangeValueForKey:@"isFinished"];
             break;

@@ -213,15 +213,12 @@ static NSOperationQueue *_sharedNetworkQueue;
     }
     else {
         // This operation is already being processed
-        DLog(@"Operation below is already in the queue");
-        DLog(@"%@", request);
         MKNetworkOperation *queuedOperation = (MKNetworkOperation*) [_sharedNetworkQueue.operations objectAtIndex:index];
         [queuedOperation updateHandlersFromOperation:request];
     }
     
     NSData *cachedData = [self cachedDataForOperation:request];
     if(cachedData) {
-        DLog(@"Request already in cache");
         [request setCachedData:cachedData];
     }
         
