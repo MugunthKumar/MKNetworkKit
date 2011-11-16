@@ -181,6 +181,23 @@ static NSOperationQueue *_sharedNetworkQueue;
     return operation;
 }
 
+-(NSData*) cachedDataForOperation:(MKNetworkOperation*) operation {
+    
+    NSData *cachedData = [self.memoryCache objectForKey:[operation uniqueIdentifier]];
+    if(cachedData) return cachedData;
+    
+    NSString *filePath = [[self cacheDirectoryName] stringByAppendingPathComponent:[operation uniqueIdentifier]];    
+
+    if([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
+
+        NSData *cachedData = [NSData dataWithContentsOfFile:filePath];
+        [self saveCacheData:cachedData forKey:[operation uniqueIdentifier]];
+        return cachedData;
+    }
+    
+    return nil;
+}
+
 -(void) queueRequest:(MKNetworkOperation*) request {
     
     [request setCacheHandler:^(MKNetworkOperation* completedCacheableRequest) {
@@ -201,6 +218,13 @@ static NSOperationQueue *_sharedNetworkQueue;
         MKNetworkOperation *queuedOperation = (MKNetworkOperation*) [_sharedNetworkQueue.operations objectAtIndex:index];
         [queuedOperation updateHandlersFromOperation:request];
     }
+    
+    NSData *cachedData = [self cachedDataForOperation:request];
+    if(cachedData) {
+        DLog(@"Request already in cache");
+        [request setCachedData:cachedData];
+    }
+        
 }
 
 #pragma -

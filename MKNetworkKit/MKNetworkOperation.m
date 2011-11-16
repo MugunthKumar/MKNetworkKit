@@ -40,7 +40,7 @@ typedef enum {
 @property (nonatomic, retain) NSMutableArray *uploadProgressChangedHandlers;
 @property (nonatomic, retain) NSMutableArray *downloadProgressChangedHandlers;
 @property (nonatomic, retain) NSMutableArray *downloadStreams;
-
+@property (nonatomic, retain) NSData *cachedResponse;
 @property (nonatomic, copy) ResponseBlock cacheHandlingBlock;
 
 - (id)initWithURLString:(NSString *)aURLString
@@ -63,6 +63,8 @@ typedef enum {
 @synthesize errorBlocks = _errorBlocks;
 @synthesize isCancelled = _isCancelled;
 @synthesize mutableData = _mutableData;
+@synthesize cachedResponse = _cachedResponse;
+
 @synthesize cacheHandlingBlock = _cacheHandlingBlock;
 @synthesize downloadStreams = _downloadStreams;
 
@@ -108,6 +110,11 @@ typedef enum {
     return [str md5];
 }
 
+-(BOOL) isAvailableInCache {
+    
+    return self.cachedResponse != nil;
+}
+
 -(void) notifySuccess {
     
     if(![self isCacheable]) return;
@@ -128,7 +135,8 @@ typedef enum {
     
     if(![self isCacheable]) return;
     if(!([self.response statusCode] >= 200 && [self.response statusCode] < 300)) return;
-        
+    
+    self.cachedResponse = nil; // remove cached data
     self.cacheHandlingBlock(self);
 }
 
@@ -186,6 +194,14 @@ typedef enum {
     [self.uploadProgressChangedHandlers addObjectsFromArray:operation.uploadProgressChangedHandlers];
     [self.downloadProgressChangedHandlers addObjectsFromArray:operation.downloadProgressChangedHandlers];
     [self.downloadStreams addObjectsFromArray:operation.downloadStreams];
+}
+
+-(void) setCachedData:(NSData*) cachedData {
+    
+    self.cachedResponse = cachedData;
+
+    for(ResponseBlock responseBlock in self.responseBlocks)
+        responseBlock(self);    
 }
 
 + (id)operationWithURLString:(NSString *)urlString
@@ -326,7 +342,7 @@ typedef enum {
         }];*/
     }
     
-    if(self.mutableData) {
+    if(self.mutableData && [self responseString]) {
         [displayString appendFormat:@"\n--------\nResponse\n--------\n%@\n", [self responseString]];
     }
     
@@ -589,6 +605,8 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
     
     if([self isFinished])
         return [self.mutableData copy];
+    else if(self.cachedResponse)
+        return self.cachedResponse;
     else
         return nil;
 }
@@ -600,17 +618,14 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
 
 -(NSString*) responseStringWithEncoding:(NSStringEncoding) encoding {
     
-    if([self isFinished])
-        return [[NSString alloc] initWithData:self.mutableData encoding:encoding];
-    else
-        return nil;
+    return [[NSString alloc] initWithData:[self responseData] encoding:encoding];
 }
 
 #ifdef __IPHONE_5_0
 -(id) responseJSON {
     
     NSError *error = nil;
-    id returnValue = [NSJSONSerialization JSONObjectWithData:self.mutableData options:0 error:&error];    
+    id returnValue = [NSJSONSerialization JSONObjectWithData:[self mutableData] options:0 error:&error];    
     DLog(@"JSON Parsing Error: %@", error);
     return returnValue;
 }

@@ -24,6 +24,13 @@
     
     [request onCompletion:^(MKNetworkOperation *completedRequest)
      {
+         if([completedRequest isAvailableInCache]) {
+             DLog(@"Data from cache");
+         }
+         else {
+             DLog(@"Data from server");
+         }
+         
          DLog(@"%@", [completedRequest responseString]);
          completionBlock(5.0f);
      }onError:^(NSError* error) {
