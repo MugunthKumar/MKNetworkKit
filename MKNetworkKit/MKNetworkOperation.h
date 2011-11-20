@@ -19,15 +19,15 @@ typedef void (^DownloadBlock)(NSData* cacheData);
     
     @private
     int _state;
+    BOOL _freezable;
 }
 
 + (id)operationWithURLString:(NSString *)urlString
                       body:(NSMutableDictionary *)body
 				httpMethod:(NSString *)method;
 
--(void) cancel;
-
 @property (nonatomic, assign) NSStringEncoding stringEncoding;
+@property (nonatomic, assign) BOOL freezable;
 
 -(void) setUsername:(NSString*) name password:(NSString*) password;
 -(void) addHeaders:(NSDictionary*) headersDictionary;
@@ -38,6 +38,7 @@ typedef void (^DownloadBlock)(NSData* cacheData);
 -(void) addData:(NSData*) data forKey:(NSString*) key;
 -(void) addData:(NSData*) data forKey:(NSString*) key mimeType:(NSString*) mimeType;
 
+-(BOOL) isCacheable;
 -(NSData*) responseData;
 
 -(void) onCompletion:(ResponseBlock) response onError:(ErrorBlock) error;

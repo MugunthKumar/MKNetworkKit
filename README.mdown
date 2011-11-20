@@ -1,14 +1,4 @@
-##TODO
-* POST Requests should be serializable (Seamless continue)
-* Background completion
-* Obey cache-expires HTTP headers
-
-* Multiple encoding types in URL
-* Mac compatibility and XML support (NSXMLDocument)
-* Read about response redirects
-
-This is version 0.8a of MKNetworkKit
-Read the <a href="http://mk.sg/98"> blog post</a> for more.
+This is version 0.8a of MKNetworkKit. Read the <a href="http://mk.sg/mknk"> blog post</a> for more.
 
 ###Why MKNetworkKit?
 
@@ -16,18 +6,21 @@ MKNetworkKit is inspired by the other two popular network frameworks ASIHTTPRequ
 Marrying the feature set from both, MKNetworkKit throws in a bunch of new features like
 
 * Single queue for the whole app
-
 * Auto queue sizing
 * Auto caching and restoring
 * Performs exactly one operation for similar requests
 * Background completion
 * Full ARC support
 
-###Documentation
-* Why do you need a single queue?
-* Why should you size your queue?
-* Image caching
-* ARC baby!
+Read the <a href="http://mk.sg/mknk"> blog post</a> for more.
+
+###TODO
+* Method to freeze blocks
+* Obey cache-expires HTTP headers
+
+* Mac compatibility and XML support (NSXMLDocument)
+* Multiple encoding types in URL
+* Read about response redirects
 
 ###Licensing
 MKNetworkKit uses CC-BY-CA Licensing

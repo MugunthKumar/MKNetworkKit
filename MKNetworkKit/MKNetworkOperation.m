@@ -54,8 +54,10 @@ typedef enum {
 @implementation MKNetworkOperation
 
 @synthesize stringEncoding = _stringEncoding;
+@dynamic freezable;
+@synthesize uniqueId = _uniqueId; // freezable operations have a unique id
+
 @synthesize connection = _connection;
-@synthesize uniqueId = _uniqueId;
 
 @synthesize request = _request;
 @synthesize requestDictionary = _requestDictionary;
@@ -94,6 +96,26 @@ typedef enum {
     return [self.request.HTTPMethod isEqualToString:@"GET"];
 }
 
+//=========================================================== 
+//  freezable 
+//=========================================================== 
+- (BOOL)freezable
+{
+    return _freezable;
+}
+
+- (void)setFreezable:(BOOL)flag
+{
+    // get method cannot be frozen. 
+    // No point in freezing a method that doesn't change server state.
+    if([self.request.HTTPMethod isEqualToString:@"GET"] && flag) return;
+    _freezable = flag;
+    
+    if(_freezable && self.uniqueId == nil)
+        self.uniqueId = [NSString uniqueString];
+}
+
+
 -(BOOL) isEqual:(id)object {
 
     if([self isCacheable]) {
@@ -119,9 +141,8 @@ typedef enum {
                      self.password ? self.password : @""];
     }
     
-    if(![self.request.HTTPMethod isEqualToString:@"GET"]) {
+    if(self.freezable) {
         
-        if(self.uniqueId == nil) self.uniqueId = [NSString uniqueString];
         str = [str stringByAppendingString:self.uniqueId];
     }
     return [str md5];
@@ -555,6 +576,7 @@ typedef enum {
 
 - (void) start
 {
+    
     self.backgroundTaskId = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
 
         dispatch_async(dispatch_get_main_queue(), ^{

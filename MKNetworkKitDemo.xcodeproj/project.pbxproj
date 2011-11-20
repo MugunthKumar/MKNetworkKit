@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AB302CB0147937CA0043D337 /* README.mdown in Resources */ = {isa = PBXBuildFile; fileRef = AB302CAF147937CA0043D337 /* README.mdown */; };
 		AB66709A146E38FD00FFB407 /* NSDictionary+RequestEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = AB667099146E38FD00FFB407 /* NSDictionary+RequestEncoding.m */; };
 		AB6670A1146E4B8A00FFB407 /* UIAlertView+MKNetworkKitAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = AB6670A0146E4B8A00FFB407 /* UIAlertView+MKNetworkKitAdditions.m */; };
 		AB6670A4146E64A500FFB407 /* NSString+MKNetworkKitAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = AB6670A3146E64A500FFB407 /* NSString+MKNetworkKitAdditions.m */; };
@@ -27,6 +28,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		AB302CAF147937CA0043D337 /* README.mdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.mdown; sourceTree = "<group>"; };
 		AB667098146E38FD00FFB407 /* NSDictionary+RequestEncoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+RequestEncoding.h"; sourceTree = "<group>"; };
 		AB667099146E38FD00FFB407 /* NSDictionary+RequestEncoding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+RequestEncoding.m"; sourceTree = "<group>"; };
 		AB66709F146E4B8A00FFB407 /* UIAlertView+MKNetworkKitAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertView+MKNetworkKitAdditions.h"; sourceTree = "<group>"; };
@@ -78,6 +80,7 @@
 		AB74B0B21467CC120088BF09 = {
 			isa = PBXGroup;
 			children = (
+				AB302CAF147937CA0043D337 /* README.mdown */,
 				ABF149AF1467F312008B20C9 /* Externals */,
 				ABF149B31467F312008B20C9 /* MKNetworkKit */,
 				ABF149B91467F312008B20C9 /* MKNetworkKitDemo */,
@@ -212,6 +215,7 @@
 			files = (
 				ABF149C91467F312008B20C9 /* InfoPlist.strings in Resources */,
 				ABF149CA1467F312008B20C9 /* MainStoryboard.storyboard in Resources */,
+				AB302CB0147937CA0043D337 /* README.mdown in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

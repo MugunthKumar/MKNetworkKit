@@ -63,8 +63,8 @@
     [self.engine useCache];
     
     [self.engine uploadImageFromFile];
-    [self.engine uploadImageFromFile];
-    [self.engine uploadImageFromFile];
+    //[self.engine uploadImageFromFile];
+    //[self.engine uploadImageFromFile];
 
     //[self.engine uploadImageFromData];        
     

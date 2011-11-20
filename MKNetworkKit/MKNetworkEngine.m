@@ -7,7 +7,7 @@
 
 #import "MKNetworkEngine.h"
 #import "Reachability.h"
-#define kPendingOperationExtension @"mknetworkkitpendingoperation"
+#define kFreezableOperationExtension @"mknetworkkitfrozenoperation"
 
 @interface MKNetworkEngine (/*Private Methods*/)
 
@@ -21,8 +21,8 @@
 -(void) saveCache;
 -(void) saveCacheData:(NSData*) data forKey:(NSString*) cacheDataKey;
 
--(void) savePendingOperations;
--(void) checkAndRestorePendingOperations;
+-(void) freezeOperations;
+-(void) checkAndRestoreFrozenOperations;
 
 @end
 
@@ -113,34 +113,37 @@ static NSOperationQueue *_sharedNetworkQueue;
     {
         DLog(@"Server [%@] is reachable via Wifi", self.hostName);
         [_sharedNetworkQueue setMaxConcurrentOperationCount:6];
-        [self checkAndRestorePendingOperations];
+        [self checkAndRestoreFrozenOperations];
     }
     else if([self.reachability currentReachabilityStatus] == ReachableViaWWAN)
     {
         DLog(@"Server [%@] is reachable only via cellular data", self.hostName);
         [_sharedNetworkQueue setMaxConcurrentOperationCount:2];
-        [self checkAndRestorePendingOperations];
+        [self checkAndRestoreFrozenOperations];
     }
     else if([self.reachability currentReachabilityStatus] == NotReachable)
     {
         DLog(@"Server [%@] is not reachable", self.hostName);
         
         [_sharedNetworkQueue setMaxConcurrentOperationCount:0];
-        [self savePendingOperations];
+        [self freezeOperations];
     }        
 }
 
--(void) savePendingOperations {
+#pragma Freezing operations (Called when network connectivity fails)
+-(void) freezeOperations {
     
     for(MKNetworkOperation *operation in _sharedNetworkQueue.operations) {
         
+        if(![operation freezable]) continue; // freeze only freeable operations.
+        
         NSString *archivePath = [[[self cacheDirectoryName] stringByAppendingPathComponent:[operation uniqueIdentifier]] 
-                                 stringByAppendingPathExtension:kPendingOperationExtension];
+                                 stringByAppendingPathExtension:kFreezableOperationExtension];
         [NSKeyedArchiver archiveRootObject:operation toFile:archivePath];
     }
 }
 
--(void) checkAndRestorePendingOperations {
+-(void) checkAndRestoreFrozenOperations {
     
     NSError *error = nil;
     NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[self cacheDirectoryName] error:&error];
@@ -150,7 +153,7 @@ static NSOperationQueue *_sharedNetworkQueue;
     NSArray *pendingOperations = [files filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
         
         NSString *thisFile = (NSString*) evaluatedObject;
-        return ([thisFile rangeOfString:kPendingOperationExtension].location != NSNotFound);             
+        return ([thisFile rangeOfString:kFreezableOperationExtension].location != NSNotFound);             
     }]];
     
     for(NSString *pendingOperationFile in pendingOperations) {
@@ -158,6 +161,10 @@ static NSOperationQueue *_sharedNetworkQueue;
         NSString *archivePath = [[self cacheDirectoryName] stringByAppendingPathComponent:pendingOperationFile];
         MKNetworkOperation *pendingOperation = [NSKeyedUnarchiver unarchiveObjectWithFile:archivePath];
         [self queueRequest:pendingOperation];
+        NSError *error = nil;
+        [[NSFileManager defaultManager] removeItemAtPath:archivePath error:&error];
+        if(error)
+            DLog(@"%@", error);
     }
 }
 
