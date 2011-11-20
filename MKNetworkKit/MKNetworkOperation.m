@@ -8,7 +8,7 @@
 
 #import "MKNetworkOperation.h"
 #import "NSDictionary+RequestEncoding.h"
-#import "NSString+MD5.h"
+#import "NSString+MKNetworkKitAdditions.h"
 
 typedef enum {
     MKRequestOperationStateReady = 1,
@@ -18,6 +18,7 @@ typedef enum {
 
 @interface MKNetworkOperation (/*Private Methods*/)
 @property (strong, nonatomic) NSURLConnection *connection;
+@property (strong, nonatomic) NSString *uniqueId;
 @property (strong, nonatomic) NSMutableURLRequest *request;
 @property (strong, nonatomic) NSMutableDictionary *requestDictionary;
 @property (strong, nonatomic) NSHTTPURLResponse *response;
@@ -42,6 +43,7 @@ typedef enum {
 @property (nonatomic, retain) NSMutableArray *downloadStreams;
 @property (nonatomic, retain) NSData *cachedResponse;
 @property (nonatomic, copy) ResponseBlock cacheHandlingBlock;
+@property (nonatomic, assign) UIBackgroundTaskIdentifier backgroundTaskId;
 
 - (id)initWithURLString:(NSString *)aURLString
                    body:(NSMutableDictionary *)body
@@ -50,28 +52,37 @@ typedef enum {
 @end
 
 @implementation MKNetworkOperation
+
+@synthesize stringEncoding = _stringEncoding;
 @synthesize connection = _connection;
+@synthesize uniqueId = _uniqueId;
+
 @synthesize request = _request;
 @synthesize requestDictionary = _requestDictionary;
 @synthesize response = _response;
+
 @synthesize fieldsToBePosted = _fieldsToBePosted;
 @synthesize filesToBePosted = _filesToBePosted;
 @synthesize dataToBePosted = _dataToBePosted;
+
 @synthesize username = _username;
 @synthesize password = _password;
+
 @synthesize responseBlocks = _responseBlocks;
 @synthesize errorBlocks = _errorBlocks;
+
 @synthesize isCancelled = _isCancelled;
 @synthesize mutableData = _mutableData;
-@synthesize cachedResponse = _cachedResponse;
-
-@synthesize cacheHandlingBlock = _cacheHandlingBlock;
-@synthesize downloadStreams = _downloadStreams;
 
 @synthesize uploadProgressChangedHandlers = _uploadProgressChangedHandlers;
 @synthesize downloadProgressChangedHandlers = _downloadProgressChangedHandlers;
 
-@synthesize stringEncoding = _stringEncoding;
+@synthesize downloadStreams = _downloadStreams;
+
+@synthesize cachedResponse = _cachedResponse;
+@synthesize cacheHandlingBlock = _cacheHandlingBlock;
+@synthesize backgroundTaskId = _backgroundTaskId;
+
 
 // A RESTful service should always return the same response for a given URL and it's parameters.
 // this means if these values are correct, you can cache the responses
@@ -94,6 +105,7 @@ typedef enum {
     return NO;
 }
 
+
 -(NSString*) uniqueIdentifier {
 
     NSString *str = [NSString stringWithFormat:@"%@ %@", 
@@ -107,10 +119,15 @@ typedef enum {
                      self.password ? self.password : @""];
     }
     
+    if(![self.request.HTTPMethod isEqualToString:@"GET"]) {
+        
+        if(self.uniqueId == nil) self.uniqueId = [NSString uniqueString];
+        str = [str stringByAppendingString:self.uniqueId];
+    }
     return [str md5];
 }
 
--(BOOL) isAvailableInCache {
+-(BOOL) isCachedResponse {
     
     return self.cachedResponse != nil;
 }
@@ -174,14 +191,97 @@ typedef enum {
         case MKRequestOperationStateFinished:
             [self didChangeValueForKey:@"isExecuting"];
             [self didChangeValueForKey:@"isFinished"];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (self.backgroundTaskId != UIBackgroundTaskInvalid) {
+                    [[UIApplication sharedApplication] endBackgroundTask:self.backgroundTaskId];
+                    self.backgroundTaskId = UIBackgroundTaskInvalid;
+                }
+            });
+
             break;
     }
+}
+
+- (void)encodeWithCoder:(NSCoder *)encoder 
+{
+    [encoder encodeInteger:self.stringEncoding forKey:@"stringEncoding"];
+    [encoder encodeObject:self.uniqueId forKey:@"uniqueId"];
+    [encoder encodeObject:self.request forKey:@"request"];
+    [encoder encodeObject:self.requestDictionary forKey:@"requestDictionary"];
+    [encoder encodeObject:self.response forKey:@"response"];
+    [encoder encodeObject:self.fieldsToBePosted forKey:@"fieldsToBePosted"];
+    [encoder encodeObject:self.filesToBePosted forKey:@"filesToBePosted"];
+    [encoder encodeObject:self.dataToBePosted forKey:@"dataToBePosted"];
+    [encoder encodeObject:self.username forKey:@"username"];
+    [encoder encodeObject:self.password forKey:@"password"];
+        
+    self.state = MKRequestOperationStateReady;
+    [encoder encodeInteger:_state forKey:@"state"];
+    [encoder encodeBool:self.isCancelled forKey:@"isCancelled"];
+    [encoder encodeObject:self.mutableData forKey:@"mutableData"];
+
+    [encoder encodeObject:self.downloadStreams forKey:@"downloadStreams"];
+}
+
+- (id)initWithCoder:(NSCoder *)decoder 
+{
+    self = [super init];
+    if (self) {
+        [self setStringEncoding:[decoder decodeIntegerForKey:@"stringEncoding"]];
+        self.request = [decoder decodeObjectForKey:@"request"];
+        self.uniqueId = [decoder decodeObjectForKey:@"uniqueId"];
+
+        self.requestDictionary = [decoder decodeObjectForKey:@"requestDictionary"];
+        self.response = [decoder decodeObjectForKey:@"response"];
+        self.fieldsToBePosted = [decoder decodeObjectForKey:@"fieldsToBePosted"];
+        self.filesToBePosted = [decoder decodeObjectForKey:@"filesToBePosted"];
+        self.dataToBePosted = [decoder decodeObjectForKey:@"dataToBePosted"];
+        self.username = [decoder decodeObjectForKey:@"username"];
+        self.password = [decoder decodeObjectForKey:@"password"];
+
+        [self setState:[decoder decodeIntegerForKey:@"state"]];
+        self.isCancelled = [decoder decodeBoolForKey:@"isCancelled"];
+        self.mutableData = [decoder decodeObjectForKey:@"mutableData"];
+
+        self.downloadStreams = [decoder decodeObjectForKey:@"downloadStreams"];
+    }
+    return self;
+}
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    id theCopy = [[[self class] allocWithZone:zone] init];  // use designated initializer
+    
+    [theCopy setStringEncoding:self.stringEncoding];
+    [theCopy setUniqueId:[self.uniqueId copy]];
+
+    [theCopy setConnection:[self.connection copy]];
+    [theCopy setRequest:[self.request copy]];
+    [theCopy setRequestDictionary:[self.requestDictionary copy]];
+    [theCopy setResponse:[self.response copy]];
+    [theCopy setFieldsToBePosted:[self.fieldsToBePosted copy]];
+    [theCopy setFilesToBePosted:[self.filesToBePosted copy]];
+    [theCopy setDataToBePosted:[self.dataToBePosted copy]];
+    [theCopy setUsername:[self.username copy]];
+    [theCopy setPassword:[self.password copy]];
+    [theCopy setResponseBlocks:[self.responseBlocks copy]];
+    [theCopy setErrorBlocks:[self.errorBlocks copy]];
+    [theCopy setState:self.state];
+    [theCopy setIsCancelled:self.isCancelled];
+    [theCopy setMutableData:[self.mutableData copy]];
+    [theCopy setUploadProgressChangedHandlers:[self.uploadProgressChangedHandlers copy]];
+    [theCopy setDownloadProgressChangedHandlers:[self.downloadProgressChangedHandlers copy]];
+    [theCopy setDownloadStreams:[self.downloadStreams copy]];
+    [theCopy setCachedResponse:[self.cachedResponse copy]];
+    [theCopy setCacheHandlingBlock:self.cacheHandlingBlock];
+    
+    return theCopy;
 }
 
 -(void) dealloc {
     
     [_connection cancel];
-    _mutableData = nil;
     _connection = nil;
 }
 
@@ -455,6 +555,18 @@ typedef enum {
 
 - (void) start
 {
+    self.backgroundTaskId = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (self.backgroundTaskId != UIBackgroundTaskInvalid)
+            {
+                [[UIApplication sharedApplication] endBackgroundTask:self.backgroundTaskId];
+                self.backgroundTaskId = UIBackgroundTaskInvalid;
+                [self cancel];
+            }
+        });
+    }];
+
     if(![NSThread isMainThread]){
         [self performSelectorOnMainThread:@selector(start) withObject:nil waitUntilDone:NO];
         return;

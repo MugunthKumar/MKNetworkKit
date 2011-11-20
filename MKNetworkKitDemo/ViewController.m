@@ -45,7 +45,7 @@
     self.engine = [[YahooEngine alloc] initWithHostName:@"download.finance.yahoo.com" 
                        customHeaderFields:headerFields];
 
-    
+/*    
     [self.engine currencyRateFor:@"SGD" 
                  inCurrency:@"INR" 
                onCompletion:^(double rate) {
@@ -58,14 +58,17 @@
                         DLog(@"%@\t%@\t%@\t%@", [error localizedDescription], [error localizedFailureReason], 
                              [error localizedRecoveryOptions], [error localizedRecoverySuggestion]);
                     }];
+ */
 
-    //[self.engine uploadImageFromFile];
-    //[self.engine uploadImageFromData];
-    
-    
     [self.engine useCache];
     
-    [self.engine downloadFatAssFileTo:@"A.pdf"];
+    [self.engine uploadImageFromFile];
+    [self.engine uploadImageFromFile];
+    [self.engine uploadImageFromFile];
+
+    //[self.engine uploadImageFromData];        
+    
+    //[self.engine downloadFatAssFileTo:@"A.pdf"];
     //[self.engine downloadFatAssFileTo:@"B.pdf"];
     //[self.engine downloadFatAssFileTo:@"C.pdf"];
 

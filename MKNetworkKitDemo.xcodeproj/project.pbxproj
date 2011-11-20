@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		AB66709A146E38FD00FFB407 /* NSDictionary+RequestEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = AB667099146E38FD00FFB407 /* NSDictionary+RequestEncoding.m */; };
 		AB6670A1146E4B8A00FFB407 /* UIAlertView+MKNetworkKitAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = AB6670A0146E4B8A00FFB407 /* UIAlertView+MKNetworkKitAdditions.m */; };
-		AB6670A4146E64A500FFB407 /* NSString+MD5.m in Sources */ = {isa = PBXBuildFile; fileRef = AB6670A3146E64A500FFB407 /* NSString+MD5.m */; };
+		AB6670A4146E64A500FFB407 /* NSString+MKNetworkKitAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = AB6670A3146E64A500FFB407 /* NSString+MKNetworkKitAdditions.m */; };
 		AB74B0C21467CC120088BF09 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB74B0C11467CC120088BF09 /* UIKit.framework */; };
 		AB74B0C41467CC120088BF09 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB74B0C31467CC120088BF09 /* Foundation.framework */; };
 		AB74B0C61467CC120088BF09 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB74B0C51467CC120088BF09 /* CoreGraphics.framework */; };
@@ -31,8 +31,8 @@
 		AB667099146E38FD00FFB407 /* NSDictionary+RequestEncoding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+RequestEncoding.m"; sourceTree = "<group>"; };
 		AB66709F146E4B8A00FFB407 /* UIAlertView+MKNetworkKitAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertView+MKNetworkKitAdditions.h"; sourceTree = "<group>"; };
 		AB6670A0146E4B8A00FFB407 /* UIAlertView+MKNetworkKitAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAlertView+MKNetworkKitAdditions.m"; sourceTree = "<group>"; };
-		AB6670A2146E64A500FFB407 /* NSString+MD5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+MD5.h"; sourceTree = "<group>"; };
-		AB6670A3146E64A500FFB407 /* NSString+MD5.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+MD5.m"; sourceTree = "<group>"; };
+		AB6670A2146E64A500FFB407 /* NSString+MKNetworkKitAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+MKNetworkKitAdditions.h"; sourceTree = "<group>"; };
+		AB6670A3146E64A500FFB407 /* NSString+MKNetworkKitAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+MKNetworkKitAdditions.m"; sourceTree = "<group>"; };
 		AB74B0BD1467CC120088BF09 /* MKNetworkKitDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MKNetworkKitDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB74B0C11467CC120088BF09 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		AB74B0C31467CC120088BF09 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -135,8 +135,8 @@
 				AB667099146E38FD00FFB407 /* NSDictionary+RequestEncoding.m */,
 				AB66709F146E4B8A00FFB407 /* UIAlertView+MKNetworkKitAdditions.h */,
 				AB6670A0146E4B8A00FFB407 /* UIAlertView+MKNetworkKitAdditions.m */,
-				AB6670A2146E64A500FFB407 /* NSString+MD5.h */,
-				AB6670A3146E64A500FFB407 /* NSString+MD5.m */,
+				AB6670A2146E64A500FFB407 /* NSString+MKNetworkKitAdditions.h */,
+				AB6670A3146E64A500FFB407 /* NSString+MKNetworkKitAdditions.m */,
 			);
 			path = MKNetworkKit;
 			sourceTree = "<group>";
@@ -231,7 +231,7 @@
 				ABC25179146802B900264474 /* YahooEngine.m in Sources */,
 				AB66709A146E38FD00FFB407 /* NSDictionary+RequestEncoding.m in Sources */,
 				AB6670A1146E4B8A00FFB407 /* UIAlertView+MKNetworkKitAdditions.m in Sources */,
-				AB6670A4146E64A500FFB407 /* NSString+MD5.m in Sources */,
+				AB6670A4146E64A500FFB407 /* NSString+MKNetworkKitAdditions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

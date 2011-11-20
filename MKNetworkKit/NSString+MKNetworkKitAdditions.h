@@ -1,5 +1,5 @@
 //
-//  NSString+MD5.h
+//  NSString+MKNetworkKitAdditions.h
 //  MKNetworkKitDemo
 //
 //  Created by Mugunth Kumar on 12/11/11.
@@ -8,7 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
-@interface NSString (MD5)
+@interface NSString (MKNetworkKitAdditions)
 
 - (NSString *) md5;
++ (NSString*) uniqueString;
 @end

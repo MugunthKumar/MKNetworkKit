@@ -24,7 +24,7 @@
     
     [request onCompletion:^(MKNetworkOperation *completedRequest)
      {
-         if([completedRequest isAvailableInCache]) {
+         if([completedRequest isCachedResponse]) {
              DLog(@"Data from cache");
          }
          else {
@@ -53,8 +53,6 @@
                                                   httpMethod:@"POST"];
     
     [request addFile:@"/Users/mugunth/Desktop/transit.png" forKey:@"media"];
-    
-    //[request addData:[NSData dataWithContentsOfFile:@"/Users/mugunth/Desktop/transit.png"] forKey:@"media" mimeType:@"image/png"];
     
     [request onUploadProgressChanged:^(double progress) {
         

@@ -7,6 +7,7 @@
 
 #import "MKNetworkEngine.h"
 #import "Reachability.h"
+#define kPendingOperationExtension @"mknetworkkitpendingoperation"
 
 @interface MKNetworkEngine (/*Private Methods*/)
 
@@ -19,6 +20,9 @@
 
 -(void) saveCache;
 -(void) saveCacheData:(NSData*) data forKey:(NSString*) cacheDataKey;
+
+-(void) savePendingOperations;
+-(void) checkAndRestorePendingOperations;
 
 @end
 
@@ -109,17 +113,52 @@ static NSOperationQueue *_sharedNetworkQueue;
     {
         DLog(@"Server [%@] is reachable via Wifi", self.hostName);
         [_sharedNetworkQueue setMaxConcurrentOperationCount:6];
+        [self checkAndRestorePendingOperations];
     }
     else if([self.reachability currentReachabilityStatus] == ReachableViaWWAN)
     {
         DLog(@"Server [%@] is reachable only via cellular data", self.hostName);
         [_sharedNetworkQueue setMaxConcurrentOperationCount:2];
+        [self checkAndRestorePendingOperations];
     }
     else if([self.reachability currentReachabilityStatus] == NotReachable)
     {
         DLog(@"Server [%@] is not reachable", self.hostName);
+        
         [_sharedNetworkQueue setMaxConcurrentOperationCount:0];
+        [self savePendingOperations];
     }        
+}
+
+-(void) savePendingOperations {
+    
+    for(MKNetworkOperation *operation in _sharedNetworkQueue.operations) {
+        
+        NSString *archivePath = [[[self cacheDirectoryName] stringByAppendingPathComponent:[operation uniqueIdentifier]] 
+                                 stringByAppendingPathExtension:kPendingOperationExtension];
+        [NSKeyedArchiver archiveRootObject:operation toFile:archivePath];
+    }
+}
+
+-(void) checkAndRestorePendingOperations {
+    
+    NSError *error = nil;
+    NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[self cacheDirectoryName] error:&error];
+    if(error)
+        DLog(@"%@", error);
+    
+    NSArray *pendingOperations = [files filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
+        
+        NSString *thisFile = (NSString*) evaluatedObject;
+        return ([thisFile rangeOfString:kPendingOperationExtension].location != NSNotFound);             
+    }]];
+    
+    for(NSString *pendingOperationFile in pendingOperations) {
+        
+        NSString *archivePath = [[self cacheDirectoryName] stringByAppendingPathComponent:pendingOperationFile];
+        MKNetworkOperation *pendingOperation = [NSKeyedUnarchiver unarchiveObjectWithFile:archivePath];
+        [self queueRequest:pendingOperation];
+    }
 }
 
 -(BOOL) isReachable {

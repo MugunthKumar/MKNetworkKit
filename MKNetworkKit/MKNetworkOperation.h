@@ -46,7 +46,7 @@ typedef void (^DownloadBlock)(NSData* cacheData);
 -(void) setDownloadStream:(NSOutputStream*) outputStream;
 -(void) setCacheHandler:(ResponseBlock) cacheHandler;
 -(void) setCachedData:(NSData*) cachedData;
--(BOOL) isAvailableInCache;
+-(BOOL) isCachedResponse;
 -(NSString*)responseString; // defaults to UTF8
 -(NSString*) responseStringWithEncoding:(NSStringEncoding) encoding;
 

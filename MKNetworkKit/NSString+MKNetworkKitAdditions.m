@@ -1,12 +1,12 @@
 //
-//  NSString+MD5.m
+//  NSString+MKNetworkKitAdditions.m
 //  MKNetworkKitDemo
 //
 //  Created by Mugunth Kumar on 12/11/11.
 //  Copyright (c) 2011 Steinlogic. All rights reserved.
 //
 
-#import "NSString+MD5.h"
+#import "NSString+MKNetworkKitAdditions.h"
 #import <CommonCrypto/CommonDigest.h>
 
 @implementation NSString (MD5)
@@ -25,5 +25,13 @@
 			];  
 }
 
++ (NSString*) uniqueString
+{
+	CFUUIDRef	uuidObj = CFUUIDCreate(nil);//create a new UUID
+	//get the string representation of the UUID
+	NSString	*uuidString = (__bridge NSString*)CFUUIDCreateString(nil, uuidObj);
+	CFRelease(uuidObj);
+	return uuidString;
+}
 
 @end
