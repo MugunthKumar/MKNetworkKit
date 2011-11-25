@@ -35,7 +35,7 @@
                               body:(NSMutableDictionary*) body
                         httpMethod:(NSString*) method;
 
--(void) queueRequest:(MKNetworkOperation*) request;
+-(void) enqueueOperation:(MKNetworkOperation*) request;
 
 // Subclasses can override this and provide their own custom caching directory names
 -(NSString*) cacheDirectoryName;

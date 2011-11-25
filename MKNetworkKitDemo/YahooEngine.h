@@ -16,9 +16,4 @@ typedef void (^CurrencyResponseBlock)(double rate);
                    inCurrency:(NSString*) targetCurrency 
                  onCompletion:(CurrencyResponseBlock) completion
                       onError:(ErrorBlock) error;
-
--(MKNetworkOperation*) uploadImageFromFile;
--(MKNetworkOperation*) uploadImageFromData;
-
--(MKNetworkOperation*) downloadFatAssFileTo:(NSString*) fileName;
 @end

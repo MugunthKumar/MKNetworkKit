@@ -10,7 +10,7 @@
 
 @implementation UIAlertView (MKNetworkKitAdditions)
 
--(UIAlertView*) showWithError:(NSError*) networkError {
++(UIAlertView*) showWithError:(NSError*) networkError {
 
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[networkError localizedFailureReason]
                                                     message:[networkError localizedRecoverySuggestion]

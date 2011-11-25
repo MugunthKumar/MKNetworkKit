@@ -123,10 +123,10 @@ static NSOperationQueue *_sharedNetworkQueue;
     }
     else if([self.reachability currentReachabilityStatus] == NotReachable)
     {
-        DLog(@"Server [%@] is not reachable", self.hostName);
-        
-        [_sharedNetworkQueue setMaxConcurrentOperationCount:0];
+        DLog(@"Server [%@] is not reachable", self.hostName);        
         [self freezeOperations];
+#warning POSSIBLY INCOMPLETE FUNCTION
+        // FREEZE OPERATIONS ONLY FOR SERVER THAT WENT DOWN        
     }        
 }
 
@@ -160,7 +160,7 @@ static NSOperationQueue *_sharedNetworkQueue;
         
         NSString *archivePath = [[self cacheDirectoryName] stringByAppendingPathComponent:pendingOperationFile];
         MKNetworkOperation *pendingOperation = [NSKeyedUnarchiver unarchiveObjectWithFile:archivePath];
-        [self queueRequest:pendingOperation];
+        [self enqueueOperation:pendingOperation];
         NSError *error = nil;
         [[NSFileManager defaultManager] removeItemAtPath:archivePath error:&error];
         if(error)
@@ -244,7 +244,7 @@ static NSOperationQueue *_sharedNetworkQueue;
     return nil;
 }
 
--(void) queueRequest:(MKNetworkOperation*) request {
+-(void) enqueueOperation:(MKNetworkOperation*) request {
     
     [request setCacheHandler:^(MKNetworkOperation* completedCacheableRequest) {
         

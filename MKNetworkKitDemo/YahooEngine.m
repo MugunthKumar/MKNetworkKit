@@ -18,11 +18,11 @@
                           onCompletion:(CurrencyResponseBlock) completionBlock
                                onError:(ErrorBlock) errorBlock {
     
-    MKNetworkOperation *request = [self requestWithPath:YAHOO_URL(sourceCurrency, targetCurrency) 
+    MKNetworkOperation *op = [self requestWithPath:YAHOO_URL(sourceCurrency, targetCurrency) 
                                                    body:nil 
                                              httpMethod:@"GET"];
     
-    [request onCompletion:^(MKNetworkOperation *completedRequest)
+    [op onCompletion:^(MKNetworkOperation *completedRequest)
      {
          if([completedRequest isCachedResponse]) {
              DLog(@"Data from cache");
@@ -38,95 +38,9 @@
          errorBlock(error);
      }];
     
-    [self queueRequest:request];
+    [self enqueueOperation:op];
     
-    return request;
+    return op;
 }
 
--(MKNetworkOperation*) uploadImageFromFile {
-    
-    MKNetworkOperation *request = [self requestWithURLString:@"http://twitpic.com/api/upload" 
-                                                        body:[NSDictionary dictionaryWithObjectsAndKeys:
-                                                              @"mksg", @"username",
-                                                              @"HelloMKSG", @"password",
-                                                              nil]
-                                                  httpMethod:@"POST"];
-    
-    [request addFile:@"/Users/mugunth/Desktop/transit.png" forKey:@"media"];
-    
-    [request onUploadProgressChanged:^(double progress) {
-        
-        DLog(@"%.2f", progress*100.0);
-    }];
-    
-    [request onCompletion:^(MKNetworkOperation* completedRequest) {
-        
-        DLog(@"%@", completedRequest);        
-    }
-                  onError:^(NSError* error) {
-                      
-                      DLog(@"%@", error);
-                  }];
-    
-    [self queueRequest:request];
-    return request;
-}
-
--(MKNetworkOperation*) uploadImageFromData {
-    
-    MKNetworkOperation *request = [self requestWithURLString:@"http://twitpic.com/api/upload" 
-                                                        body:[NSDictionary dictionaryWithObjectsAndKeys:
-                                                              @"mksg", @"username",
-                                                              @"HelloMKSG", @"password",
-                                                              nil]
-                                                  httpMethod:@"POST"];
-    
-    [request addData:[NSData dataWithContentsOfFile:@"/Users/mugunth/Desktop/transit.png"] forKey:@"media" mimeType:@"image/png"];
-    
-    [request onDownloadProgressChanged:^(double progress) {
-        
-        DLog(@"%.2f", progress*100.0);
-    }];
-    
-    [request onCompletion:^(MKNetworkOperation* completedRequest) {
-        
-        DLog(@"%@", completedRequest);        
-    }
-                  onError:^(NSError* error) {
-                      
-                      DLog(@"%@", error);
-                  }];
-    
-    [self queueRequest:request];
-    return request;
-}
-
-
--(MKNetworkOperation*) downloadFatAssFileTo:(NSString*) fileName {
-    
-    MKNetworkOperation *request = [self requestWithURLString:@"http://developer.apple.com/library/mac/documentation/Cocoa/Reference/Foundation/Classes/NSURLRequest_Class/NSURLRequest_Class.pdf" 
-                                                        body:nil
-                                                  httpMethod:@"GET"];
-    
-    [request onDownloadProgressChanged:^(double progress) {
-        
-        DLog(@"%.2f", progress*100.0);
-    }];
-    
-    [request onCompletion:^(MKNetworkOperation* completedRequest) {
-        
-        DLog(@"%@", completedRequest);        
-    }
-                  onError:^(NSError* error) {
-                      
-                      DLog(@"%@", error);
-                  }];
-    
-    [request setDownloadStream:[NSOutputStream outputStreamToFileAtPath:
-                                [@"/Users/mugunth/Desktop" stringByAppendingPathComponent:fileName]                                
-                                                                 append:YES]];
-    
-    [self queueRequest:request];
-    return request;
-}
 @end

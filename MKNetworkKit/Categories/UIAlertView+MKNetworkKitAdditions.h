@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface UIAlertView (MKNetworkKitAdditions)
--(UIAlertView*) showWithError:(NSError*) networkError;
++(UIAlertView*) showWithError:(NSError*) networkError;
 @end

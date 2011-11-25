@@ -45,6 +45,8 @@ typedef enum {
 @property (nonatomic, copy) ResponseBlock cacheHandlingBlock;
 @property (nonatomic, assign) UIBackgroundTaskIdentifier backgroundTaskId;
 
+@property (strong, nonatomic) NSError *error;
+
 - (id)initWithURLString:(NSString *)aURLString
                    body:(NSMutableDictionary *)body
              httpMethod:(NSString *)method;
@@ -84,6 +86,8 @@ typedef enum {
 @synthesize cachedResponse = _cachedResponse;
 @synthesize cacheHandlingBlock = _cacheHandlingBlock;
 @synthesize backgroundTaskId = _backgroundTaskId;
+
+@synthesize error = _error;
 
 
 // A RESTful service should always return the same response for a given URL and it's parameters.
@@ -649,13 +653,14 @@ typedef enum {
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
     
+    self.error = error;
     self.mutableData = nil;
     for(NSOutputStream *stream in self.downloadStreams)
         [stream close];
     self.state = MKRequestOperationStateFinished;
     
     for(ErrorBlock errorBlock in self.errorBlocks)
-        errorBlock(error);    
+        errorBlock(error);       
 }
 
 - (void)connection:(NSURLConnection *)connection 
@@ -751,6 +756,11 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
 -(NSString*) responseStringWithEncoding:(NSStringEncoding) encoding {
     
     return [[NSString alloc] initWithData:[self responseData] encoding:encoding];
+}
+
+-(UIImage*) responseImage {
+        
+    return [UIImage imageWithData:[self responseData]];
 }
 
 #ifdef __IPHONE_5_0

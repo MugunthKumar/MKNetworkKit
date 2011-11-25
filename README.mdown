@@ -15,15 +15,21 @@ Marrying the feature set from both, MKNetworkKit throws in a bunch of new featur
 Read the <a href="http://mk.sg/mknk"> blog post</a> for more.
 
 ###TODO
-* Method to freeze blocks
+* Method to freeze blocks (alternative techniques probably)
 * Obey cache-expires HTTP headers
 
 * Mac compatibility and XML support (NSXMLDocument)
 * Multiple encoding types in URL
-* Read about response redirects
+* Read about response redirects and implement delegate callbacks or booleans
+When one server is unreachable, the complete queue stops. // ASI - ShouldCancelAllRequests
+
+Client Identifier in header like AFNetworking
+
+
+Do an example for fetching images using a subclass.
 
 ###Licensing
 MKNetworkKit uses CC-BY-CA Licensing
-And so all of my source code can be used free of charge in your app, provided you attribute me.
+And so all of my source code can be used free of charge in your app, provided you attribute it in your app.
 
 Royalty free licensing available upon request. Contact me at <a href="mailto:mknetworkkit@mk.sg"> mknetworkkit@mk.sg </a>

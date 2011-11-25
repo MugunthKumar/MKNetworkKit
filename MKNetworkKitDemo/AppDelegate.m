@@ -11,10 +11,28 @@
 @implementation AppDelegate
 
 @synthesize window = _window;
+@synthesize engine = _engine;
+@synthesize uploader = _uploader;
+@synthesize downloader = _downloader;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
+    NSMutableDictionary *headerFields = [NSMutableDictionary dictionary]; 
+    [headerFields setValue:@"iOS" forKey:@"x-client-identifier"];
+    
+    self.engine = [[YahooEngine alloc] initWithHostName:@"download.finance.yahoo.com" 
+                                     customHeaderFields:headerFields];
+    [self.engine useCache];        
+    
+    self.uploader = [[ExampleUploader alloc] initWithHostName:@"twitpic.com/api" 
+                                           customHeaderFields:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                               @"mksg", @"username",
+                                                               @"HelloMKSG", @"password",
+                                                               nil]];
+    
+    self.downloader = [[ExampleDownloader alloc] initWithHostName:nil customHeaderFields:nil];
+
     return YES;
 }
 							

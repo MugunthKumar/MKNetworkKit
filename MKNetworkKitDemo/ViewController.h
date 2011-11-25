@@ -7,9 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "YahooEngine.h"
 
 @interface ViewController : UIViewController
 
-@property (strong, nonatomic) YahooEngine *engine;
+@property (strong, nonatomic) MKNetworkOperation *uploadOperation;
+@property (strong, nonatomic) MKNetworkOperation *downloadOperation;
+@property (strong, nonatomic) MKNetworkOperation *currencyOperation;
+
+@property (nonatomic, weak) IBOutlet UIProgressView *downloadProgessBar;
+@property (nonatomic, weak) IBOutlet UIProgressView *uploadProgessBar;
 @end

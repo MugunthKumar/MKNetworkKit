@@ -13,7 +13,6 @@
 typedef void (^ProgressBlock)(double progress);
 typedef void (^ResponseBlock)(MKNetworkOperation* request);
 typedef void (^ErrorBlock)(NSError* requestError);
-typedef void (^DownloadBlock)(NSData* cacheData);
 
 @interface MKNetworkOperation : NSOperation {
     
@@ -28,6 +27,7 @@ typedef void (^DownloadBlock)(NSData* cacheData);
 
 @property (nonatomic, assign) NSStringEncoding stringEncoding;
 @property (nonatomic, assign) BOOL freezable;
+@property (nonatomic, readonly, strong) NSError *error;
 
 -(void) setUsername:(NSString*) name password:(NSString*) password;
 -(void) addHeaders:(NSDictionary*) headersDictionary;
@@ -54,6 +54,7 @@ typedef void (^DownloadBlock)(NSData* cacheData);
 -(void) updateHandlersFromOperation:(MKNetworkOperation*) operation;
 
 -(NSString*) uniqueIdentifier;
+-(UIImage*) responseImage;
 #ifdef __IPHONE_5_0
 -(id) responseJSON;
 #endif
