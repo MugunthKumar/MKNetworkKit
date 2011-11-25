@@ -28,7 +28,7 @@ Client Identifier in header like AFNetworking
 Do an example for fetching images using a subclass.
 
 ###Licensing
-MKNetworkKit uses CC-BY-CA Licensing
-And so all of my source code can be used free of charge in your app, provided you attribute it in your app.
+MKNetworkKit is licensed under New BSD License
+And so all of my source code can be used free of charge in your app, provided you add the copyright notices to your app.
 
 Royalty free licensing available upon request. Contact me at <a href="mailto:mknetworkkit@mk.sg"> mknetworkkit@mk.sg </a>
