@@ -178,7 +178,6 @@ typedef enum {
     if(![self isCacheable]) return;
     if(!([self.response statusCode] >= 200 && [self.response statusCode] < 300)) return;
     
-    self.cachedResponse = nil; // remove cached data
     self.cacheHandlingBlock(self);
 }
 
@@ -728,11 +727,12 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
         [stream close];
     
     self.state = MKRequestOperationStateFinished;
-
-    for(ResponseBlock responseBlock in self.responseBlocks)
-        responseBlock(self);    
+    self.cachedResponse = nil; // remove cached data
 
     [self notifyCache];
+
+    for(ResponseBlock responseBlock in self.responseBlocks)
+        responseBlock(self);
 }
 
 #pragma mark -

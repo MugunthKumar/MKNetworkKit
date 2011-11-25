@@ -25,7 +25,6 @@ When one server is unreachable, the complete queue stops. // ASI - ShouldCancelA
 
 Client Identifier in header like AFNetworking
 
-
 Do an example for fetching images using a subclass.
 
 ###Licensing

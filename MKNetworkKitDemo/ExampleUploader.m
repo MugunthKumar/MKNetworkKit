@@ -13,7 +13,10 @@
 -(MKNetworkOperation*) uploadImageFromFile:(NSString*) file {
     
     MKNetworkOperation *op = [self requestWithPath:@"upload" 
-                                              body:nil
+                                              body:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                    @"mksg", @"username",
+                                                    @"HelloMKSG", @"password",
+                                                    nil]
                                         httpMethod:@"POST"];
     
     [op addFile:file forKey:@"media"];

@@ -26,10 +26,7 @@
     [self.engine useCache];        
     
     self.uploader = [[ExampleUploader alloc] initWithHostName:@"twitpic.com/api" 
-                                           customHeaderFields:[NSDictionary dictionaryWithObjectsAndKeys:
-                                                               @"mksg", @"username",
-                                                               @"HelloMKSG", @"password",
-                                                               nil]];
+                                           customHeaderFields:nil];
     
     self.downloader = [[ExampleDownloader alloc] initWithHostName:nil customHeaderFields:nil];
 
