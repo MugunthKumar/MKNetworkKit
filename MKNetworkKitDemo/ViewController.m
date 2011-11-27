@@ -95,9 +95,9 @@
         self.uploadProgessBar.progress = progress;
     }];
     
-    [self.uploadOperation onCompletion:^(MKNetworkOperation* completedRequest) {
+    [self.uploadOperation onCompletion:^(MKNetworkOperation* completedOperation) {
         
-        DLog(@"%@", completedRequest);        
+        DLog(@"%@", completedOperation);        
     }
              onError:^(NSError* error) {
 

@@ -28,9 +28,20 @@
 @class MKNetworkOperation;
 
 typedef void (^ProgressBlock)(double progress);
-typedef void (^ResponseBlock)(MKNetworkOperation* request);
-typedef void (^ErrorBlock)(NSError* requestError);
+typedef void (^ResponseBlock)(MKNetworkOperation* operation);
+typedef void (^ErrorBlock)(NSError* error);
 
+/*!
+ *  @class MKNetworkOperation
+ *  @abstract Represents a single unique network operation.
+ *  
+ *  @discussion
+ *	You normally create an instance of this class using the methods exposed by MKNetworkEngine
+ *  Created operations are enqueued into the shared queue on MKNetworkEngine
+ *  MKNetworkOperation encapsulates both request and response
+ *  Printing a MKNetworkOperation prints out a cURL command that can be copied and pasted directly on terminal
+ *  Freezable operations are serialized when network connectivity is lost and performed when connection is restored
+ */
 @interface MKNetworkOperation : NSOperation {
     
     @private
@@ -38,15 +49,58 @@ typedef void (^ErrorBlock)(NSError* requestError);
     BOOL _freezable;
 }
 
+/*!
+ *  @abstract Creates a simple network operation
+ *  
+ *  @discussion
+ *	Creates an operation with the given URL string.
+ *  The default headers you specified in your MKNetworkEngine subclass gets added to the headers
+ *  The params dictionary in this method gets attached to the URL as query parameters if the HTTP Method is GET/DELETE
+ *  The params dictionary is attached to the body if the HTTP Method is POST/PUT
+ */
 + (id)operationWithURLString:(NSString *)urlString
-                      body:(NSMutableDictionary *)body
+                      params:(NSMutableDictionary *)body
 				httpMethod:(NSString *)method;
 
+/*!
+ *  @abstract String Encoding Property
+ *  @property stringEncoding
+ *  
+ *  @discussion
+ *	Creates an operation with the given URL string.
+ *  The default headers you specified in your MKNetworkEngine subclass gets added to the headers
+ *  The params dictionary in this method gets attached to the URL as query parameters if the HTTP Method is GET/DELETE
+ *  The params dictionary is attached to the body if the HTTP Method is POST/PUT
+ */
 @property (nonatomic, assign) NSStringEncoding stringEncoding;
+
+/*!
+ *  @abstract Freezable request
+ *  @property freezable
+ *  
+ *  @discussion
+ *	Freezable operations are serialized when the network goes down and restored when the connectivity is up again.
+ */
 @property (nonatomic, assign) BOOL freezable;
+
+/*!
+ *  @abstract Error object
+ *  @property Variable that holds the network error
+ *  
+ *  @discussion
+ *	If the network operation results in an error, this will hold the response error, otherwise it will be nil
+ */
 @property (nonatomic, readonly, strong) NSError *error;
 
+
+/*!
+ *  @abstract Authentication methods
+ *  
+ *  @discussion
+ *	If your request needs to be authenticated, set your username and password using this method.
+ */
 -(void) setUsername:(NSString*) name password:(NSString*) password;
+
 -(void) addHeaders:(NSDictionary*) headersDictionary;
 
 -(void) addFile:(NSString*) filePath forKey:(NSString*) key;

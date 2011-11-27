@@ -35,20 +35,20 @@
                           onCompletion:(CurrencyResponseBlock) completionBlock
                                onError:(ErrorBlock) errorBlock {
     
-    MKNetworkOperation *op = [self requestWithPath:YAHOO_URL(sourceCurrency, targetCurrency) 
-                                                   body:nil 
+    MKNetworkOperation *op = [self operationWithPath:YAHOO_URL(sourceCurrency, targetCurrency) 
+                                                   params:nil 
                                              httpMethod:@"GET"];
     
-    [op onCompletion:^(MKNetworkOperation *completedRequest)
+    [op onCompletion:^(MKNetworkOperation *completedOperation)
      {
-         if([completedRequest isCachedResponse]) {
+         if([completedOperation isCachedResponse]) {
              DLog(@"Data from cache");
          }
          else {
              DLog(@"Data from server");
          }
          
-         DLog(@"%@", [completedRequest responseString]);
+         DLog(@"%@", [completedOperation responseString]);
          completionBlock(5.0f);
      }onError:^(NSError* error) {
          

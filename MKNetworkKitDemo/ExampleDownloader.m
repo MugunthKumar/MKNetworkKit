@@ -30,8 +30,8 @@
 
 -(MKNetworkOperation*) downloadFatAssFileFrom:(NSString*) remoteURL toFile:(NSString*) filePath {
     
-    MKNetworkOperation *op = [self requestWithURLString:remoteURL 
-                                                        body:nil
+    MKNetworkOperation *op = [self operationWithURLString:remoteURL 
+                                                        params:nil
                                                   httpMethod:@"GET"];
     
     [op setDownloadStream:[NSOutputStream outputStreamToFileAtPath:filePath

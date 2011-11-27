@@ -33,6 +33,7 @@ Marrying the feature set from both, MKNetworkKit throws in a bunch of new featur
 * Performs exactly one operation for similar requests
 * Background completion
 * Full ARC support
+* cURL-able debug lines.
 
 Read the <a href="http://mk.sg/mknk"> blog post</a> for more.
 
@@ -45,9 +46,10 @@ Read the <a href="http://mk.sg/mknk"> blog post</a> for more.
 * Multiple encoding types in URL
 * Read about response redirects and implement delegate callbacks or state variables
 * I'll be working on this soon. But you can start forking it and getting it right
-
-Documentation using Apple doc
-
+* Freeze operations when the are about to be executed if reachability is NotReachable
 
 ###Known Issues
 Frozen operations don't report progress/completion handlers back to the calling code.
+
+###A note on licensing
+Attribution free licensing available upon request. Contact me at <a href="mailto:mknetworkkit@mk.sg"> mknetworkkit@mk.sg </a>

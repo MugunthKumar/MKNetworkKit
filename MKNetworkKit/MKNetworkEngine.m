@@ -192,55 +192,55 @@ static NSOperationQueue *_sharedNetworkQueue;
 }
 
 #pragma -
-#pragma Request related
+#pragma Create methods
 
--(MKNetworkOperation*) requestWithPath:(NSString*) path {
+-(MKNetworkOperation*) operationWithPath:(NSString*) path {
     
-    return [self requestWithPath:path body:nil];
+    return [self operationWithPath:path params:nil];
 }
 
--(MKNetworkOperation*) requestWithPath:(NSString*) path
-                         body:(NSMutableDictionary*) body {
+-(MKNetworkOperation*) operationWithPath:(NSString*) path
+                         params:(NSMutableDictionary*) body {
 
-    return [self requestWithPath:path 
-                     body:body 
+    return [self operationWithPath:path 
+                     params:body 
                httpMethod:@"GET"];
 }
 
--(MKNetworkOperation*) requestWithPath:(NSString*) path
-                         body:(NSMutableDictionary*) body
+-(MKNetworkOperation*) operationWithPath:(NSString*) path
+                         params:(NSMutableDictionary*) body
                    httpMethod:(NSString*)method  {
     
-    return [self requestWithPath:path body:body httpMethod:method ssl:NO];
+    return [self operationWithPath:path params:body httpMethod:method ssl:NO];
 }
 
--(MKNetworkOperation*) requestWithPath:(NSString*) path
-                         body:(NSMutableDictionary*) body
+-(MKNetworkOperation*) operationWithPath:(NSString*) path
+                         params:(NSMutableDictionary*) body
                    httpMethod:(NSString*)method 
                           ssl:(BOOL) useSSL {
     
     NSString *urlString = [NSString stringWithFormat:@"%@://%@/%@", useSSL ? @"https" : @"http", self.hostName, path];
     
-    return [self requestWithURLString:urlString body:body httpMethod:method];
+    return [self operationWithURLString:urlString params:body httpMethod:method];
 }
 
--(MKNetworkOperation*) requestWithURLString:(NSString*) urlString {
+-(MKNetworkOperation*) operationWithURLString:(NSString*) urlString {
 
-    return [self requestWithURLString:urlString body:nil httpMethod:@"GET"];
+    return [self operationWithURLString:urlString params:nil httpMethod:@"GET"];
 }
 
--(MKNetworkOperation*) requestWithURLString:(NSString*) urlString
-                                       body:(NSMutableDictionary*) body {
+-(MKNetworkOperation*) operationWithURLString:(NSString*) urlString
+                                       params:(NSMutableDictionary*) body {
 
-    return [self requestWithURLString:urlString body:body httpMethod:@"GET"];
+    return [self operationWithURLString:urlString params:body httpMethod:@"GET"];
 }
 
 
--(MKNetworkOperation*) requestWithURLString:(NSString*) urlString
-                         body:(NSMutableDictionary*) body
+-(MKNetworkOperation*) operationWithURLString:(NSString*) urlString
+                         params:(NSMutableDictionary*) body
                    httpMethod:(NSString*)method {
 
-    MKNetworkOperation *operation = [MKNetworkOperation operationWithURLString:urlString body:body httpMethod:method];
+    MKNetworkOperation *operation = [MKNetworkOperation operationWithURLString:urlString params:body httpMethod:method];
     [operation addHeaders:self.customHeaders];
     return operation;
 }
@@ -262,28 +262,28 @@ static NSOperationQueue *_sharedNetworkQueue;
     return nil;
 }
 
--(void) enqueueOperation:(MKNetworkOperation*) request {
+-(void) enqueueOperation:(MKNetworkOperation*) operation {
     
-    [request setCacheHandler:^(MKNetworkOperation* completedCacheableRequest) {
+    [operation setCacheHandler:^(MKNetworkOperation* completedCacheableOperation) {
         
         // if this is not called, the request would have been a non cacheable request
-        [self saveCacheData:[completedCacheableRequest responseData] 
-                     forKey:[completedCacheableRequest uniqueIdentifier]];
+        [self saveCacheData:[completedCacheableOperation responseData] 
+                     forKey:[completedCacheableOperation uniqueIdentifier]];
     }];
     
-    NSUInteger index = [_sharedNetworkQueue.operations indexOfObject:request];
+    NSUInteger index = [_sharedNetworkQueue.operations indexOfObject:operation];
     if(index == NSNotFound) {
-        [_sharedNetworkQueue addOperation:request];
+        [_sharedNetworkQueue addOperation:operation];
     }
     else {
         // This operation is already being processed
         MKNetworkOperation *queuedOperation = (MKNetworkOperation*) [_sharedNetworkQueue.operations objectAtIndex:index];
-        [queuedOperation updateHandlersFromOperation:request];
+        [queuedOperation updateHandlersFromOperation:operation];
     }
     
-    NSData *cachedData = [self cachedDataForOperation:request];
+    NSData *cachedData = [self cachedDataForOperation:operation];
     if(cachedData) {
-        [request setCachedData:cachedData];
+        [operation setCachedData:cachedData];
     }
 }
 

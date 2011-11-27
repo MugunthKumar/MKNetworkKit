@@ -182,6 +182,7 @@
 				AB74B0B91467CC120088BF09 /* Sources */,
 				AB74B0BA1467CC120088BF09 /* Frameworks */,
 				AB74B0BB1467CC120088BF09 /* Resources */,
+				AB148FFF148249F4001F4A86 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -230,6 +231,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		AB148FFF148249F4001F4A86 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "dst_dir = $(SRCROOT)/Documentation\nrm -rf $(dst_dir)\nmkdir $(dst_dir)\nheaderdoc2html -u -t -o $(dst_dir) \ngatherheaderdoc $(dst_dir) index.html";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		AB74B0B91467CC120088BF09 /* Sources */ = {

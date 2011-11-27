@@ -26,38 +26,149 @@
 #import <Foundation/Foundation.h>
 
 @class MKNetworkOperation;
-@interface MKNetworkEngine : NSObject <NSCacheDelegate>
+/*!
+ *  @class MKNetworkEngine
+ *  @abstract Represents a subclassable Network Engine for your app
+ *  
+ *  @discussion
+ *	This class is the heart of MKNetworkEngine
+ *  You create network operations and enqueue them here
+ *  MKNetworkEngine encapsulates a Reachability object that relieves you of managing network connectivity losses
+ *  MKNetworkEngine also allows you to provide custom header fields that gets appended automatically to every request
+ */
+@interface MKNetworkEngine : NSObject
 
 - (id) initWithHostName:(NSString*) hostName customHeaderFields:(NSDictionary*) headers;
 
--(MKNetworkOperation*) requestWithPath:(NSString*) path;
+/*!
+ *  @abstract Creates a simple GET Operation with a request URL
+ *  
+ *  @discussion
+ *	Creates an operation with the given URL path.
+ *  The default headers you specified in your MKNetworkEngine subclass gets added to the headers
+ *  The HTTP Method is implicitly assumed to be GET
+ *  
+ */
 
--(MKNetworkOperation*) requestWithPath:(NSString*) path
-                         body:(NSMutableDictionary*) body;
+-(MKNetworkOperation*) operationWithPath:(NSString*) path;
 
--(MKNetworkOperation*) requestWithPath:(NSString*) path
-                         body:(NSMutableDictionary*) body
+/*!
+ *  @abstract Creates a simple GET Operation with a request URL and parameters
+ *  
+ *  @discussion
+ *	Creates an operation with the given URL path.
+ *  The default headers you specified in your MKNetworkEngine subclass gets added to the headers
+ *  The body dictionary in this method gets attached to the URL as query parameters
+ *  The HTTP Method is implicitly assumed to be GET
+ *  
+ */
+-(MKNetworkOperation*) operationWithPath:(NSString*) path
+                         params:(NSMutableDictionary*) body;
+
+/*!
+ *  @abstract Creates a simple GET Operation with a request URL, parameters
+ *  
+ *  @discussion
+ *	Creates an operation with the given URL path.
+ *  The default headers you specified in your MKNetworkEngine subclass gets added to the headers
+ *  The params dictionary in this method gets attached to the URL as query parameters if the HTTP Method is GET/DELETE
+ *  The params dictionary is attached to the body if the HTTP Method is POST/PUT
+ *  The HTTP Method is implicitly assumed to be GET
+ */
+-(MKNetworkOperation*) operationWithPath:(NSString*) path
+                         params:(NSMutableDictionary*) body
                    httpMethod:(NSString*)method;
 
--(MKNetworkOperation*) requestWithPath:(NSString*) path
-                         body:(NSMutableDictionary*) body
+/*!
+ *  @abstract Creates a simple GET Operation with a request URL and parameters and a HTTPMethod
+ *  
+ *  @discussion
+ *	Creates an operation with the given URL path.
+ *  The default headers you specified in your MKNetworkEngine subclass gets added to the headers
+ *  The params dictionary in this method gets attached to the URL as query parameters if the HTTP Method is GET/DELETE
+ *  The params dictionary is attached to the body if the HTTP Method is POST/PUT
+ *  The previously mentioned methods operationWithPath: and operationWithPath:params: call this internally
+ */
+-(MKNetworkOperation*) operationWithPath:(NSString*) path
+                         params:(NSMutableDictionary*) body
                    httpMethod:(NSString*)method 
                           ssl:(BOOL) useSSL;
 
--(MKNetworkOperation*) requestWithURLString:(NSString*) urlString;
 
--(MKNetworkOperation*) requestWithURLString:(NSString*) urlString
-                                       body:(NSMutableDictionary*) body;
+/*!
+ *  @abstract Creates a simple GET Operation with a request URL and parameters
+ *  
+ *  @discussion
+ *	Creates an operation with the given absolute URL.
+ *  The hostname of the engine is *NOT* prefixed
+ *  The default headers you specified in your MKNetworkEngine subclass gets added to the headers
+ *  The HTTP method is implicitly assumed to be GET.
+ */
+-(MKNetworkOperation*) operationWithURLString:(NSString*) urlString;
 
--(MKNetworkOperation*) requestWithURLString:(NSString*) urlString
-                              body:(NSMutableDictionary*) body
+/*!
+ *  @abstract Creates a simple GET Operation with a request URL and parameters
+ *  
+ *  @discussion
+ *	Creates an operation with the given absolute URL.
+ *  The hostname of the engine is *NOT* prefixed
+ *  The default headers you specified in your MKNetworkEngine subclass gets added to the headers
+ *  The body dictionary in this method gets attached to the URL as query parameters
+ *  The HTTP method is implicitly assumed to be GET.
+ */
+-(MKNetworkOperation*) operationWithURLString:(NSString*) urlString
+                                       params:(NSMutableDictionary*) body;
+
+/*!
+ *  @abstract Creates a simple GET Operation with a request URL and parameters
+ *  
+ *  @discussion
+ *	Creates an operation with the given absolute URL.
+ *  The hostname of the engine is *NOT* prefixed
+ *  The default headers you specified in your MKNetworkEngine subclass gets added to the headers
+ *  The params dictionary in this method gets attached to the URL as query parameters if the HTTP Method is GET/DELETE
+ *  The params dictionary is attached to the body if the HTTP Method is POST/PUT
+ */
+-(MKNetworkOperation*) operationWithURLString:(NSString*) urlString
+                              params:(NSMutableDictionary*) body
                         httpMethod:(NSString*) method;
 
+/*!
+ *  @abstract Enqueues your operation into the shared queue
+ *  
+ *  @discussion
+ *	The operation you created is enqueued to the shared queue
+ */
 -(void) enqueueOperation:(MKNetworkOperation*) request;
 
-// Subclasses can override this and provide their own custom caching directory names
+/*!
+ *  @abstract Cache Directory Name
+ *  
+ *  @discussion
+ *	This method can be over-ridden by subclasses to provide an alternative cache directory
+ *  The default directory (MKNetworkKitCache) within the NSCaches directory will be used otherwise
+ *  Overriding this method is optional
+ */
 -(NSString*) cacheDirectoryName;
+
+/*!
+ *  @abstract Cache Directory Name
+ *  
+ *  @discussion
+ *	This method can be over-ridden by subclasses to provide an alternative in memory cache size.
+ *  By default, MKNetworkKit caches 10 recent requests in memory
+ *  The default size is 10
+ *  Overriding this method is optional
+ */
 -(int) cacheMemoryCost;
 
+/*!
+ *  @abstract Enable Caching
+ *  
+ *  @discussion
+ *	This method should be called explicitly to enable caching for this engine.
+ *  By default, MKNetworkKit doens't cache your requests.
+ *  The cacheMemoryCost and cacheDirectoryName will be used when you turn caching on using this method.
+ */
 -(void) useCache;
 @end

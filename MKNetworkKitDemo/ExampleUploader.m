@@ -29,8 +29,8 @@
 
 -(MKNetworkOperation*) uploadImageFromFile:(NSString*) file {
     
-    MKNetworkOperation *op = [self requestWithPath:@"api/upload" 
-                                              body:[NSDictionary dictionaryWithObjectsAndKeys:
+    MKNetworkOperation *op = [self operationWithPath:@"api/upload" 
+                                              params:[NSDictionary dictionaryWithObjectsAndKeys:
                                                     @"mksg", @"username",
                                                     @"HelloMKSG", @"password",
                                                     nil]

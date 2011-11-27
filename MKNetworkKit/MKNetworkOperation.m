@@ -344,7 +344,7 @@ typedef enum {
 }
 
 + (id)operationWithURLString:(NSString *)urlString
-                        body:(NSMutableDictionary *)body
+                        params:(NSMutableDictionary *)body
                   httpMethod:(NSString *)method
 {
 	return [[self alloc] initWithURLString:urlString
