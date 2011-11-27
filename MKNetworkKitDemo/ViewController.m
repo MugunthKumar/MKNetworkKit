@@ -71,7 +71,7 @@
 
 -(IBAction)convertCurrencyTapped:(id)sender {
     
-    self.currencyOperation = [ApplicationDelegate.engine currencyRateFor:@"SGD" 
+    self.currencyOperation = [ApplicationDelegate.yahooEngine currencyRateFor:@"SGD" 
                       inCurrency:@"USD" 
                     onCompletion:^(double rate) {
                         
@@ -87,7 +87,7 @@
 
 -(IBAction)uploadImageTapped:(id)sender {
     
-    self.uploadOperation = [ApplicationDelegate.uploader uploadImageFromFile:@"/Users/mugunth/Desktop/transit.png"];    
+    self.uploadOperation = [ApplicationDelegate.twitPicUploader uploadImageFromFile:@"/Users/mugunth/Desktop/transit.png"];    
     
     [self.uploadOperation onUploadProgressChanged:^(double progress) {
         
@@ -107,7 +107,8 @@
 
 -(IBAction)downloadFileTapped:(id)sender {
     
-    self.downloadOperation = [ApplicationDelegate.downloader downloadFatAssFileFrom:@"http://developer.apple.com/library/mac/documentation/Cocoa/Reference/Foundation/Classes/NSURLRequest_Class/NSURLRequest_Class.pdf" 
+#warning Relace this to file to something you like
+    self.downloadOperation = [ApplicationDelegate.sampleDownloader downloadFatAssFileFrom:@"http://developer.apple.com/library/mac/documentation/Cocoa/Reference/Foundation/Classes/NSURLRequest_Class/NSURLRequest_Class.pdf" 
                                                               toFile:@"/Users/mugunth/Desktop/a.pdf"]; 
     
     [self.downloadOperation onDownloadProgressChanged:^(double progress) {
@@ -123,6 +124,7 @@
              onError:^(NSError* error) {
                  
                  DLog(@"%@", error);
+                 [UIAlertView showWithError:error];
              }];
 
 }

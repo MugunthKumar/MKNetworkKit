@@ -29,7 +29,8 @@
 
 +(UIAlertView*) showWithError:(NSError*) networkError {
 
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[networkError localizedFailureReason]
+    DLog(@"%@", [networkError userInfo]);
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[networkError localizedDescription]
                                                     message:[networkError localizedRecoverySuggestion]
                                                    delegate:nil
                                           cancelButtonTitle:NSLocalizedString(@"Dismiss", @"")

@@ -34,9 +34,8 @@
 
 @property (strong, nonatomic) UIWindow *window;
 
-@property (strong, nonatomic) YahooEngine *engine;
-@property (strong, nonatomic) ExampleUploader *uploader;
-@property (strong, nonatomic) ExampleDownloader *downloader;
-
+@property (strong, nonatomic) YahooEngine *yahooEngine;
+@property (strong, nonatomic) ExampleUploader *twitPicUploader;
+@property (strong, nonatomic) ExampleDownloader *sampleDownloader;
 
 @end

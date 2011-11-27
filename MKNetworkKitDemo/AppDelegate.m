@@ -28,24 +28,26 @@
 @implementation AppDelegate
 
 @synthesize window = _window;
-@synthesize engine = _engine;
-@synthesize uploader = _uploader;
-@synthesize downloader = _downloader;
+@synthesize yahooEngine = _yahooEngine;
+@synthesize twitPicUploader = _twitPicUploader;
+@synthesize sampleDownloader = _sampleDownloader;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
+    
     NSMutableDictionary *headerFields = [NSMutableDictionary dictionary]; 
     [headerFields setValue:@"iOS" forKey:@"x-client-identifier"];
     
-    self.engine = [[YahooEngine alloc] initWithHostName:@"download.finance.yahoo.com" 
+    self.yahooEngine = [[YahooEngine alloc] initWithHostName:@"download.finance.yahoo.com" 
                                      customHeaderFields:headerFields];
-    [self.engine useCache];        
+    // not that these header fields are mandated by yahoo. This line is to show the feature of MKNetworkKit
+    [self.yahooEngine useCache];        
     
-    self.uploader = [[ExampleUploader alloc] initWithHostName:@"twitpic.com/api" 
+    self.twitPicUploader = [[ExampleUploader alloc] initWithHostName:@"twitpic.com" 
                                            customHeaderFields:nil];
     
-    self.downloader = [[ExampleDownloader alloc] initWithHostName:nil customHeaderFields:nil];
+    self.sampleDownloader = [[ExampleDownloader alloc] initWithHostName:nil customHeaderFields:nil];
 
     return YES;
 }
