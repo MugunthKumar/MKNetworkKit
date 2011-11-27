@@ -2,8 +2,26 @@
 //  MKNetworkEngine.m
 //  MKNetworkKit
 //
-//  Created by Mugunth Kumar on 7/11/11.
-//  Copyright 2011 Steinlogic. All rights reserved.
+//  Created by Mugunth Kumar (@mugunthkumar) on 11/11/11.
+//  Copyright (C) 2011-2020 by Steinlogic
+
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to deal
+//  in the Software without restriction, including without limitation the rights
+//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//  copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
+//
+//  The above copyright notice and this permission notice shall be included in
+//  all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//  THE SOFTWARE.
 
 #import "MKNetworkEngine.h"
 #import "Reachability.h"
@@ -38,7 +56,7 @@ static NSOperationQueue *_sharedNetworkQueue;
 
 // Network Queue is a shared singleton object.
 // no matter how many instances of MKNetworkEngine is created, there is one and only one network queue
-// In theory any app contains as many network engines as domains
+// In theory an app should contain as many network engines as the number of domains it talks to
 
 #pragma mark -
 #pragma mark Initialization
@@ -125,7 +143,7 @@ static NSOperationQueue *_sharedNetworkQueue;
     {
         DLog(@"Server [%@] is not reachable", self.hostName);        
         [self freezeOperations];
-#warning POSSIBLY INCOMPLETE FUNCTION
+#warning POSSIBLY INCOMPLETE FUNCTION (BETA CODE)
         // FREEZE OPERATIONS ONLY FOR SERVER THAT WENT DOWN        
     }        
 }
@@ -267,7 +285,6 @@ static NSOperationQueue *_sharedNetworkQueue;
     if(cachedData) {
         [request setCachedData:cachedData];
     }
-        
 }
 
 #pragma -

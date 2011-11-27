@@ -1,20 +1,37 @@
 //
-//  MKRequest.m
+//  MKNetworkOperation.m
 //  MKNetworkKit
 //
-//  Created by Mugunth on 25/2/11
-//  Copyright 2011 Steinlogic. All rights reserved.
+//  Created by Mugunth Kumar (@mugunthkumar) on 11/11/11.
+//  Copyright (C) 2011-2020 by Steinlogic
+
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to deal
+//  in the Software without restriction, including without limitation the rights
+//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//  copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
 //
+//  The above copyright notice and this permission notice shall be included in
+//  all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//  THE SOFTWARE.
 
 #import "MKNetworkOperation.h"
 #import "NSDictionary+RequestEncoding.h"
 #import "NSString+MKNetworkKitAdditions.h"
 
 typedef enum {
-    MKRequestOperationStateReady = 1,
-    MKRequestOperationStateExecuting = 2,
-    MKRequestOperationStateFinished = 3
-} MKRequestOperationState;
+    MKNetworkOperationStateReady = 1,
+    MKNetworkOperationStateExecuting = 2,
+    MKNetworkOperationStateFinished = 3
+} MKNetworkOperationState;
 
 @interface MKNetworkOperation (/*Private Methods*/)
 @property (strong, nonatomic) NSURLConnection *connection;
@@ -33,7 +50,7 @@ typedef enum {
 @property (nonatomic, retain) NSMutableArray *responseBlocks;
 @property (nonatomic, retain) NSMutableArray *errorBlocks;
 
-@property (nonatomic, assign) MKRequestOperationState state;
+@property (nonatomic, assign) MKNetworkOperationState state;
 @property (nonatomic, assign) BOOL isCancelled;
 
 @property (strong, nonatomic) NSMutableData *mutableData;
@@ -121,9 +138,9 @@ typedef enum {
 
 
 -(BOOL) isEqual:(id)object {
-
+    
     if([self isCacheable]) {
-
+        
         MKNetworkOperation *anotherObject = (MKNetworkOperation*) object;
         return ([[self uniqueIdentifier] isEqualToString:[anotherObject uniqueIdentifier]]);
     }
@@ -133,16 +150,16 @@ typedef enum {
 
 
 -(NSString*) uniqueIdentifier {
-
+    
     NSString *str = [NSString stringWithFormat:@"%@ %@", 
                      self.request.HTTPMethod,
                      [self.request.URL absoluteString]];
-
+    
     if(self.username || self.password) {
-
+        
         str = [str stringByAppendingFormat:@" [%@:%@]",
-                     self.username ? self.username : @"",
-                     self.password ? self.password : @""];
+               self.username ? self.username : @"",
+               self.password ? self.password : @""];
     }
     
     if(self.freezable) {
@@ -181,22 +198,22 @@ typedef enum {
     self.cacheHandlingBlock(self);
 }
 
--(MKRequestOperationState) state {
+-(MKNetworkOperationState) state {
     
     return _state;
 }
 
--(void) setState:(MKRequestOperationState)newState {
+-(void) setState:(MKNetworkOperationState)newState {
     
     switch (newState) {
-        case MKRequestOperationStateReady:
+        case MKNetworkOperationStateReady:
             [self willChangeValueForKey:@"isReady"];
             break;
-        case MKRequestOperationStateExecuting:
+        case MKNetworkOperationStateExecuting:
             [self willChangeValueForKey:@"isReady"];
             [self willChangeValueForKey:@"isExecuting"];
             break;
-        case MKRequestOperationStateFinished:
+        case MKNetworkOperationStateFinished:
             [self willChangeValueForKey:@"isExecuting"];
             [self willChangeValueForKey:@"isFinished"];
             break;
@@ -205,14 +222,14 @@ typedef enum {
     _state = newState;
     
     switch (newState) {
-        case MKRequestOperationStateReady:
+        case MKNetworkOperationStateReady:
             [self didChangeValueForKey:@"isReady"];
             break;
-        case MKRequestOperationStateExecuting:
+        case MKNetworkOperationStateExecuting:
             [self didChangeValueForKey:@"isReady"];
             [self didChangeValueForKey:@"isExecuting"];
             break;
-        case MKRequestOperationStateFinished:
+        case MKNetworkOperationStateFinished:
             [self didChangeValueForKey:@"isExecuting"];
             [self didChangeValueForKey:@"isFinished"];
             
@@ -222,7 +239,7 @@ typedef enum {
                     self.backgroundTaskId = UIBackgroundTaskInvalid;
                 }
             });
-
+            
             break;
     }
 }
@@ -239,12 +256,12 @@ typedef enum {
     [encoder encodeObject:self.dataToBePosted forKey:@"dataToBePosted"];
     [encoder encodeObject:self.username forKey:@"username"];
     [encoder encodeObject:self.password forKey:@"password"];
-        
-    self.state = MKRequestOperationStateReady;
+    
+    self.state = MKNetworkOperationStateReady;
     [encoder encodeInteger:_state forKey:@"state"];
     [encoder encodeBool:self.isCancelled forKey:@"isCancelled"];
     [encoder encodeObject:self.mutableData forKey:@"mutableData"];
-
+    
     [encoder encodeObject:self.downloadStreams forKey:@"downloadStreams"];
 }
 
@@ -255,7 +272,7 @@ typedef enum {
         [self setStringEncoding:[decoder decodeIntegerForKey:@"stringEncoding"]];
         self.request = [decoder decodeObjectForKey:@"request"];
         self.uniqueId = [decoder decodeObjectForKey:@"uniqueId"];
-
+        
         self.requestDictionary = [decoder decodeObjectForKey:@"requestDictionary"];
         self.response = [decoder decodeObjectForKey:@"response"];
         self.fieldsToBePosted = [decoder decodeObjectForKey:@"fieldsToBePosted"];
@@ -263,11 +280,11 @@ typedef enum {
         self.dataToBePosted = [decoder decodeObjectForKey:@"dataToBePosted"];
         self.username = [decoder decodeObjectForKey:@"username"];
         self.password = [decoder decodeObjectForKey:@"password"];
-
+        
         [self setState:[decoder decodeIntegerForKey:@"state"]];
         self.isCancelled = [decoder decodeBoolForKey:@"isCancelled"];
         self.mutableData = [decoder decodeObjectForKey:@"mutableData"];
-
+        
         self.downloadStreams = [decoder decodeObjectForKey:@"downloadStreams"];
     }
     return self;
@@ -279,7 +296,7 @@ typedef enum {
     
     [theCopy setStringEncoding:self.stringEncoding];
     [theCopy setUniqueId:[self.uniqueId copy]];
-
+    
     [theCopy setConnection:[self.connection copy]];
     [theCopy setRequest:[self.request copy]];
     [theCopy setRequestDictionary:[self.requestDictionary copy]];
@@ -310,7 +327,7 @@ typedef enum {
 }
 
 -(void) updateHandlersFromOperation:(MKNetworkOperation*) operation {
-
+    
     [self.responseBlocks addObjectsFromArray:operation.responseBlocks];
     [self.errorBlocks addObjectsFromArray:operation.errorBlocks];
     [self.uploadProgressChangedHandlers addObjectsFromArray:operation.uploadProgressChangedHandlers];
@@ -321,14 +338,14 @@ typedef enum {
 -(void) setCachedData:(NSData*) cachedData {
     
     self.cachedResponse = cachedData;
-
+    
     for(ResponseBlock responseBlock in self.responseBlocks)
         responseBlock(self);    
 }
 
 + (id)operationWithURLString:(NSString *)urlString
-                      body:(NSMutableDictionary *)body
-				httpMethod:(NSString *)method
+                        body:(NSMutableDictionary *)body
+                  httpMethod:(NSString *)method
 {
 	return [[self alloc] initWithURLString:urlString
                                       body:body 
@@ -376,12 +393,12 @@ typedef enum {
         self.uploadProgressChangedHandlers = [NSMutableArray array];
         self.downloadProgressChangedHandlers = [NSMutableArray array];
         self.downloadStreams = [NSMutableArray array];
-
+        
         NSURL *finalURL = nil;
         self.requestDictionary = body;
         self.fieldsToBePosted = body;
         self.stringEncoding = NSUTF8StringEncoding; // use a delegate to get these values later
-
+        
         if (([method isEqualToString:@"GET"] ||
              [method isEqualToString:@"DELETE"]) && (body && [body count] > 0)) {
             
@@ -403,6 +420,11 @@ typedef enum {
          [NSString stringWithFormat:@"application/x-www-form-urlencoded; charset=%@", charset]
             forHTTPHeaderField:@"Content-Type"];
         
+        [self.request addValue:[NSString stringWithFormat:@"%@, en-us", 
+                                [[NSLocale preferredLanguages] componentsJoinedByString:@", "]
+                                ] forHTTPHeaderField:@"Accept-Language"];
+        
+        
         if ([method isEqualToString:@"POST"] || [method isEqualToString:@"PUT"]) {
             
             // in case of multi-part form request, 
@@ -410,7 +432,7 @@ typedef enum {
             self.request.HTTPBody = [[[body urlEncodedKeyValueString] dataUsingEncoding:self.stringEncoding] mutableCopy];
         }
         
-        self.state = MKRequestOperationStateReady;
+        self.state = MKNetworkOperationStateReady;
     }
     
 	return self;
@@ -433,22 +455,22 @@ typedef enum {
                                               self.request.HTTPMethod];
     
     if([self.filesToBePosted count] == 0 && [self.dataToBePosted count] == 0) {
-    [[self.request allHTTPHeaderFields] enumerateKeysAndObjectsUsingBlock:^(id key, id val, BOOL *stop)
-     {
-         [displayString appendFormat:@" -H \"%@: %@\"", key, val];
-     }];
+        [[self.request allHTTPHeaderFields] enumerateKeysAndObjectsUsingBlock:^(id key, id val, BOOL *stop)
+         {
+             [displayString appendFormat:@" -H \"%@: %@\"", key, val];
+         }];
     }
     
     [displayString appendFormat:@" \"%@\"",  [self.request.URL absoluteString]];
     
     if ([self.request.HTTPMethod isEqualToString:@"POST"] || [self.request.HTTPMethod isEqualToString:@"PUT"]) {
-
+        
         NSString *option = [self.filesToBePosted count] == 0 ? @"-d" : @"-F";
         [self.requestDictionary enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
             
             [displayString appendFormat:@" %@ \"%@=%@\"", option, key, obj];
         }];
-         
+        
         [self.filesToBePosted enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
             
             NSDictionary *thisFile = (NSDictionary*) obj;
@@ -457,11 +479,11 @@ typedef enum {
         }];
         
         /* Not sure how to do this via curl
-        [self.dataToBePosted enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-            
-            NSDictionary *thisData = (NSDictionary*) obj;
-            [displayString appendFormat:@" --data-binary \"%@\"", [thisData objectForKey:@"data"]];
-        }];*/
+         [self.dataToBePosted enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+         
+         NSDictionary *thisData = (NSDictionary*) obj;
+         [displayString appendFormat:@" --data-binary \"%@\"", [thisData objectForKey:@"data"]];
+         }];*/
     }
     
     if(self.mutableData && [self responseString]) {
@@ -495,23 +517,23 @@ typedef enum {
 }
 
 -(void) addFile:(NSString*) filePath forKey:(NSString*) key mimeType:(NSString*) mimeType {
-
+    
     [self.request setHTTPMethod:@"POST"];
-
+    
     NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
-     filePath, @"filepath",
-     key, @"name",
-     mimeType, @"mimetype",     
-     nil];
+                          filePath, @"filepath",
+                          key, @"name",
+                          mimeType, @"mimetype",     
+                          nil];
     
     [self.filesToBePosted addObject:dict];    
 }
 
 -(NSData*) bodyData {
-
+    
     NSString *boundary = @"0xKhTmLbOuNdArY";
     NSMutableData *body = [NSMutableData data];
-
+    
     [self.fieldsToBePosted enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
         
         NSString *thisFieldString = [NSString stringWithFormat:
@@ -520,8 +542,8 @@ typedef enum {
         
         [body appendData:[thisFieldString dataUsingEncoding:[self stringEncoding]]];        
     }];
-     
-     
+    
+    
     [self.filesToBePosted enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         
         NSDictionary *thisFile = (NSDictionary*) obj;
@@ -549,17 +571,17 @@ typedef enum {
         [body appendData:[thisFieldString dataUsingEncoding:[self stringEncoding]]];         
         [body appendData:[thisDataObject objectForKey:@"data"]];
     }];
-   
+    
     [body appendData: [[NSString stringWithFormat:@"\r\n--%@--\r\n", boundary] dataUsingEncoding:self.stringEncoding]];
-
+    
     NSLog(@"%@", [[NSString alloc] initWithData:body encoding:NSUTF8StringEncoding]);
     
-        NSString *charset = (__bridge NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(self.stringEncoding));
-
+    NSString *charset = (__bridge NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(self.stringEncoding));
+    
     if(([self.filesToBePosted count] > 0) || ([self.dataToBePosted count] > 0))
-     [self.request setValue:[NSString stringWithFormat:@"multipart/form-data; charset=%@; boundary=%@", charset, boundary] 
-         forHTTPHeaderField:@"Content-Type"];
-     
+        [self.request setValue:[NSString stringWithFormat:@"multipart/form-data; charset=%@; boundary=%@", charset, boundary] 
+            forHTTPHeaderField:@"Content-Type"];
+    
     return body;
 }
 
@@ -581,7 +603,7 @@ typedef enum {
 {
     
     self.backgroundTaskId = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
-
+        
         dispatch_async(dispatch_get_main_queue(), ^{
             if (self.backgroundTaskId != UIBackgroundTaskInvalid)
             {
@@ -591,7 +613,7 @@ typedef enum {
             }
         });
     }];
-
+    
     if(![NSThread isMainThread]){
         [self performSelectorOnMainThread:@selector(start) withObject:nil waitUntilDone:NO];
         return;
@@ -602,14 +624,14 @@ typedef enum {
             
             [self.request setHTTPBody:[self bodyData]];
         }
-
+        
         self.connection = [[NSURLConnection alloc] initWithRequest:self.request 
                                                           delegate:self 
                                                   startImmediately:YES]; 
-        self.state = MKRequestOperationStateExecuting;
+        self.state = MKNetworkOperationStateExecuting;
     }
     else {
-        self.state = MKRequestOperationStateFinished;
+        self.state = MKNetworkOperationStateFinished;
     }
 }
 
@@ -623,17 +645,17 @@ typedef enum {
 
 - (BOOL)isReady {
     
-    return (self.state == MKRequestOperationStateReady);
+    return (self.state == MKNetworkOperationStateReady);
 }
 
 - (BOOL)isFinished 
 {
-	return (self.state == MKRequestOperationStateFinished);
+	return (self.state == MKNetworkOperationStateFinished);
 }
 
 - (BOOL)isExecuting {
     
-	return (self.state == MKRequestOperationStateExecuting);
+	return (self.state == MKNetworkOperationStateExecuting);
 }
 
 -(void) cancel {
@@ -656,7 +678,7 @@ typedef enum {
     self.mutableData = nil;
     for(NSOutputStream *stream in self.downloadStreams)
         [stream close];
-    self.state = MKRequestOperationStateFinished;
+    self.state = MKNetworkOperationStateFinished;
     
     for(ErrorBlock errorBlock in self.errorBlocks)
         errorBlock(error);       
@@ -692,7 +714,7 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
     [self.mutableData appendData:data];
     
     for(NSOutputStream *stream in self.downloadStreams) {
-
+        
         if ([stream hasSpaceAvailable]) {
             const uint8_t *dataBuffer = [data bytes];
             [stream write:&dataBuffer[0] maxLength:[data length]];
@@ -700,7 +722,7 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
     }
     
     for(ProgressBlock downloadProgressBlock in self.downloadProgressChangedHandlers) {
-
+        
         if([self.response expectedContentLength] > 0) {
             
             double progress = (double)[self.mutableData length] / (double)[self.response expectedContentLength];
@@ -714,7 +736,7 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
 totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
     
     for(ProgressBlock uploadProgressBlock in self.uploadProgressChangedHandlers) {
-
+        
         if(totalBytesExpectedToWrite > 0) {
             uploadProgressBlock(((double)totalBytesWritten/(double)totalBytesExpectedToWrite));
         }
@@ -726,11 +748,11 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
     for(NSOutputStream *stream in self.downloadStreams)
         [stream close];
     
-    self.state = MKRequestOperationStateFinished;
+    self.state = MKNetworkOperationStateFinished;
     self.cachedResponse = nil; // remove cached data
-
+    
     [self notifyCache];
-
+    
     for(ResponseBlock responseBlock in self.responseBlocks)
         responseBlock(self);
 }
@@ -759,7 +781,7 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
 }
 
 -(UIImage*) responseImage {
-        
+    
     return [UIImage imageWithData:[self responseData]];
 }
 
