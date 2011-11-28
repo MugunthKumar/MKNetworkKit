@@ -158,7 +158,9 @@ static NSOperationQueue *_sharedNetworkQueue;
         NSString *archivePath = [[[self cacheDirectoryName] stringByAppendingPathComponent:[operation uniqueIdentifier]] 
                                  stringByAppendingPathExtension:kFreezableOperationExtension];
         [NSKeyedArchiver archiveRootObject:operation toFile:archivePath];
+        [operation cancel];
     }
+    
 }
 
 -(void) checkAndRestoreFrozenOperations {
