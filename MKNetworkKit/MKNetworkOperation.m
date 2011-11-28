@@ -67,7 +67,10 @@ typedef enum {
 - (id)initWithURLString:(NSString *)aURLString
                    body:(NSMutableDictionary *)body
              httpMethod:(NSString *)method;
+
 -(NSData*) bodyData;
+-(BOOL) isCacheable;
+
 @end
 
 @implementation MKNetworkOperation

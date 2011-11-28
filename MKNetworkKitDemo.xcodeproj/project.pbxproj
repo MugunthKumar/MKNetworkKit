@@ -245,7 +245,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "dst_dir = $(SRCROOT)/Documentation\nrm -rf $(dst_dir)\nmkdir $(dst_dir)\nheaderdoc2html -u -t -o $(dst_dir) \ngatherheaderdoc $(dst_dir) index.html";
+			shellScript = "";
 		};
 /* End PBXShellScriptBuildPhase section */
 

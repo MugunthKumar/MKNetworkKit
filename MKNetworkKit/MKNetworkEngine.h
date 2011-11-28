@@ -134,6 +134,18 @@
                         httpMethod:(NSString*) method;
 
 /*!
+ *  @abstract A handy image fetcher that fetches images from a remote location
+ *  
+ *  @discussion
+ *	Creates an operation with the given absolute URL String.
+ *  The hostname of the engine is *NOT* prefixed.
+ *  The default headers you specified in your MKNetworkEngine subclass gets added to the headers.
+ *  The method invokes completion handler if the image was previously cached.
+ */
+
+-(MKNetworkOperation*) imageAtURL:(NSString*) urlString onCompletion:(ImageBlock) completionBlock onError:(ErrorBlock) errorBlock;
+
+/*!
  *  @abstract Enqueues your operation into the shared queue
  *  
  *  @discussion

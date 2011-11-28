@@ -29,6 +29,7 @@
 
 typedef void (^ProgressBlock)(double progress);
 typedef void (^ResponseBlock)(MKNetworkOperation* operation);
+typedef void (^ImageBlock) (UIImage* fetchedImage, NSString* urlString);
 typedef void (^ErrorBlock)(NSError* error);
 
 /*!
@@ -85,7 +86,7 @@ typedef void (^ErrorBlock)(NSError* error);
 
 /*!
  *  @abstract Error object
- *  @property Variable that holds the network error
+ *  @property error
  *  
  *  @discussion
  *	If the network operation results in an error, this will hold the response error, otherwise it will be nil
@@ -101,33 +102,167 @@ typedef void (^ErrorBlock)(NSError* error);
  */
 -(void) setUsername:(NSString*) name password:(NSString*) password;
 
+/*!
+ *  @abstract Add additional header parameters
+ *  
+ *  @discussion
+ *	If you ever need to set additional headers after creating your operation, you this method.
+ *  You normally set default headers to the engine and they get added to every request you create.
+ *  On specific cases where you need to set a new header parameter for just a single API call, you can use this
+ */
 -(void) addHeaders:(NSDictionary*) headersDictionary;
 
+/*!
+ *  @abstract Attaches a file to the request
+ *  
+ *  @discussion
+ *	This method lets you attach a file to the request
+ *  The method has a side effect. It changes the HTTPMethod to "POST" regardless of what it was before.
+ *  It also changes the post format to multipart/form-data
+ *  The mime-type is assumed to be application/octet-stream
+ */
 -(void) addFile:(NSString*) filePath forKey:(NSString*) key;
+
+/*!
+ *  @abstract Attaches a file to the request and allows you to specify a mime-type
+ *  
+ *  @discussion
+ *	This method lets you attach a file to the request
+ *  The method has a side effect. It changes the HTTPMethod to "POST" regardless of what it was before.
+ *  It also changes the post format to multipart/form-data
+ */
 -(void) addFile:(NSString*) filePath forKey:(NSString*) key mimeType:(NSString*) mimeType;
 
+/*!
+ *  @abstract Attaches a resource to the request from a NSData pointer
+ *  
+ *  @discussion
+ *	This method lets you attach a NSData object to the request. The behaviour is exactly similar to addFile:forKey:
+ *  The method has a side effect. It changes the HTTPMethod to "POST" regardless of what it was before.
+ *  It also changes the post format to multipart/form-data
+ *  The mime-type is assumed to be application/octet-stream
+ */
 -(void) addData:(NSData*) data forKey:(NSString*) key;
+
+/*!
+ *  @abstract Attaches a resource to the request from a NSData pointer and allows you to specify a mime-type
+ *  
+ *  @discussion
+ *	This method lets you attach a NSData object to the request. The behaviour is exactly similar to addFile:forKey:mimeType:
+ *  The method has a side effect. It changes the HTTPMethod to "POST" regardless of what it was before.
+ *  It also changes the post format to multipart/form-data
+ */
 -(void) addData:(NSData*) data forKey:(NSString*) key mimeType:(NSString*) mimeType;
 
--(BOOL) isCacheable;
--(NSData*) responseData;
-
+/*!
+ *  @abstract Block Handler for completion and error
+ *  
+ *  @discussion
+ *	This method sets your completion and error blocks. If your operation's response data was previously called,
+ *  the completion block will be called almost immediately with the cached response. You can check if the completion 
+ *  handler was invoked with a cached data or with real data by calling the isCachedResponse method.
+ *
+ *  @seealso
+ *  isCachedResponse
+ */
 -(void) onCompletion:(ResponseBlock) response onError:(ErrorBlock) error;
+
+/*!
+ *  @abstract Block Handler for tracking upload progress
+ *  
+ *  @discussion
+ *	This method can be used to update your progress bars when an upload is in progress. 
+ *  The value range of the progress is 0 to 1.
+ *
+ */
 -(void) onUploadProgressChanged:(ProgressBlock) uploadProgressBlock;
+
+/*!
+ *  @abstract Block Handler for tracking download progress
+ *  
+ *  @discussion
+ *	This method can be used to update your progress bars when a download is in progress. 
+ *  The value range of the progress is 0 to 1.
+ *
+ */
 -(void) onDownloadProgressChanged:(ProgressBlock) downloadProgressBlock;
--(void) setDownloadStream:(NSOutputStream*) outputStream;
--(void) setCacheHandler:(ResponseBlock) cacheHandler;
+
+/*!
+ *  @abstract Downloads a resource directly to a file or any output stream
+ *  
+ *  @discussion
+ *	This method can be used to download a resource directly to a stream (It's normally a file in most cases).
+ *  Calling this method multiple times adds new streams to the same operation.
+ *  A stream cannot be removed after it is added.
+ *
+ */
+
 -(void) setCachedData:(NSData*) cachedData;
 -(BOOL) isCachedResponse;
--(NSString*)responseString; // defaults to UTF8
+
+/*!
+ *  @abstract Helper method to retrieve the contents
+ *  
+ *  @discussion
+ *	This method is used for accessing the downloaded data. If the operation is still in progress, the method returns nil instead of partial data. To access partial data, use a downloadStream.
+ *
+ *  @seealso
+ *  setDownloadStream:
+ */
+-(NSData*) responseData;
+
+/*!
+ *  @abstract Helper method to retrieve the contents as a NSString
+ *  
+ *  @discussion
+ *	This method is used for accessing the downloaded data. If the operation is still in progress, the method returns nil instead of partial data. To access partial data, use a downloadStream. The method also converts the responseData to a NSString using the stringEncoding specified in the operation
+ *
+ *  @seealso
+ *  setDownloadStream:
+ *  stringEncoding
+ */
+-(NSString*)responseString;
+
+/*!
+ *  @abstract Helper method to retrieve the contents as a NSString encoded using a specific string encoding
+ *  
+ *  @discussion
+ *	This method is used for accessing the downloaded data. If the operation is still in progress, the method returns nil instead of partial data. To access partial data, use a downloadStream. The method also converts the responseData to a NSString using the stringEncoding specified in the parameter
+ *
+ *  @seealso
+ *  setDownloadStream:
+ *  stringEncoding
+ */
 -(NSString*) responseStringWithEncoding:(NSStringEncoding) encoding;
 
--(void) updateHandlersFromOperation:(MKNetworkOperation*) operation;
-
--(NSString*) uniqueIdentifier;
+/*!
+ *  @abstract Helper method to retrieve the contents as a UIImage
+ *  
+ *  @discussion
+ *	This method is used for accessing the downloaded data as a UIImage. If the operation is still in progress, the method returns nil instead of a partial image. To access partial data, use a downloadStream. If the response is not a valid image, this method returns nil. This method doesn't obey the response mime type property. If the server response with a proper image data but set the mime type incorrectly, this method will still be able access the response as an image.
+ *
+ *  @seealso
+ *  setDownloadStream:
+ */
 -(UIImage*) responseImage;
 #ifdef __IPHONE_5_0
+/*!
+ *  @abstract Helper method to retrieve the contents as a NSDictionary or NSArray depending on the JSON contents
+ *  
+ *  @discussion
+ *	This method is used for accessing the downloaded data as a NSDictionary or an NSArray. If the operation is still in progress, the method returns nil. If the response is not a valid JSON, this method returns nil.
+ *
+ *  @availability
+ *  iOS 5 and above
+ */
 -(id) responseJSON;
 #endif
+
+// internal methods called by MKNetworkEngine only.
+// Don't touch
+-(void) setDownloadStream:(NSOutputStream*) outputStream;
+-(void) setCacheHandler:(ResponseBlock) cacheHandler;
+-(void) updateHandlersFromOperation:(MKNetworkOperation*) operation;
+-(NSString*) uniqueIdentifier;
 
 @end

@@ -262,6 +262,22 @@ static NSOperationQueue *_sharedNetworkQueue;
     return nil;
 }
 
+-(MKNetworkOperation*) imageAtURL:(NSString*) urlString onCompletion:(ImageBlock) completionBlock onError:(ErrorBlock) errorBlock {
+    
+    MKNetworkOperation * op = [self operationWithURLString:urlString params:nil httpMethod:@"GET"];
+
+    [op onCompletion:^(MKNetworkOperation *completedOperation) {
+            
+        completionBlock([completedOperation responseImage], urlString);
+            
+    } onError:^(NSError *error) {
+     
+        errorBlock(error);
+    }];
+     
+    return op;     
+}
+
 -(void) enqueueOperation:(MKNetworkOperation*) operation {
     
     [operation setCacheHandler:^(MKNetworkOperation* completedCacheableOperation) {

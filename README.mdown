@@ -1,4 +1,4 @@
-This is version 0.8a of MKNetworkKit. Read the <a href="http://mk.sg/mknk"> blog post</a> for more.
+This is version 0.8 of MKNetworkKit. Read the <a href="http://mk.sg/8w"> blog post</a> for more.
 ###Licensing
 MKNetworkKit is licensed under MIT License
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -35,7 +35,8 @@ Marrying the feature set from both, MKNetworkKit throws in a bunch of new featur
 * Full ARC support
 * cURL-able debug lines.
 
-Read the <a href="http://mk.sg/mknk"> blog post</a> for more.
+###How to use
+Read the <a href="http://mk.sg/8w"> blog post</a> for more.
 
 ###TODO
 
@@ -45,11 +46,25 @@ Read the <a href="http://mk.sg/mknk"> blog post</a> for more.
 * UserAgent String (Don't advertise MKNetworkKit, this should be app name)
 * Multiple encoding types in URL
 * Read about response redirects and implement delegate callbacks or state variables
-* I'll be working on this soon. But you can start forking it and getting it right
 * Freeze operations when the are about to be executed if reachability is NotReachable
+* Integrate the ARC version of Reachability from https://gist.github.com/1182373
+* Write a run script to auto generate header docs
+dst_dir = $(SRCROOT)/Documentation
+rm -rf $(dst_dir)
+mkdir $(dst_dir)
+headerdoc2html -u -t -o $(dst_dir) 
+gatherheaderdoc $(dst_dir) index.html
+
+I'll be working on this soon. But you can start forking it and getting it right
 
 ###Known Issues
 Frozen operations don't report progress/completion handlers back to the calling code.
 
 ###A note on licensing
 Attribution free licensing available upon request. Contact me at <a href="mailto:mknetworkkit@mk.sg"> mknetworkkit@mk.sg </a>
+
+
+Change MKSG twitter password
+Cleanup download paths
+
+
