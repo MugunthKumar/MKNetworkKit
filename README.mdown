@@ -49,6 +49,11 @@ Read the <a href="http://mk.sg/8w"> blog post</a> for more.
 * Freeze operations when the are about to be executed if reachability is NotReachable
 * Integrate the ARC version of Reachability from https://gist.github.com/1182373
 * Write a run script to auto generate header docs
+dst_dir = $(SRCROOT)/Documentation
+rm -rf $(dst_dir)
+mkdir $(dst_dir)
+headerdoc2html -u -t -o $(dst_dir) 
+gatherheaderdoc $(dst_dir) index.html
 
 I'll be working on this soon. But you can start forking it and getting it right
 

@@ -27,11 +27,6 @@
 
 @class MKNetworkOperation;
 
-typedef void (^ProgressBlock)(double progress);
-typedef void (^ResponseBlock)(MKNetworkOperation* operation);
-typedef void (^ImageBlock) (UIImage* fetchedImage, NSString* urlString);
-typedef void (^ErrorBlock)(NSError* error);
-
 /*!
  *  @class MKNetworkOperation
  *  @abstract Represents a single unique network operation.

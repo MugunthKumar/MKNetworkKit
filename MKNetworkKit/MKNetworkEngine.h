@@ -24,8 +24,15 @@
 //  THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
+#import "MKNetworkKit.h"
 
 @class MKNetworkOperation;
+
+typedef void (^ProgressBlock)(double progress);
+typedef void (^ResponseBlock)(MKNetworkOperation* operation);
+typedef void (^ImageBlock) (UIImage* fetchedImage, NSString* urlString);
+typedef void (^ErrorBlock)(NSError* error);
+
 /*!
  *  @class MKNetworkEngine
  *  @abstract Represents a subclassable Network Engine for your app
