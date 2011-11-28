@@ -50,6 +50,17 @@ typedef void (^ErrorBlock)(NSError* error);
  */
 @interface MKNetworkEngine : NSObject
 
+/*!
+ *  @abstract Initializes your network engine with a hostname and custom header fields
+ *  
+ *  @discussion
+ *	Creates an engine for a given host name
+ *  The default headers you specify here will be appened to every operation created in this engine
+ *  The hostname, if not null, initializes a Reachability notifier.
+ *  Network reachability notifications are automatically taken care of by MKNetworkEngine
+ *  Both parameters are optional
+ *  
+ */
 - (id) initWithHostName:(NSString*) hostName customHeaderFields:(NSDictionary*) headers;
 
 /*!
@@ -78,7 +89,7 @@ typedef void (^ErrorBlock)(NSError* error);
                          params:(NSMutableDictionary*) body;
 
 /*!
- *  @abstract Creates a simple GET Operation with a request URL, parameters
+ *  @abstract Creates a simple GET Operation with a request URL, parameters and HTTP Method
  *  
  *  @discussion
  *	Creates an operation with the given URL path.
@@ -92,10 +103,12 @@ typedef void (^ErrorBlock)(NSError* error);
                    httpMethod:(NSString*)method;
 
 /*!
- *  @abstract Creates a simple GET Operation with a request URL and parameters and a HTTPMethod
+ *  @abstract Creates a simple GET Operation with a request URL, parameters, HTTP Method and the SSL switch
  *  
  *  @discussion
  *	Creates an operation with the given URL path.
+ *  The ssl option when true changes the URL to https.
+ *  The ssl option when false changes the URL to http.
  *  The default headers you specified in your MKNetworkEngine subclass gets added to the headers
  *  The params dictionary in this method gets attached to the URL as query parameters if the HTTP Method is GET/DELETE
  *  The params dictionary is attached to the body if the HTTP Method is POST/PUT
@@ -108,7 +121,7 @@ typedef void (^ErrorBlock)(NSError* error);
 
 
 /*!
- *  @abstract Creates a simple GET Operation with a request URL and parameters
+ *  @abstract Creates a simple GET Operation with a request URL
  *  
  *  @discussion
  *	Creates an operation with the given absolute URL.
@@ -132,7 +145,7 @@ typedef void (^ErrorBlock)(NSError* error);
                                        params:(NSMutableDictionary*) body;
 
 /*!
- *  @abstract Creates a simple GET Operation with a request URL and parameters
+ *  @abstract Creates a simple GET Operation with a request URL, parameters and HTTP Method
  *  
  *  @discussion
  *	Creates an operation with the given absolute URL.
@@ -176,7 +189,7 @@ typedef void (^ErrorBlock)(NSError* error);
 -(NSString*) cacheDirectoryName;
 
 /*!
- *  @abstract Cache Directory Name
+ *  @abstract Cache Directory In Memory Cost
  *  
  *  @discussion
  *	This method can be over-ridden by subclasses to provide an alternative in memory cache size.
