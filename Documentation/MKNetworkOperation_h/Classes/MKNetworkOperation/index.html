@@ -263,6 +263,11 @@ Freezable operations are serialized when network connectivity is lost and perfor
 <p>Add additional header parameters
 </p>
 </dd>
+<dt><tt><a href="index.html#//apple_ref/occ/instm/MKNetworkOperation/isCachedResponse" target="_top">-isCachedResponse</a></tt></dt>
+<dd>
+<p>Helper method to check if the response is from cache
+</p>
+</dd>
 <dt><tt><a href="index.html#//apple_ref/occ/instm/MKNetworkOperation/onCompletion:onError:" target="_top">-onCompletion:onError:</a></tt></dt>
 <dd>
 <p>Block Handler for completion and error
@@ -308,7 +313,7 @@ Freezable operations are serialized when network connectivity is lost and perfor
 <p>Helper method to retrieve the contents as a NSString encoded using a specific string encoding
 </p>
 </dd>
-<dt><tt><a href="index.html#//apple_ref/occ/instm/MKNetworkOperation/setCachedData:" target="_top">-setCachedData:</a></tt></dt>
+<dt><tt><a href="index.html#//apple_ref/occ/instm/MKNetworkOperation/setDownloadStream:" target="_top">-setDownloadStream:</a></tt></dt>
 <dd>
 <p>Downloads a resource directly to a file or any output stream
 </p>
@@ -409,6 +414,23 @@ On specific cases where you need to set a new header parameter for just a single
 <!-- headerDoc=discussion;uid=//apple_ref/occ/instm/MKNetworkOperation/addHeaders:;name=end --><!-- end discussion -->
 </p>
 <hr class="betweenAPIEntries">
+<!-- headerDoc=instm;  uid=//apple_ref/occ/instm/MKNetworkOperation/isCachedResponse;   name=MKNetworkOperation::isCachedResponse --><a name="//apple_ref/occ/instm/MKNetworkOperation/isCachedResponse"></a>
+<h3><a name="isCachedResponse">isCachedResponse</a></h3>
+<hr class="afterName">
+<p><!-- headerDoc=abstract;uid=//apple_ref/occ/instm/MKNetworkOperation/isCachedResponse;name=start --><!-- begin abstract --></p>
+<p>Helper method to check if the response is from cache
+</p>
+<!-- end abstract --><!-- headerDoc=abstract;uid=//apple_ref/occ/instm/MKNetworkOperation/isCachedResponse;name=end -->
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/occ/instm/MKNetworkOperation/isCachedResponse;name=start -->-(<!-- a logicalPath="//apple_ref/occ/cl/BOOL //apple_ref/occ/tdef/BOOL //apple_ref/occ/tag/BOOL //apple_ref/occ/struct/BOOL //apple_ref/occ/intf/BOOL //apple_ref/doc/anysymbol/BOOL" machineGenerated="true" --><span class="type">BOOL</span><!-- /a -->) <!-- a logicalPath="//apple_ref/occ/econst/isCachedResponse //apple_ref/occ/data/MKNetworkOperation/isCachedResponse //apple_ref/occ/data/isCachedResponse //apple_ref/occ/clconst/MKNetworkOperation/isCachedResponse " machineGenerated="true" --><span class="var">isCachedResponse</span><!-- /a -->; <!-- headerDoc=declaration;uid=//apple_ref/occ/instm/MKNetworkOperation/isCachedResponse;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/occ/instm/MKNetworkOperation/isCachedResponse;name=start --><p>This method should be used to check if your response is cached.
+When you enable caching on MKNetworkEngine, your completionHandler will be called with cached data first and then
+with real data, later after fetching. In your handler, you can call this method to check if it is from cache or not
+</p>
+<!-- headerDoc=discussion;uid=//apple_ref/occ/instm/MKNetworkOperation/isCachedResponse;name=end --><!-- end discussion -->
+<hr class="betweenAPIEntries">
 <!-- headerDoc=instm;  uid=//apple_ref/occ/instm/MKNetworkOperation/onCompletion:onError:;   name=MKNetworkOperation::onCompletion:onError: --><a name="//apple_ref/occ/instm/MKNetworkOperation/onCompletion:onError:"></a>
 <h3><a name="onCompletion:onError:">onCompletion:onError:</a></h3>
 <hr class="afterName">
@@ -427,7 +449,7 @@ handler was invoked with a cached data or with real data by calling the isCached
 <!-- headerDoc=discussion;uid=//apple_ref/occ/instm/MKNetworkOperation/onCompletion:onError:;name=end --><!-- end discussion -->
 <p><b>See Also</b></p>
 <div class="list_indent"><dl>
-<dt><p><!-- a logicalPath="//apple_ref/occ/cl/isCachedResponse //apple_ref/occ/tdef/isCachedResponse //apple_ref/occ/tag/isCachedResponse //apple_ref/occ/struct/isCachedResponse //apple_ref/occ/intf/isCachedResponse //apple_ref/occ/econst/isCachedResponse //apple_ref/occ/data/isCachedResponse //apple_ref/occ/clconst/isCachedResponse //apple_ref/occ/instm/isCachedResponse //apple_ref/occ/clm/isCachedResponse //apple_ref/occ/intfcm/isCachedResponse //apple_ref/occ/intfm/isCachedResponse //apple_ref/occ/func/isCachedResponse //apple_ref/occ/ftmplt/isCachedResponse //apple_ref/occ/defn/isCachedResponse //apple_ref/occ/macro/isCachedResponse //apple_ref/doc/com/intfm/isCachedResponse //apple_ref/doc/anysymbol/isCachedResponse" -->isCachedResponse<!-- /a --></p></dt>
+<dt><p><a href="index.html#//apple_ref/occ/instm/MKNetworkOperation/isCachedResponse" logicalPath="//apple_ref/occ/instm/MKNetworkOperation/isCachedResponse" target="_top">isCachedResponse</a></p></dt>
 <dd></dd>
 </dl></div>
 <hr class="betweenAPIEntries">
@@ -497,7 +519,7 @@ The params dictionary is attached to the body if the HTTP Method is POST/PUT
 <!-- headerDoc=discussion;uid=//apple_ref/occ/instm/MKNetworkOperation/responseData;name=end --><!-- end discussion -->
 <p><b>See Also</b></p>
 <div class="list_indent"><dl>
-<dt><p><!-- a logicalPath="//apple_ref/occ/cl/setDownloadStream: //apple_ref/occ/tdef/setDownloadStream: //apple_ref/occ/tag/setDownloadStream: //apple_ref/occ/struct/setDownloadStream: //apple_ref/occ/intf/setDownloadStream: //apple_ref/occ/econst/setDownloadStream: //apple_ref/occ/data/setDownloadStream: //apple_ref/occ/clconst/setDownloadStream: //apple_ref/occ/instm/setDownloadStream: //apple_ref/occ/clm/setDownloadStream: //apple_ref/occ/intfcm/setDownloadStream: //apple_ref/occ/intfm/setDownloadStream: //apple_ref/occ/func/setDownloadStream: //apple_ref/occ/ftmplt/setDownloadStream: //apple_ref/occ/defn/setDownloadStream: //apple_ref/occ/macro/setDownloadStream: //apple_ref/doc/com/intfm/setDownloadStream: //apple_ref/doc/anysymbol/setDownloadStream:" -->setDownloadStream:<!-- /a --></p></dt>
+<dt><p><a href="index.html#//apple_ref/occ/instm/MKNetworkOperation/setDownloadStream:" logicalPath="//apple_ref/occ/instm/MKNetworkOperation/setDownloadStream:" target="_top">setDownloadStream:</a></p></dt>
 <dd></dd>
 </dl></div>
 <hr class="betweenAPIEntries">
@@ -517,7 +539,7 @@ The params dictionary is attached to the body if the HTTP Method is POST/PUT
 <!-- headerDoc=discussion;uid=//apple_ref/occ/instm/MKNetworkOperation/responseImage;name=end --><!-- end discussion -->
 <p><b>See Also</b></p>
 <div class="list_indent"><dl>
-<dt><p><!-- a logicalPath="//apple_ref/occ/cl/setDownloadStream: //apple_ref/occ/tdef/setDownloadStream: //apple_ref/occ/tag/setDownloadStream: //apple_ref/occ/struct/setDownloadStream: //apple_ref/occ/intf/setDownloadStream: //apple_ref/occ/econst/setDownloadStream: //apple_ref/occ/data/setDownloadStream: //apple_ref/occ/clconst/setDownloadStream: //apple_ref/occ/instm/setDownloadStream: //apple_ref/occ/clm/setDownloadStream: //apple_ref/occ/intfcm/setDownloadStream: //apple_ref/occ/intfm/setDownloadStream: //apple_ref/occ/func/setDownloadStream: //apple_ref/occ/ftmplt/setDownloadStream: //apple_ref/occ/defn/setDownloadStream: //apple_ref/occ/macro/setDownloadStream: //apple_ref/doc/com/intfm/setDownloadStream: //apple_ref/doc/anysymbol/setDownloadStream:" -->setDownloadStream:<!-- /a --></p></dt>
+<dt><p><a href="index.html#//apple_ref/occ/instm/MKNetworkOperation/setDownloadStream:" logicalPath="//apple_ref/occ/instm/MKNetworkOperation/setDownloadStream:" target="_top">setDownloadStream:</a></p></dt>
 <dd></dd>
 </dl></div>
 <hr class="betweenAPIEntries">
@@ -557,7 +579,7 @@ The params dictionary is attached to the body if the HTTP Method is POST/PUT
 <!-- headerDoc=discussion;uid=//apple_ref/occ/instm/MKNetworkOperation/responseString;name=end --><!-- end discussion -->
 <p><b>See Also</b></p>
 <div class="list_indent"><dl>
-<dt><p><!-- a logicalPath="//apple_ref/occ/cl/setDownloadStream: //apple_ref/occ/tdef/setDownloadStream: //apple_ref/occ/tag/setDownloadStream: //apple_ref/occ/struct/setDownloadStream: //apple_ref/occ/intf/setDownloadStream: //apple_ref/occ/econst/setDownloadStream: //apple_ref/occ/data/setDownloadStream: //apple_ref/occ/clconst/setDownloadStream: //apple_ref/occ/instm/setDownloadStream: //apple_ref/occ/clm/setDownloadStream: //apple_ref/occ/intfcm/setDownloadStream: //apple_ref/occ/intfm/setDownloadStream: //apple_ref/occ/func/setDownloadStream: //apple_ref/occ/ftmplt/setDownloadStream: //apple_ref/occ/defn/setDownloadStream: //apple_ref/occ/macro/setDownloadStream: //apple_ref/doc/com/intfm/setDownloadStream: //apple_ref/doc/anysymbol/setDownloadStream:" -->setDownloadStream:<!-- /a --></p></dt>
+<dt><p><a href="index.html#//apple_ref/occ/instm/MKNetworkOperation/setDownloadStream:" logicalPath="//apple_ref/occ/instm/MKNetworkOperation/setDownloadStream:" target="_top">setDownloadStream:</a></p></dt>
 <dd></dd>
 <dt><p><a href="index.html#//apple_ref/occ/instp/MKNetworkOperation/stringEncoding" logicalPath="//apple_ref/occ/instp/MKNetworkOperation/stringEncoding" target="_top">stringEncoding</a></p></dt>
 <dd></dd>
@@ -579,28 +601,28 @@ The params dictionary is attached to the body if the HTTP Method is POST/PUT
 <!-- headerDoc=discussion;uid=//apple_ref/occ/instm/MKNetworkOperation/responseStringWithEncoding:;name=end --><!-- end discussion -->
 <p><b>See Also</b></p>
 <div class="list_indent"><dl>
-<dt><p><!-- a logicalPath="//apple_ref/occ/cl/setDownloadStream: //apple_ref/occ/tdef/setDownloadStream: //apple_ref/occ/tag/setDownloadStream: //apple_ref/occ/struct/setDownloadStream: //apple_ref/occ/intf/setDownloadStream: //apple_ref/occ/econst/setDownloadStream: //apple_ref/occ/data/setDownloadStream: //apple_ref/occ/clconst/setDownloadStream: //apple_ref/occ/instm/setDownloadStream: //apple_ref/occ/clm/setDownloadStream: //apple_ref/occ/intfcm/setDownloadStream: //apple_ref/occ/intfm/setDownloadStream: //apple_ref/occ/func/setDownloadStream: //apple_ref/occ/ftmplt/setDownloadStream: //apple_ref/occ/defn/setDownloadStream: //apple_ref/occ/macro/setDownloadStream: //apple_ref/doc/com/intfm/setDownloadStream: //apple_ref/doc/anysymbol/setDownloadStream:" -->setDownloadStream:<!-- /a --></p></dt>
+<dt><p><a href="index.html#//apple_ref/occ/instm/MKNetworkOperation/setDownloadStream:" logicalPath="//apple_ref/occ/instm/MKNetworkOperation/setDownloadStream:" target="_top">setDownloadStream:</a></p></dt>
 <dd></dd>
 <dt><p><a href="index.html#//apple_ref/occ/instp/MKNetworkOperation/stringEncoding" logicalPath="//apple_ref/occ/instp/MKNetworkOperation/stringEncoding" target="_top">stringEncoding</a></p></dt>
 <dd></dd>
 </dl></div>
 <hr class="betweenAPIEntries">
-<!-- headerDoc=instm;  uid=//apple_ref/occ/instm/MKNetworkOperation/setCachedData:;   name=MKNetworkOperation::setCachedData: --><a name="//apple_ref/occ/instm/MKNetworkOperation/setCachedData:"></a>
-<h3><a name="setCachedData:">setCachedData:</a></h3>
+<!-- headerDoc=instm;  uid=//apple_ref/occ/instm/MKNetworkOperation/setDownloadStream:;   name=MKNetworkOperation::setDownloadStream: --><a name="//apple_ref/occ/instm/MKNetworkOperation/setDownloadStream:"></a>
+<h3><a name="setDownloadStream:">setDownloadStream:</a></h3>
 <hr class="afterName">
-<p><!-- headerDoc=abstract;uid=//apple_ref/occ/instm/MKNetworkOperation/setCachedData:;name=start --><!-- begin abstract --></p>
+<p><!-- headerDoc=abstract;uid=//apple_ref/occ/instm/MKNetworkOperation/setDownloadStream:;name=start --><!-- begin abstract --></p>
 <p>Downloads a resource directly to a file or any output stream
 </p>
-<!-- end abstract --><!-- headerDoc=abstract;uid=//apple_ref/occ/instm/MKNetworkOperation/setCachedData:;name=end -->
+<!-- end abstract --><!-- headerDoc=abstract;uid=//apple_ref/occ/instm/MKNetworkOperation/setDownloadStream:;name=end -->
 <div class="declaration_indent">
-<pre><!-- headerDoc=declaration;uid=//apple_ref/occ/instm/MKNetworkOperation/setCachedData:;name=start -->-(<!-- a logicalPath="//apple_ref/occ/cl/void //apple_ref/occ/tdef/void //apple_ref/occ/tag/void //apple_ref/occ/struct/void //apple_ref/occ/intf/void //apple_ref/doc/anysymbol/void" machineGenerated="true" --><span class="type">void</span><!-- /a -->) <a machinegenerated="true" href="index.html#//apple_ref/occ/instm/MKNetworkOperation/setCachedData:" logicalPath="//apple_ref/occ/instm/MKNetworkOperation/setCachedData" target="_top"><span class="function">setCachedData</span></a>:(<!-- a logicalPath="//apple_ref/occ/cl/NSData //apple_ref/occ/tdef/NSData //apple_ref/occ/tag/NSData //apple_ref/occ/struct/NSData //apple_ref/occ/intf/NSData //apple_ref/doc/anysymbol/NSData" machineGenerated="true" --><span class="type">NSData</span><!-- /a --><span class="type">*</span>) <!-- a logicalPath="//apple_ref/occ/econst/cachedData //apple_ref/occ/data/MKNetworkOperation/cachedData //apple_ref/occ/data/cachedData //apple_ref/occ/clconst/MKNetworkOperation/cachedData " machineGenerated="true" --><span class="var">cachedData</span><!-- /a -->; <!-- headerDoc=declaration;uid=//apple_ref/occ/instm/MKNetworkOperation/setCachedData:;name=end --></pre>
+<pre><!-- headerDoc=declaration;uid=//apple_ref/occ/instm/MKNetworkOperation/setDownloadStream:;name=start -->-(<!-- a logicalPath="//apple_ref/occ/cl/void //apple_ref/occ/tdef/void //apple_ref/occ/tag/void //apple_ref/occ/struct/void //apple_ref/occ/intf/void //apple_ref/doc/anysymbol/void" machineGenerated="true" --><span class="type">void</span><!-- /a -->) <a machinegenerated="true" href="index.html#//apple_ref/occ/instm/MKNetworkOperation/setDownloadStream:" logicalPath="//apple_ref/occ/instm/MKNetworkOperation/setDownloadStream" target="_top"><span class="function">setDownloadStream</span></a>:(<!-- a logicalPath="//apple_ref/occ/cl/NSOutputStream //apple_ref/occ/tdef/NSOutputStream //apple_ref/occ/tag/NSOutputStream //apple_ref/occ/struct/NSOutputStream //apple_ref/occ/intf/NSOutputStream //apple_ref/doc/anysymbol/NSOutputStream" machineGenerated="true" --><span class="type">NSOutputStream</span><!-- /a --><span class="type">*</span>) <!-- a logicalPath="//apple_ref/occ/econst/outputStream //apple_ref/occ/data/MKNetworkOperation/outputStream //apple_ref/occ/data/outputStream //apple_ref/occ/clconst/MKNetworkOperation/outputStream " machineGenerated="true" --><span class="var">outputStream</span><!-- /a -->; <!-- headerDoc=declaration;uid=//apple_ref/occ/instm/MKNetworkOperation/setDownloadStream:;name=end --></pre>
 </div>
 <h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
-<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/occ/instm/MKNetworkOperation/setCachedData:;name=start --><p>This method can be used to download a resource directly to a stream (It's normally a file in most cases).
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/occ/instm/MKNetworkOperation/setDownloadStream:;name=start --><p>This method can be used to download a resource directly to a stream (It's normally a file in most cases).
 Calling this method multiple times adds new streams to the same operation.
 A stream cannot be removed after it is added.
 </p>
-<!-- headerDoc=discussion;uid=//apple_ref/occ/instm/MKNetworkOperation/setCachedData:;name=end --><!-- end discussion -->
+<!-- headerDoc=discussion;uid=//apple_ref/occ/instm/MKNetworkOperation/setDownloadStream:;name=end --><!-- end discussion -->
 <hr class="betweenAPIEntries">
 <!-- headerDoc=instm;  uid=//apple_ref/occ/instm/MKNetworkOperation/setUsername:password:;   name=MKNetworkOperation::setUsername:password: --><a name="//apple_ref/occ/instm/MKNetworkOperation/setUsername:password:"></a>
 <h3><a name="setUsername:password:">setUsername:password:</a></h3>

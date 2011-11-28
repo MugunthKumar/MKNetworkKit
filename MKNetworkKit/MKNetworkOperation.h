@@ -25,7 +25,10 @@
 
 #import <UIKit/UIKit.h>
 
-@class MKNetworkOperation;
+/*!
+ @header MKNetworkOperation.h
+ @abstract   Represents a single unique network operation.
+ */
 
 /*!
  *  @class MKNetworkOperation
@@ -191,8 +194,17 @@
  *  A stream cannot be removed after it is added.
  *
  */
+-(void) setDownloadStream:(NSOutputStream*) outputStream;
 
--(void) setCachedData:(NSData*) cachedData;
+/*!
+ *  @abstract Helper method to check if the response is from cache
+ *  
+ *  @discussion
+ *	This method should be used to check if your response is cached.
+ *  When you enable caching on MKNetworkEngine, your completionHandler will be called with cached data first and then
+ *  with real data, later after fetching. In your handler, you can call this method to check if it is from cache or not
+ *
+ */
 -(BOOL) isCachedResponse;
 
 /*!
@@ -255,7 +267,7 @@
 
 // internal methods called by MKNetworkEngine only.
 // Don't touch
--(void) setDownloadStream:(NSOutputStream*) outputStream;
+-(void) setCachedData:(NSData*) cachedData;
 -(void) setCacheHandler:(ResponseBlock) cacheHandler;
 -(void) updateHandlersFromOperation:(MKNetworkOperation*) operation;
 -(NSString*) uniqueIdentifier;

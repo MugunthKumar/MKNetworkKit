@@ -26,6 +26,11 @@
 #import <Foundation/Foundation.h>
 #import "MKNetworkKit.h"
 
+/*!
+ @header MKNetworkEngine.h
+ @abstract   Represents a subclassable Network Engine for your app
+ */
+
 @class MKNetworkOperation;
 
 typedef void (^ProgressBlock)(double progress);

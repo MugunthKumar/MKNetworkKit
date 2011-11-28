@@ -245,7 +245,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "rm -rf /Documentation\nmkdir Documentation\nheaderdoc2html . -o Documentation\ngatherheaderdoc Documentation/ index.html";
+			shellScript = "rm -rf Documentation\nmkdir Documentation\nheaderdoc2html MKNetworkKit/MKNetworkOperation.h -o Documentation/\nheaderdoc2html MKNetworkKit/MKNetworkEngine.h -o Documentation/\ngatherheaderdoc Documentation/ index.html";
 		};
 /* End PBXShellScriptBuildPhase section */
 
