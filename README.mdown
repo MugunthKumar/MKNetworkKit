@@ -45,15 +45,14 @@ Read the <a href="http://mk.sg/8w"> blog post</a> for more.
 * Mac compatibility and XML support (NSXMLDocument)
 * UserAgent String (Don't advertise MKNetworkKit, this should be app name)
 * Multiple encoding types in URL
-* Read about response redirects and implement delegate callbacks or state variables
-* Freeze operations when the are about to be executed if reachability is NotReachable
+* Read about response redirects and implement delegate callbacks or use state variables
 * Integrate the ARC version of Reachability from https://gist.github.com/1182373
+* The generate header docs looks EXTREMELY UGLY FUGLY
 
 I'll be working on this soon. But you can start forking it and getting it right
 
 ###Known Issues
 * Frozen operations don't report progress/completion handlers back to the calling code.
-* The generate header docs scripts spits out tons of error. FIX THIS
 
 ###A note on licensing
 Attribution free licensing available upon request. Contact me at <a href="mailto:mknetworkkit@mk.sg"> mknetworkkit@mk.sg </a>

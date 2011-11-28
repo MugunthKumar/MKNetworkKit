@@ -301,6 +301,9 @@ static NSOperationQueue *_sharedNetworkQueue;
     if(cachedData) {
         [operation setCachedData:cachedData];
     }
+    
+    if([self.reachability currentReachabilityStatus] == NotReachable)
+        [self freezeOperations];
 }
 
 #pragma -
