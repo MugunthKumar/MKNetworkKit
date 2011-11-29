@@ -98,7 +98,7 @@
                                    delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles: nil] show];
         return;
     }
-    NSString *uploadPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingFormat:@"/transit.png"];
+    NSString *uploadPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingFormat:@"/sample.JPG"];
     self.uploadOperation = [ApplicationDelegate.twitPicUploader uploadImageFromFile:uploadPath 
                                                                        onCompletion:^(NSString *twitPicURL) {
                                                                            
