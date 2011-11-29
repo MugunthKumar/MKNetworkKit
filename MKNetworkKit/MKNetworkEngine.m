@@ -42,6 +42,7 @@
 -(void) freezeOperations;
 -(void) checkAndRestoreFrozenOperations;
 
+-(BOOL) isCacheEnabled;
 @end
 
 static NSOperationQueue *_sharedNetworkQueue;
@@ -53,6 +54,7 @@ static NSOperationQueue *_sharedNetworkQueue;
 
 @synthesize memoryCache = _memoryCache;
 @synthesize memoryCacheKeys = _memoryCacheKeys;
+
 
 // Network Queue is a shared singleton object.
 // no matter how many instances of MKNetworkEngine is created, there is one and only one network queue
@@ -131,6 +133,7 @@ static NSOperationQueue *_sharedNetworkQueue;
     {
         DLog(@"Server [%@] is reachable via Wifi", self.hostName);
         [_sharedNetworkQueue setMaxConcurrentOperationCount:6];
+        
         [self checkAndRestoreFrozenOperations];
     }
     else if([self.reachability currentReachabilityStatus] == ReachableViaWWAN)
@@ -151,6 +154,8 @@ static NSOperationQueue *_sharedNetworkQueue;
 #pragma Freezing operations (Called when network connectivity fails)
 -(void) freezeOperations {
     
+    if(![self isCacheEnabled]) return;
+        
     for(MKNetworkOperation *operation in _sharedNetworkQueue.operations) {
         
         if(![operation freezable]) continue; // freeze only freeable operations.
@@ -165,6 +170,8 @@ static NSOperationQueue *_sharedNetworkQueue;
 
 -(void) checkAndRestoreFrozenOperations {
     
+    if(![self isCacheEnabled]) return;
+
     NSError *error = nil;
     NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[self cacheDirectoryName] error:&error];
     if(error)
@@ -370,6 +377,13 @@ static NSOperationQueue *_sharedNetworkQueue;
     
     return abs([creationDate timeIntervalSinceNow]);
 }*/
+
+-(BOOL) isCacheEnabled {
+    
+    BOOL isDir = NO;
+    BOOL isCachingEnabled = [[NSFileManager defaultManager] fileExistsAtPath:[self cacheDirectoryName] isDirectory:&isDir];
+    return isCachingEnabled;
+}
 
 -(void) useCache {
     

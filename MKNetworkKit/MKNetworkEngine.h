@@ -26,17 +26,17 @@
 #import <Foundation/Foundation.h>
 #import "MKNetworkKit.h"
 
-/*!
- @header MKNetworkEngine.h
- @abstract   Represents a subclassable Network Engine for your app
- */
-
 @class MKNetworkOperation;
 
 typedef void (^ProgressBlock)(double progress);
 typedef void (^ResponseBlock)(MKNetworkOperation* operation);
 typedef void (^ImageBlock) (UIImage* fetchedImage, NSString* urlString);
 typedef void (^ErrorBlock)(NSError* error);
+
+/*!
+ @header MKNetworkEngine.h
+ @abstract   Represents a subclassable Network Engine for your app
+ */
 
 /*!
  *  @class MKNetworkEngine

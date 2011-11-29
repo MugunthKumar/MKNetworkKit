@@ -56,8 +56,3 @@ I'll be working on this soon. But you can start forking it and getting it right
 
 ###A note on licensing
 Attribution free licensing available upon request. Contact me at <a href="mailto:mknetworkkit@mk.sg"> mknetworkkit@mk.sg </a>
-
-Change MKSG twitter password
-Cleanup download paths
-
-
