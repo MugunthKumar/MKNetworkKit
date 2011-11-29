@@ -65,29 +65,55 @@
         [self.currencyOperation cancel];
         self.currencyOperation = nil;
     }
-
+    
     // upload and download operations are expected to run in background even when view disappears
 }
 
 -(IBAction)convertCurrencyTapped:(id)sender {
     
     self.currencyOperation = [ApplicationDelegate.yahooEngine currencyRateFor:@"SGD" 
-                      inCurrency:@"USD" 
-                    onCompletion:^(double rate) {
-                        
-                        DLog(@"%f", rate);
-                    } 
-                         onError:^(NSError* error) {
-                             
-                             
-                             DLog(@"%@\t%@\t%@\t%@", [error localizedDescription], [error localizedFailureReason], 
-                                  [error localizedRecoveryOptions], [error localizedRecoverySuggestion]);
-                         }];    
+                                                                   inCurrency:@"USD" 
+                                                                 onCompletion:^(double rate) {
+                                                                     
+                                                                     [[[UIAlertView alloc] initWithTitle:@"Today's Singapore Dollar Rates"                              
+                                                                                                                     message:[NSString stringWithFormat:@"%.2f", rate]
+                                                                                                                    delegate:nil
+                                                                                                           cancelButtonTitle:NSLocalizedString(@"Dismiss", @"")
+                                                                                                           otherButtonTitles:nil] show];
+                                                                 } 
+                                                                      onError:^(NSError* error) {
+                                                                          
+                                                                          
+                                                                          DLog(@"%@\t%@\t%@\t%@", [error localizedDescription], [error localizedFailureReason], 
+                                                                               [error localizedRecoveryOptions], [error localizedRecoverySuggestion]);
+                                                                      }];    
 }
 
 -(IBAction)uploadImageTapped:(id)sender {
     
-    self.uploadOperation = [ApplicationDelegate.twitPicUploader uploadImageFromFile:@"/Users/mugunth/Desktop/transit.png"];    
+    if([kTwitterUserName length] == 0) {
+        
+        [[[UIAlertView alloc] initWithTitle:@"Twitter Account Not Set" 
+                                   message:@"Set your twitter name/password in AppDelegate.h and try again" 
+                                   delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles: nil] show];
+        return;
+    }
+    NSString *uploadPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingFormat:@"/transit.png"];
+    self.uploadOperation = [ApplicationDelegate.twitPicUploader uploadImageFromFile:uploadPath 
+                                                                       onCompletion:^(NSString *twitPicURL) {
+                                                                           
+                                                                           UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Uploaded to"                              
+                                                                                                                           message:twitPicURL
+                                                                                                                          delegate:nil
+                                                                                                                 cancelButtonTitle:NSLocalizedString(@"Dismiss", @"")
+                                                                                                                 otherButtonTitles:nil];
+                                                                           [alert show];
+                                                                           self.uploadProgessBar.progress = 0.0;
+                                                                       } 
+                                                                            onError:^(NSError* error) {
+                                                                                
+                                                                                [UIAlertView showWithError:error];
+                                                                            }];    
     
     [self.uploadOperation onUploadProgressChanged:^(double progress) {
         
@@ -95,21 +121,16 @@
         self.uploadProgessBar.progress = progress;
     }];
     
-    [self.uploadOperation onCompletion:^(MKNetworkOperation* completedOperation) {
-        
-        DLog(@"%@", completedOperation);        
-    }
-             onError:^(NSError* error) {
-
-                 [UIAlertView showWithError:error];
-             }];
 }
 
 -(IBAction)downloadFileTapped:(id)sender {
     
-#warning Relace this to file to something you like
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+    NSString *cachesDirectory = [paths objectAtIndex:0];
+	NSString *downloadPath = [cachesDirectory stringByAppendingPathComponent:@"DownloadedFile.pdf"];
+    
     self.downloadOperation = [ApplicationDelegate.sampleDownloader downloadFatAssFileFrom:@"http://developer.apple.com/library/mac/documentation/Cocoa/Reference/Foundation/Classes/NSURLRequest_Class/NSURLRequest_Class.pdf" 
-                                                              toFile:@"/Users/mugunth/Desktop/a.pdf"]; 
+                                                                                   toFile:downloadPath]; 
     
     [self.downloadOperation onDownloadProgressChanged:^(double progress) {
         
@@ -119,14 +140,21 @@
     
     [self.downloadOperation onCompletion:^(MKNetworkOperation* completedRequest) {
         
-        DLog(@"%@", completedRequest);        
+        DLog(@"%@", completedRequest);   
+        self.downloadProgessBar.progress = 0.0f;
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Download Completed"                              
+                                                        message:@"The file is in your Caches directory"
+                                                       delegate:nil
+                                              cancelButtonTitle:NSLocalizedString(@"Dismiss", @"")
+                                              otherButtonTitles:nil];
+        [alert show];
     }
-             onError:^(NSError* error) {
-                 
-                 DLog(@"%@", error);
-                 [UIAlertView showWithError:error];
-             }];
-
+                                 onError:^(NSError* error) {
+                                     
+                                     DLog(@"%@", error);
+                                     [UIAlertView showWithError:error];
+                                 }];
+    
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

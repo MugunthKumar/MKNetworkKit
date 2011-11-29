@@ -39,3 +39,7 @@
 @property (strong, nonatomic) ExampleDownloader *sampleDownloader;
 
 @end
+
+
+#define kTwitterUserName @""
+#define kTwitterPassword @""

@@ -27,20 +27,39 @@
 
 @implementation ExampleUploader
 
--(MKNetworkOperation*) uploadImageFromFile:(NSString*) file {
+-(MKNetworkOperation*) uploadImageFromFile:(NSString*) file 
+                              onCompletion:(TwitPicBlock) completionBlock
+                                   onError:(ErrorBlock) errorBlock {
     
     MKNetworkOperation *op = [self operationWithPath:@"api/upload" 
                                               params:[NSDictionary dictionaryWithObjectsAndKeys:
-                                                    @"mksg", @"username",
-                                                    @"HelloMKSG", @"password",
-                                                    nil]
-                                        httpMethod:@"POST"];
+                                                      kTwitterUserName, @"username",
+                                                      kTwitterPassword, @"password",
+                                                      nil]
+                                          httpMethod:@"POST"];
     
     [op addFile:file forKey:@"media"];
-
+    
     // setFreezable uploads your images after connection is restored!
     [op setFreezable:YES];
+    
+    [op onCompletion:^(MKNetworkOperation* completedOperation) {
+        
+        NSString *xmlString = [completedOperation responseString];
+        NSUInteger start = [xmlString rangeOfString:@"<mediaurl>"].location;
+        xmlString = [xmlString substringFromIndex:start + @"<mediaurl>".length];
+        NSUInteger end = [xmlString rangeOfString:@"</mediaurl>"].location;
+        xmlString = [xmlString substringToIndex:end];
+        completionBlock(xmlString);
+    }
+             onError:^(NSError* error) {
+                 
+                 errorBlock(error);
+             }];
+    
     [self enqueueOperation:op];
+    
+    
     return op;
 }
 
