@@ -51,4 +51,17 @@
 	return uuidString;
 }
 
+- (NSString*) urlEncodedString {
+    
+    CFStringRef encodedString = CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, 
+                                                                        (__bridge CFStringRef) self, 
+                                                                        nil,
+                                                                        CFSTR("?!@#$^&%*+,:;='\"`<>()[]{}/\\|~ "), 
+                                                                        kCFStringEncodingUTF8);
+	if (encodedString) {
+		return (__bridge_transfer NSString*) encodedString;
+	}
+	return @"";
+}
+
 @end

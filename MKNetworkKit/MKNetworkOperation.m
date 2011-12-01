@@ -419,6 +419,8 @@ typedef enum {
             self.request.HTTPBody = [[[body urlEncodedKeyValueString] dataUsingEncoding:self.stringEncoding] mutableCopy];
         }
         
+        NSLog(@"%@", self.debugDescription);
+        
         self.state = MKNetworkOperationStateReady;
     }
     
@@ -520,14 +522,15 @@ typedef enum {
     
     NSString *boundary = @"0xKhTmLbOuNdArY";
     NSMutableData *body = [NSMutableData data];
+    __block NSUInteger postLength = 0;
     
     [self.fieldsToBePosted enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
         
         NSString *thisFieldString = [NSString stringWithFormat:
                                      @"--%@\r\nContent-Disposition: form-data; name=\"%@\"\r\n\r\n%@\r\n",
-                                     boundary, key, obj]];
+                                     boundary, [key urlEncodedString], [obj urlEncodedString]];
         
-        [body appendData:[thisFieldString dataUsingEncoding:[self stringEncoding]]];        
+        [body appendData:[thisFieldString dataUsingEncoding:[self stringEncoding]]];
     }];
     
     
@@ -559,9 +562,10 @@ typedef enum {
         [body appendData:[thisDataObject objectForKey:@"data"]];
     }];
     
-    [body appendData: [[NSString stringWithFormat:@"\r\n--%@--\r\n", boundary] dataUsingEncoding:self.stringEncoding]];
+    if (postLength >= 1)
+        [self.request setValue:[NSString stringWithFormat:@"%lu", postLength] forHTTPHeaderField:@"content-length"];
     
-    //NSLog(@"%@", [[NSString alloc] initWithData:body encoding:NSUTF8StringEncoding]);
+    [body appendData: [[NSString stringWithFormat:@"\r\n--%@--\r\n", boundary] dataUsingEncoding:self.stringEncoding]];
     
     NSString *charset = (__bridge NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(self.stringEncoding));
     
@@ -571,7 +575,7 @@ typedef enum {
         
         [self.request setValue:[NSString stringWithFormat:@"%d", [body length]] forHTTPHeaderField:@"Content-Length"];
     }
-    
+        
     return body;
 }
 
@@ -614,6 +618,8 @@ typedef enum {
             
             [self.request setHTTPBody:[self bodyData]];
         }
+        
+        NSLog(@"%@", self.request.allHTTPHeaderFields);
         
         self.connection = [[NSURLConnection alloc] initWithRequest:self.request 
                                                           delegate:self 
