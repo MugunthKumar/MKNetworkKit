@@ -39,7 +39,6 @@ typedef enum {
 @property (strong, nonatomic) NSURLConnection *connection;
 @property (strong, nonatomic) NSString *uniqueId;
 @property (strong, nonatomic) NSMutableURLRequest *request;
-@property (strong, nonatomic) NSMutableDictionary *requestDictionary;
 @property (strong, nonatomic) NSHTTPURLResponse *response;
 
 @property (strong, nonatomic) NSMutableDictionary *fieldsToBePosted;
@@ -84,7 +83,6 @@ typedef enum {
 @synthesize connection = _connection;
 
 @synthesize request = _request;
-@synthesize requestDictionary = _requestDictionary;
 @synthesize response = _response;
 
 @synthesize fieldsToBePosted = _fieldsToBePosted;
@@ -238,7 +236,6 @@ typedef enum {
     [encoder encodeInteger:self.stringEncoding forKey:@"stringEncoding"];
     [encoder encodeObject:self.uniqueId forKey:@"uniqueId"];
     [encoder encodeObject:self.request forKey:@"request"];
-    [encoder encodeObject:self.requestDictionary forKey:@"requestDictionary"];
     [encoder encodeObject:self.response forKey:@"response"];
     [encoder encodeObject:self.fieldsToBePosted forKey:@"fieldsToBePosted"];
     [encoder encodeObject:self.filesToBePosted forKey:@"filesToBePosted"];
@@ -262,7 +259,6 @@ typedef enum {
         self.request = [decoder decodeObjectForKey:@"request"];
         self.uniqueId = [decoder decodeObjectForKey:@"uniqueId"];
         
-        self.requestDictionary = [decoder decodeObjectForKey:@"requestDictionary"];
         self.response = [decoder decodeObjectForKey:@"response"];
         self.fieldsToBePosted = [decoder decodeObjectForKey:@"fieldsToBePosted"];
         self.filesToBePosted = [decoder decodeObjectForKey:@"filesToBePosted"];
@@ -288,7 +284,6 @@ typedef enum {
     
     [theCopy setConnection:[self.connection copy]];
     [theCopy setRequest:[self.request copy]];
-    [theCopy setRequestDictionary:[self.requestDictionary copy]];
     [theCopy setResponse:[self.response copy]];
     [theCopy setFieldsToBePosted:[self.fieldsToBePosted copy]];
     [theCopy setFilesToBePosted:[self.filesToBePosted copy]];
@@ -382,7 +377,6 @@ typedef enum {
         self.downloadStreams = [NSMutableArray array];
         
         NSURL *finalURL = nil;
-        self.requestDictionary = body;
         self.fieldsToBePosted = body;
         self.stringEncoding = NSUTF8StringEncoding; // use a delegate to get these values later
         
@@ -419,8 +413,6 @@ typedef enum {
             self.request.HTTPBody = [[[body urlEncodedKeyValueString] dataUsingEncoding:self.stringEncoding] mutableCopy];
         }
         
-        NSLog(@"%@", self.debugDescription);
-        
         self.state = MKNetworkOperationStateReady;
     }
     
@@ -455,9 +447,9 @@ typedef enum {
     if ([self.request.HTTPMethod isEqualToString:@"POST"] || [self.request.HTTPMethod isEqualToString:@"PUT"]) {
         
         NSString *option = [self.filesToBePosted count] == 0 ? @"-d" : @"-F";
-        [self.requestDictionary enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+        [self.fieldsToBePosted enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
             
-            [displayString appendFormat:@" %@ \"%@=%@\"", option, key, obj];
+            [displayString appendFormat:@" %@ \"%@=%@\"", option, key, obj];    
         }];
         
         [self.filesToBePosted enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
@@ -524,6 +516,8 @@ typedef enum {
     NSMutableData *body = [NSMutableData data];
     __block NSUInteger postLength = 0;
     
+    if([self.filesToBePosted count] > 0 || [self.dataToBePosted count] > 0) {
+        
     [self.fieldsToBePosted enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
         
         NSString *thisFieldString = [NSString stringWithFormat:
@@ -532,6 +526,10 @@ typedef enum {
         
         [body appendData:[thisFieldString dataUsingEncoding:[self stringEncoding]]];
     }];
+    }
+    else {
+        self.request.HTTPBody = [[[self.fieldsToBePosted urlEncodedKeyValueString] dataUsingEncoding:self.stringEncoding] mutableCopy];
+    }
     
     
     [self.filesToBePosted enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
