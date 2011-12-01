@@ -32,8 +32,7 @@
 typedef enum {
     MKNetworkOperationStateReady = 1,
     MKNetworkOperationStateExecuting = 2,
-    MKNetworkOperationStateFinished = 3,
-    MKNetworkOperationStateError = 4
+    MKNetworkOperationStateFinished = 3
 } MKNetworkOperationState;
 
 @interface MKNetworkOperation (/*Private Methods*/)
@@ -178,22 +177,6 @@ typedef enum {
 -(BOOL) isCachedResponse {
     
     return self.cachedResponse != nil;
-}
-
--(void) notifySuccess {
-    
-    if(![self isCacheable]) return;
-    if(!([self.response statusCode] >= 200 && [self.response statusCode] < 300)) return;
-    
-    self.cacheHandlingBlock(self);
-}
-
--(void) notifyFailure {
-    
-    if(![self isCacheable]) return;
-    if(!([self.response statusCode] >= 200 && [self.response statusCode] < 300)) return;
-    
-    self.cacheHandlingBlock(self);
 }
 
 -(void) notifyCache {
@@ -343,10 +326,8 @@ typedef enum {
 
 -(void) setCachedData:(NSData*) cachedData {
     
-    self.cachedResponse = cachedData;
-    
-    for(ResponseBlock responseBlock in self.responseBlocks)
-        responseBlock(self);    
+    self.cachedResponse = cachedData;    
+    [self operationSucceeded];
 }
 
 + (id)operationWithURLString:(NSString *)urlString
@@ -544,7 +525,7 @@ typedef enum {
         
         NSString *thisFieldString = [NSString stringWithFormat:
                                      @"--%@\r\nContent-Disposition: form-data; name=\"%@\"\r\n\r\n%@\r\n",
-                                     boundary, key, obj];
+                                     boundary, key, obj]];
         
         [body appendData:[thisFieldString dataUsingEncoding:[self stringEncoding]]];        
     }];
@@ -584,9 +565,12 @@ typedef enum {
     
     NSString *charset = (__bridge NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(self.stringEncoding));
     
-    if(([self.filesToBePosted count] > 0) || ([self.dataToBePosted count] > 0))
+    if(([self.filesToBePosted count] > 0) || ([self.dataToBePosted count] > 0)) {
         [self.request setValue:[NSString stringWithFormat:@"multipart/form-data; charset=%@; boundary=%@", charset, boundary] 
             forHTTPHeaderField:@"Content-Type"];
+        
+        [self.request setValue:[NSString stringWithFormat:@"%d", [body length]] forHTTPHeaderField:@"Content-Length"];
+    }
     
     return body;
 }
@@ -686,8 +670,7 @@ typedef enum {
         [stream close];
     self.state = MKNetworkOperationStateFinished;
     
-    for(ErrorBlock errorBlock in self.errorBlocks)
-        errorBlock(error);       
+    [self operationFailedWithError:error];
 }
 
 - (void)connection:(NSURLConnection *)connection willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
@@ -709,17 +692,13 @@ typedef enum {
     NSUInteger size = [self.response expectedContentLength] < 0 ? 0 : [self.response expectedContentLength];
     self.response = (NSHTTPURLResponse*) response;
     self.mutableData = [NSMutableData dataWithCapacity:size];
+
+    // handle response redirects here (TODO)
+    #warning POSSIBLY INCOMPLETE CODE (MKNETWORKKIT DOESN'T NOTIFY YOU OF RESPONSE REDIRECTS)
+    // This will be implemented soon.
     
-    // There maybe reasons why other developers would not like a 
-    // Error thrown for status codes greater then 400.. but for thga.me
-    // I see absolutely no probelms setting it up like this.
-    if (self.response.statusCode >= 400) {
-        self.state = MKNetworkOperationStateError;
-        
-    } else {
-        for(NSOutputStream *stream in self.downloadStreams)
-            [stream open];
-    }
+    for(NSOutputStream *stream in self.downloadStreams)
+        [stream open];
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
@@ -758,33 +737,26 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
     
-    if (self.state == MKNetworkOperationStateError) {
-        
-        [self cancel];
-        
-        // Not sure how to format NSError's... Might want to change this.
-        NSError *error = [NSError errorWithDomain:self.response.URL.absoluteString 
-                                             code:self.response.statusCode
-                                         userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"Description", self.response, nil]];
-        
-        // One thing that I didnt like about ASI is that when there is a error reported I want to know if there was a response at all and what it is.
-        
-        for(ErrorBlock errorBlock in self.errorBlocks)
-            errorBlock(error);
-        
-    } else {
+    self.state = MKNetworkOperationStateFinished;
+    self.cachedResponse = nil; // remove cached data
+    
+    if (self.response.statusCode > 200 && self.response.statusCode <= 300) {
         
         for(NSOutputStream *stream in self.downloadStreams)
             [stream close];
         
-        self.state = MKNetworkOperationStateFinished;
-        self.cachedResponse = nil; // remove cached data
-        
         [self notifyCache];
+
+        [self operationSucceeded];
         
-        for(ResponseBlock responseBlock in self.responseBlocks)
-            responseBlock(self);
+    } else {                        
         
+        NSError *error = [NSError errorWithDomain:NSURLErrorDomain
+                                             code:self.response.statusCode
+                                         userInfo:self.response.allHeaderFields];
+                
+        for(ErrorBlock errorBlock in self.errorBlocks)
+            errorBlock(error);
     }
 }
 
@@ -825,5 +797,21 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
     return returnValue;
 }
 #endif
+
+
+#pragma mark -
+#pragma mark Overridable methods
+
+-(void) operationSucceeded {
+
+    for(ResponseBlock responseBlock in self.responseBlocks)
+        responseBlock(self);
+}
+
+-(void) operationFailedWithError:(NSError*) error {
+    
+    for(ErrorBlock errorBlock in self.errorBlocks)
+        errorBlock(error);       
+}
 
 @end

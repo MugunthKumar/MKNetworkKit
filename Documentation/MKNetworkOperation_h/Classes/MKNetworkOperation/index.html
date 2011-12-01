@@ -283,6 +283,16 @@ Freezable operations are serialized when network connectivity is lost and perfor
 <p>Block Handler for tracking upload progress
 </p>
 </dd>
+<dt><tt><a href="index.html#//apple_ref/occ/instm/MKNetworkOperation/operationFailedWithError:" target="_top">-operationFailedWithError:</a></tt></dt>
+<dd>
+<p>Overridable custom method where you can add your custom business logic error handling
+</p>
+</dd>
+<dt><tt><a href="index.html#//apple_ref/occ/instm/MKNetworkOperation/operationSucceeded" target="_top">-operationSucceeded</a></tt></dt>
+<dd>
+<p>Overridable custom method where you can add your custom business logic error handling
+</p>
+</dd>
 <dt><tt><a href="index.html#//apple_ref/occ/clm/MKNetworkOperation/operationWithURLString:params:httpMethod:" target="_top">+operationWithURLString:params:httpMethod:</a></tt></dt>
 <dd>
 <p>Creates a simple network operation
@@ -484,6 +494,43 @@ The value range of the progress is 0 to 1.
 The value range of the progress is 0 to 1.
 </p>
 <!-- headerDoc=discussion;uid=//apple_ref/occ/instm/MKNetworkOperation/onUploadProgressChanged:;name=end --><!-- end discussion -->
+<hr class="betweenAPIEntries">
+<!-- headerDoc=instm;  uid=//apple_ref/occ/instm/MKNetworkOperation/operationFailedWithError:;   name=MKNetworkOperation::operationFailedWithError: --><a name="//apple_ref/occ/instm/MKNetworkOperation/operationFailedWithError:"></a>
+<h3><a name="operationFailedWithError:">operationFailedWithError:</a></h3>
+<hr class="afterName">
+<p><!-- headerDoc=abstract;uid=//apple_ref/occ/instm/MKNetworkOperation/operationFailedWithError:;name=start --><!-- begin abstract --></p>
+<p>Overridable custom method where you can add your custom business logic error handling
+</p>
+<!-- end abstract --><!-- headerDoc=abstract;uid=//apple_ref/occ/instm/MKNetworkOperation/operationFailedWithError:;name=end -->
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/occ/instm/MKNetworkOperation/operationFailedWithError:;name=start -->-(<!-- a logicalPath="//apple_ref/occ/cl/void //apple_ref/occ/tdef/void //apple_ref/occ/tag/void //apple_ref/occ/struct/void //apple_ref/occ/intf/void //apple_ref/doc/anysymbol/void" machineGenerated="true" --><span class="type">void</span><!-- /a -->) <a machinegenerated="true" href="index.html#//apple_ref/occ/instm/MKNetworkOperation/operationFailedWithError:" logicalPath="//apple_ref/occ/instm/MKNetworkOperation/operationFailedWithError" target="_top"><span class="function">operationFailedWithError</span></a>:(<!-- a logicalPath="//apple_ref/occ/cl/NSError //apple_ref/occ/tdef/NSError //apple_ref/occ/tag/NSError //apple_ref/occ/struct/NSError //apple_ref/occ/intf/NSError //apple_ref/doc/anysymbol/NSError" machineGenerated="true" --><span class="type">NSError</span><!-- /a --><span class="type">*</span>) <!-- a logicalPath="//apple_ref/occ/econst/error //apple_ref/occ/data/MKNetworkOperation/error //apple_ref/occ/data/error //apple_ref/occ/clconst/MKNetworkOperation/error " machineGenerated="true" --><span class="var">error</span><!-- /a -->; <!-- headerDoc=declaration;uid=//apple_ref/occ/instm/MKNetworkOperation/operationFailedWithError:;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/occ/instm/MKNetworkOperation/operationFailedWithError:;name=start --><p>This optional method can be overridden to do custom error handling. Be sure to call [super operationSucceeded] at the last.
+For example, a invalid HTTP response (401) like "Unauthorized" might be a valid case in your app.
+You can override this method and called [super operationSucceeded]; to notify that HTTP call failed but the method
+ended as a success call. For example, Facebook login failed, but to your business implementation, it's not a problem as you
+are going to try alternative login mechanisms.
+</p>
+<!-- headerDoc=discussion;uid=//apple_ref/occ/instm/MKNetworkOperation/operationFailedWithError:;name=end --><!-- end discussion -->
+<hr class="betweenAPIEntries">
+<!-- headerDoc=instm;  uid=//apple_ref/occ/instm/MKNetworkOperation/operationSucceeded;   name=MKNetworkOperation::operationSucceeded --><a name="//apple_ref/occ/instm/MKNetworkOperation/operationSucceeded"></a>
+<h3><a name="operationSucceeded">operationSucceeded</a></h3>
+<hr class="afterName">
+<p><!-- headerDoc=abstract;uid=//apple_ref/occ/instm/MKNetworkOperation/operationSucceeded;name=start --><!-- begin abstract --></p>
+<p>Overridable custom method where you can add your custom business logic error handling
+</p>
+<!-- end abstract --><!-- headerDoc=abstract;uid=//apple_ref/occ/instm/MKNetworkOperation/operationSucceeded;name=end -->
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/occ/instm/MKNetworkOperation/operationSucceeded;name=start -->-(<!-- a logicalPath="//apple_ref/occ/cl/void //apple_ref/occ/tdef/void //apple_ref/occ/tag/void //apple_ref/occ/struct/void //apple_ref/occ/intf/void //apple_ref/doc/anysymbol/void" machineGenerated="true" --><span class="type">void</span><!-- /a -->) <!-- a logicalPath="//apple_ref/occ/econst/operationSucceeded //apple_ref/occ/data/MKNetworkOperation/operationSucceeded //apple_ref/occ/data/operationSucceeded //apple_ref/occ/clconst/MKNetworkOperation/operationSucceeded " machineGenerated="true" --><span class="var">operationSucceeded</span><!-- /a -->; <!-- headerDoc=declaration;uid=//apple_ref/occ/instm/MKNetworkOperation/operationSucceeded;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/occ/instm/MKNetworkOperation/operationSucceeded;name=start --><p>This optional method can be overridden to do custom error handling. Be sure to call [super operationSucceeded] at the last.
+For example, a valid HTTP response (200) like "Item not found in database" might have a custom business error code
+You can override this method and called [super failWithError:customError]; to notify that HTTP call was successful but the method
+ended as a failed call
+</p>
+<!-- headerDoc=discussion;uid=//apple_ref/occ/instm/MKNetworkOperation/operationSucceeded;name=end --><!-- end discussion -->
 <hr class="betweenAPIEntries">
 <!-- headerDoc=clm;  uid=//apple_ref/occ/clm/MKNetworkOperation/operationWithURLString:params:httpMethod:;   name=MKNetworkOperation::operationWithURLString:params:httpMethod: --><a name="//apple_ref/occ/clm/MKNetworkOperation/operationWithURLString:params:httpMethod:"></a>
 <h3><a name="operationWithURLString:params:httpMethod:">operationWithURLString:params:httpMethod:</a></h3>
@@ -704,7 +751,7 @@ The params dictionary is attached to the body if the HTTP Method is POST/PUT
 <p class="gapBeforeFooter">&nbsp;</p>
 <hr class="afterFooter">
 <div class="hd_copyright_and_timestamp">
-<p class="hd_timestamp">Last Updated: Wednesday, November 30, 2011
+<p class="hd_timestamp">Last Updated: Thursday, December 01, 2011
 </p>
 </div>
 </td>

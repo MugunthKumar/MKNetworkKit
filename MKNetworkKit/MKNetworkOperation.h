@@ -266,6 +266,31 @@
 -(id) responseJSON;
 #endif
 
+/*!
+ *  @abstract Overridable custom method where you can add your custom business logic error handling
+ *  
+ *  @discussion
+ *	This optional method can be overridden to do custom error handling. Be sure to call [super operationSucceeded] at the last.
+ *  For example, a valid HTTP response (200) like "Item not found in database" might have a custom business error code
+ *  You can override this method and called [super failWithError:customError]; to notify that HTTP call was successful but the method
+ *  ended as a failed call
+ *
+ */
+-(void) operationSucceeded;
+
+/*!
+ *  @abstract Overridable custom method where you can add your custom business logic error handling
+ *  
+ *  @discussion
+ *	This optional method can be overridden to do custom error handling. Be sure to call [super operationSucceeded] at the last.
+ *  For example, a invalid HTTP response (401) like "Unauthorized" might be a valid case in your app.
+ *  You can override this method and called [super operationSucceeded]; to notify that HTTP call failed but the method
+ *  ended as a success call. For example, Facebook login failed, but to your business implementation, it's not a problem as you
+ *  are going to try alternative login mechanisms.
+ *
+ */
+-(void) operationFailedWithError:(NSError*) error;
+
 // internal methods called by MKNetworkEngine only.
 // Don't touch
 -(void) setCachedData:(NSData*) cachedData;
