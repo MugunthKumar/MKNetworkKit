@@ -83,7 +83,8 @@ static NSOperationQueue *_sharedNetworkQueue;
                                                  selector:@selector(reachabilityChanged:) 
                                                      name:kReachabilityChangedNotification 
                                                    object:nil];
-        
+
+        DLog(@"Engine initialized with host: %@", API_DOMAIN);
         self.hostName = hostName;
         self.customHeaders = headers;
         self.reachability = [Reachability reachabilityWithHostName:self.hostName];
