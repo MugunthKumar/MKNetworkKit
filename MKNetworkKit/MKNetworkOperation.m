@@ -27,10 +27,13 @@
 #import "NSDictionary+RequestEncoding.h"
 #import "NSString+MKNetworkKitAdditions.h"
 
+
+// Should there be a cancelled state? or something similar.
 typedef enum {
     MKNetworkOperationStateReady = 1,
     MKNetworkOperationStateExecuting = 2,
-    MKNetworkOperationStateFinished = 3
+    MKNetworkOperationStateFinished = 3,
+    MKNetworkOperationStateError = 4
 } MKNetworkOperationState;
 
 @interface MKNetworkOperation (/*Private Methods*/)
@@ -347,7 +350,7 @@ typedef enum {
 }
 
 + (id)operationWithURLString:(NSString *)urlString
-                        params:(NSMutableDictionary *)body
+                      params:(NSMutableDictionary *)body
                   httpMethod:(NSString *)method
 {
 	return [[self alloc] initWithURLString:urlString
@@ -577,7 +580,7 @@ typedef enum {
     
     [body appendData: [[NSString stringWithFormat:@"\r\n--%@--\r\n", boundary] dataUsingEncoding:self.stringEncoding]];
     
-    NSLog(@"%@", [[NSString alloc] initWithData:body encoding:NSUTF8StringEncoding]);
+    //NSLog(@"%@", [[NSString alloc] initWithData:body encoding:NSUTF8StringEncoding]);
     
     NSString *charset = (__bridge NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(self.stringEncoding));
     
@@ -669,7 +672,7 @@ typedef enum {
     [self.connection cancel];
     
     self.mutableData = nil;
-    self.isCancelled = YES;    
+    self.isCancelled = YES; 
 }
 
 #pragma mark -
@@ -687,8 +690,7 @@ typedef enum {
         errorBlock(error);       
 }
 
-- (void)connection:(NSURLConnection *)connection 
-willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
+- (void)connection:(NSURLConnection *)connection willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
     
     if(!(self.username && self.password)) {
         [[challenge sender] continueWithoutCredentialForAuthenticationChallenge:challenge];
@@ -708,8 +710,16 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
     self.response = (NSHTTPURLResponse*) response;
     self.mutableData = [NSMutableData dataWithCapacity:size];
     
-    for(NSOutputStream *stream in self.downloadStreams)
-        [stream open];
+    // There maybe reasons why other developers would not like a 
+    // Error thrown for status codes greater then 400.. but for thga.me
+    // I see absolutely no probelms setting it up like this.
+    if (self.response.statusCode >= 400) {
+        self.state = MKNetworkOperationStateError;
+        
+    } else {
+        for(NSOutputStream *stream in self.downloadStreams)
+            [stream open];
+    }
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
@@ -748,16 +758,34 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
     
-    for(NSOutputStream *stream in self.downloadStreams)
-        [stream close];
-    
-    self.state = MKNetworkOperationStateFinished;
-    self.cachedResponse = nil; // remove cached data
-    
-    [self notifyCache];
-    
-    for(ResponseBlock responseBlock in self.responseBlocks)
-        responseBlock(self);
+    if (self.state == MKNetworkOperationStateError) {
+        
+        [self cancel];
+        
+        // Not sure how to format NSError's... Might want to change this.
+        NSError *error = [NSError errorWithDomain:self.response.URL.absoluteString 
+                                             code:self.response.statusCode
+                                         userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"Description", self.response, nil]];
+        
+        // One thing that I didnt like about ASI is that when there is a error reported I want to know if there was a response at all and what it is.
+        
+        for(ErrorBlock errorBlock in self.errorBlocks)
+            errorBlock(error);
+        
+    } else {
+        
+        for(NSOutputStream *stream in self.downloadStreams)
+            [stream close];
+        
+        self.state = MKNetworkOperationStateFinished;
+        self.cachedResponse = nil; // remove cached data
+        
+        [self notifyCache];
+        
+        for(ResponseBlock responseBlock in self.responseBlocks)
+            responseBlock(self);
+        
+    }
 }
 
 #pragma mark -
