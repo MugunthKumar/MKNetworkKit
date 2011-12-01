@@ -164,7 +164,7 @@
  *  @seealso
  *  isCachedResponse
  */
--(void) onCompletion:(ResponseBlock) response onError:(ErrorBlock) error;
+-(void) onCompletion:(MKNKResponseBlock) response onError:(MKNKErrorBlock) error;
 
 /*!
  *  @abstract Block Handler for tracking upload progress
@@ -174,7 +174,7 @@
  *  The value range of the progress is 0 to 1.
  *
  */
--(void) onUploadProgressChanged:(ProgressBlock) uploadProgressBlock;
+-(void) onUploadProgressChanged:(MKNKProgressBlock) uploadProgressBlock;
 
 /*!
  *  @abstract Block Handler for tracking download progress
@@ -184,7 +184,7 @@
  *  The value range of the progress is 0 to 1.
  *
  */
--(void) onDownloadProgressChanged:(ProgressBlock) downloadProgressBlock;
+-(void) onDownloadProgressChanged:(MKNKProgressBlock) downloadProgressBlock;
 
 /*!
  *  @abstract Downloads a resource directly to a file or any output stream
@@ -294,7 +294,7 @@
 // internal methods called by MKNetworkEngine only.
 // Don't touch
 -(void) setCachedData:(NSData*) cachedData;
--(void) setCacheHandler:(ResponseBlock) cacheHandler;
+-(void) setCacheHandler:(MKNKResponseBlock) cacheHandler;
 -(void) updateHandlersFromOperation:(MKNetworkOperation*) operation;
 -(NSString*) uniqueIdentifier;
 

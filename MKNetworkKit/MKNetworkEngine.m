@@ -271,7 +271,7 @@ static NSOperationQueue *_sharedNetworkQueue;
     return nil;
 }
 
--(MKNetworkOperation*) imageAtURL:(NSString*) urlString onCompletion:(ImageBlock) completionBlock onError:(ErrorBlock) errorBlock {
+-(MKNetworkOperation*) imageAtURL:(NSString*) urlString onCompletion:(MKNKImageBlock) completionBlock onError:(MKNKErrorBlock) errorBlock {
     
     MKNetworkOperation * op = [self operationWithURLString:urlString params:nil httpMethod:@"GET"];
 

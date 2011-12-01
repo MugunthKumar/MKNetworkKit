@@ -30,6 +30,6 @@ typedef void (^TwitPicBlock)(NSString *twitPicURL);
 
 -(MKNetworkOperation*) uploadImageFromFile:(NSString*) file 
                               onCompletion:(TwitPicBlock) completionBlock
-                                   onError:(ErrorBlock) errorBlock;
+                                   onError:(MKNKErrorBlock) errorBlock;
 
 @end

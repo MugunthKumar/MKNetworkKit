@@ -33,7 +33,7 @@
 -(MKNetworkOperation*) currencyRateFor:(NSString*) sourceCurrency 
                             inCurrency:(NSString*) targetCurrency 
                           onCompletion:(CurrencyResponseBlock) completionBlock
-                               onError:(ErrorBlock) errorBlock {
+                               onError:(MKNKErrorBlock) errorBlock {
     
     MKNetworkOperation *op = [self operationWithPath:YAHOO_URL(sourceCurrency, targetCurrency) 
                                                    params:nil 

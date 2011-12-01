@@ -28,10 +28,10 @@
 
 @class MKNetworkOperation;
 
-typedef void (^ProgressBlock)(double progress);
-typedef void (^ResponseBlock)(MKNetworkOperation* operation);
-typedef void (^ImageBlock) (UIImage* fetchedImage, NSString* urlString);
-typedef void (^ErrorBlock)(NSError* error);
+typedef void (^MKNKProgressBlock)(double progress);
+typedef void (^MKNKResponseBlock)(MKNetworkOperation* operation);
+typedef void (^MKNKImageBlock) (UIImage* fetchedImage, NSString* urlString);
+typedef void (^MKNKErrorBlock)(NSError* error);
 
 /*!
  @header MKNetworkEngine.h
@@ -168,7 +168,7 @@ typedef void (^ErrorBlock)(NSError* error);
  *  The method invokes completion handler if the image was previously cached.
  */
 
--(MKNetworkOperation*) imageAtURL:(NSString*) urlString onCompletion:(ImageBlock) completionBlock onError:(ErrorBlock) errorBlock;
+-(MKNetworkOperation*) imageAtURL:(NSString*) urlString onCompletion:(MKNKImageBlock) completionBlock onError:(MKNKErrorBlock) errorBlock;
 
 /*!
  *  @abstract Enqueues your operation into the shared queue

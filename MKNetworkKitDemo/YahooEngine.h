@@ -32,5 +32,5 @@ typedef void (^CurrencyResponseBlock)(double rate);
 -(MKNetworkOperation*) currencyRateFor:(NSString*) sourceCurrency 
                    inCurrency:(NSString*) targetCurrency 
                  onCompletion:(CurrencyResponseBlock) completion
-                      onError:(ErrorBlock) error;
+                      onError:(MKNKErrorBlock) error;
 @end
