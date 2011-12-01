@@ -24,6 +24,7 @@
 //  THE SOFTWARE.
 
 #import "NSDictionary+RequestEncoding.h"
+#import "NSString+MKNetworkKitAdditions.h"
 
 @implementation NSDictionary (RequestEncoding)
 
@@ -32,14 +33,15 @@
     NSMutableString *string = [NSMutableString string];
     for (NSString *key in self) {
 
-        CFStringRef encodedString = CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, 
-                                                                            (__bridge CFStringRef) [self valueForKey:key], 
-                                                                            nil,
-                                                                            CFSTR("?!@#$^&%*+,:;='\"`<>()[]{}/\\|~ "), 
-                                                                            kCFStringEncodingUTF8);
+//        CFStringRef encodedString = CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, 
+//                                                                            (__bridge CFStringRef) [self valueForKey:key], 
+//                                                                            nil,
+//                                                                            CFSTR("?!@#$^&%*+,:;='\"`<>()[]{}/\\|~ "), 
+//                                                                            kCFStringEncodingUTF8);
                                                 
-        [string appendFormat:@"%@=%@&", key, encodedString];
-        CFRelease(encodedString);
+        [string appendFormat:@"%@=%@&", [key encodedURLString], [[self valueForKey:key] encodedURLString]];
+//        CFRelease(encodedString);
+
     }
     
     if([string length] > 0)
@@ -48,4 +50,7 @@
     return string;
     
 }
+
+
+
 @end

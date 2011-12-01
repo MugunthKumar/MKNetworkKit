@@ -46,6 +46,7 @@
 
 #define MKNETWORKCACHE_DEFAULT_COST 10
 #define MKNETWORKCACHE_DEFAULT_DIRECTORY @"MKNetworkKitCache"
+#define MK_DEBUG_MODE 0
 
 #endif
 

@@ -438,6 +438,8 @@ typedef enum {
             self.request.HTTPBody = [[[body urlEncodedKeyValueString] dataUsingEncoding:self.stringEncoding] mutableCopy];
         }
         
+        NSLog(@"%@", self.debugDescription);
+        
         self.state = MKNetworkOperationStateReady;
     }
     
@@ -539,14 +541,27 @@ typedef enum {
     
     NSString *boundary = @"0xKhTmLbOuNdArY";
     NSMutableData *body = [NSMutableData data];
+    __block NSUInteger postLength = 0;
+    
+//    for (NSDictionary *val in [self postData]) {
+//		[self appendPostString:[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"\r\n\r\n",[val objectForKey:@"key"]]];
+//		[self appendPostString:[val objectForKey:@"value"]];
+//		i++;
+//		if (i != [[self postData] count] || [[self fileData] count] > 0) { //Only add the boundary if this is not the last item in the post body
+//			[self appendPostString:endItemBoundary];
+//		}
+//	}
+    
+    //[body appendData: [[NSString stringWithFormat:@"\r\n--%@--\r\n", boundary] dataUsingEncoding:self.stringEncoding]];
     
     [self.fieldsToBePosted enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
         
-        NSString *thisFieldString = [NSString stringWithFormat:
-                                     @"--%@\r\nContent-Disposition: form-data; name=\"%@\"\r\n\r\n%@\r\n",
-                                     boundary, key, obj];
+        NSString *thisFieldString = [NSString stringWithFormat:@"%@=%@&", [key encodedURLString], [obj encodedURLString]];
+        postLength += [key length];
+        postLength += [obj length];
+        postLength += 2;
         
-        [body appendData:[thisFieldString dataUsingEncoding:[self stringEncoding]]];        
+        [body appendData:[thisFieldString dataUsingEncoding:[self stringEncoding]]];
     }];
     
     
@@ -578,15 +593,20 @@ typedef enum {
         [body appendData:[thisDataObject objectForKey:@"data"]];
     }];
     
+    if (postLength >= 1)
+        [self.request setValue:[NSString stringWithFormat:@"%lu", postLength] forHTTPHeaderField:@"content-length"];
+    
     [body appendData: [[NSString stringWithFormat:@"\r\n--%@--\r\n", boundary] dataUsingEncoding:self.stringEncoding]];
     
-    //NSLog(@"%@", [[NSString alloc] initWithData:body encoding:NSUTF8StringEncoding]);
+    NSLog(@"%@", [[NSString alloc] initWithData:body encoding:NSUTF8StringEncoding]);
     
     NSString *charset = (__bridge NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(self.stringEncoding));
     
     if(([self.filesToBePosted count] > 0) || ([self.dataToBePosted count] > 0))
         [self.request setValue:[NSString stringWithFormat:@"multipart/form-data; charset=%@; boundary=%@", charset, boundary] 
             forHTTPHeaderField:@"Content-Type"];
+    
+    NSLog(@"%@", [[NSString alloc] initWithData:body encoding:NSUTF8StringEncoding]);
     
     return body;
 }
@@ -630,6 +650,8 @@ typedef enum {
             
             [self.request setHTTPBody:[self bodyData]];
         }
+        
+        NSLog(@"%@", self.request.allHTTPHeaderFields);
         
         self.connection = [[NSURLConnection alloc] initWithRequest:self.request 
                                                           delegate:self 

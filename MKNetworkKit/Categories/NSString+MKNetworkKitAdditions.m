@@ -51,4 +51,12 @@
 	return uuidString;
 }
 
+- (NSString*) encodedURLString {
+    NSString *newString = [NSMakeCollectable(CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, (__bridge CFStringRef)self, NULL, CFSTR(":/?#[]@!$ &'()*+,;=\"<>%{}|\\^~`"), CFStringConvertNSStringEncodingToEncoding(NSUTF8StringEncoding))) autorelease];
+	if (newString) {
+		return newString;
+	}
+	return @"";
+}
+
 @end
