@@ -71,6 +71,9 @@
 
 -(IBAction)convertCurrencyTapped:(id)sender {
     
+    self.currencyOperation = [ApplicationDelegate.samplePoster postDataToServer];
+    
+    /*
     self.currencyOperation = [ApplicationDelegate.yahooEngine currencyRateFor:@"SGD" 
                                                                    inCurrency:@"USD" 
                                                                  onCompletion:^(double rate) {
@@ -86,7 +89,8 @@
                                                                           
                                                                           DLog(@"%@\t%@\t%@\t%@", [error localizedDescription], [error localizedFailureReason], 
                                                                                [error localizedRecoveryOptions], [error localizedRecoverySuggestion]);
-                                                                      }];    
+                                                                      }];   
+     */
 }
 
 -(IBAction)uploadImageTapped:(id)sender {

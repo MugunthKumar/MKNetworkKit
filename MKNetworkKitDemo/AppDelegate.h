@@ -27,6 +27,7 @@
 #import "YahooEngine.h"
 #import "ExampleUploader.h"
 #import "ExampleDownloader.h"
+#import "ExamplePost.h"
 
 #define ApplicationDelegate ((AppDelegate *)[UIApplication sharedApplication].delegate)
 
@@ -37,7 +38,7 @@
 @property (strong, nonatomic) YahooEngine *yahooEngine;
 @property (strong, nonatomic) ExampleUploader *twitPicUploader;
 @property (strong, nonatomic) ExampleDownloader *sampleDownloader;
-
+@property (strong, nonatomic) ExamplePost *samplePoster;
 @end
 
 

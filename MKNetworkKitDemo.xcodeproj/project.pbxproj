@@ -15,6 +15,7 @@
 		AB148FB5147E0F1D001F4A86 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = AB148FAF147E0F1D001F4A86 /* Reachability.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		AB148FD2147F4EF8001F4A86 /* ExampleUploader.m in Sources */ = {isa = PBXBuildFile; fileRef = AB148FD1147F4EF8001F4A86 /* ExampleUploader.m */; };
 		AB148FD6147F5167001F4A86 /* ExampleDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = AB148FD5147F5167001F4A86 /* ExampleDownloader.m */; };
+		AB20C3401487C854004B0825 /* ExamplePost.m in Sources */ = {isa = PBXBuildFile; fileRef = AB20C33F1487C854004B0825 /* ExamplePost.m */; };
 		AB302CB0147937CA0043D337 /* README.mdown in Resources */ = {isa = PBXBuildFile; fileRef = AB302CAF147937CA0043D337 /* README.mdown */; };
 		AB74B0C21467CC120088BF09 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB74B0C11467CC120088BF09 /* UIKit.framework */; };
 		AB74B0C41467CC120088BF09 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB74B0C31467CC120088BF09 /* Foundation.framework */; };
@@ -48,6 +49,8 @@
 		AB148FD1147F4EF8001F4A86 /* ExampleUploader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExampleUploader.m; sourceTree = "<group>"; };
 		AB148FD4147F5166001F4A86 /* ExampleDownloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExampleDownloader.h; sourceTree = "<group>"; };
 		AB148FD5147F5167001F4A86 /* ExampleDownloader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExampleDownloader.m; sourceTree = "<group>"; };
+		AB20C33E1487C854004B0825 /* ExamplePost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExamplePost.h; sourceTree = "<group>"; };
+		AB20C33F1487C854004B0825 /* ExamplePost.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExamplePost.m; sourceTree = "<group>"; };
 		AB302CAF147937CA0043D337 /* README.mdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.mdown; sourceTree = "<group>"; };
 		AB74B0BD1467CC120088BF09 /* MKNetworkKitDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MKNetworkKitDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB74B0C11467CC120088BF09 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -171,6 +174,8 @@
 				AB148FD1147F4EF8001F4A86 /* ExampleUploader.m */,
 				AB148FD4147F5166001F4A86 /* ExampleDownloader.h */,
 				AB148FD5147F5167001F4A86 /* ExampleDownloader.m */,
+				AB20C33E1487C854004B0825 /* ExamplePost.h */,
+				AB20C33F1487C854004B0825 /* ExamplePost.m */,
 			);
 			path = MKNetworkKitDemo;
 			sourceTree = "<group>";
@@ -270,6 +275,7 @@
 				AB148FB5147E0F1D001F4A86 /* Reachability.m in Sources */,
 				AB148FD2147F4EF8001F4A86 /* ExampleUploader.m in Sources */,
 				AB148FD6147F5167001F4A86 /* ExampleDownloader.m in Sources */,
+				AB20C3401487C854004B0825 /* ExamplePost.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

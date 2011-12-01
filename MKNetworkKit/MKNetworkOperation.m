@@ -370,14 +370,20 @@ typedef enum {
         
         self.responseBlocks = [NSMutableArray array];
         self.errorBlocks = [NSMutableArray array];        
+        
         self.filesToBePosted = [NSMutableArray array];
         self.dataToBePosted = [NSMutableArray array];
+        self.fieldsToBePosted = [NSMutableArray array];
+        
         self.uploadProgressChangedHandlers = [NSMutableArray array];
         self.downloadProgressChangedHandlers = [NSMutableArray array];
         self.downloadStreams = [NSMutableArray array];
         
         NSURL *finalURL = nil;
-        self.fieldsToBePosted = body;
+        
+        if(body)
+            self.fieldsToBePosted = body;
+        
         self.stringEncoding = NSUTF8StringEncoding; // use a delegate to get these values later
         
         if (([method isEqualToString:@"GET"] ||
@@ -512,11 +518,15 @@ typedef enum {
 
 -(NSData*) bodyData {
     
+    
+    if([self.filesToBePosted count] == 0 && [self.dataToBePosted count] == 0) {
+        
+        return [[[self.fieldsToBePosted urlEncodedKeyValueString] dataUsingEncoding:self.stringEncoding] mutableCopy];
+    }
+
     NSString *boundary = @"0xKhTmLbOuNdArY";
     NSMutableData *body = [NSMutableData data];
-    __block NSUInteger postLength = 0;
-    
-    if([self.filesToBePosted count] > 0 || [self.dataToBePosted count] > 0) {
+    __block NSUInteger postLength = 0;    
         
     [self.fieldsToBePosted enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
         
@@ -525,12 +535,7 @@ typedef enum {
                                      boundary, [key urlEncodedString], [obj urlEncodedString]];
         
         [body appendData:[thisFieldString dataUsingEncoding:[self stringEncoding]]];
-    }];
-    }
-    else {
-        self.request.HTTPBody = [[[self.fieldsToBePosted urlEncodedKeyValueString] dataUsingEncoding:self.stringEncoding] mutableCopy];
-    }
-    
+    }];        
     
     [self.filesToBePosted enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         
@@ -617,8 +622,7 @@ typedef enum {
             [self.request setHTTPBody:[self bodyData]];
         }
         
-        NSLog(@"%@", self.request.allHTTPHeaderFields);
-        
+        DLog(@"%@", self);
         self.connection = [[NSURLConnection alloc] initWithRequest:self.request 
                                                           delegate:self 
                                                   startImmediately:YES]; 
@@ -744,7 +748,7 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
     self.state = MKNetworkOperationStateFinished;
     self.cachedResponse = nil; // remove cached data
     
-    if (self.response.statusCode > 200 && self.response.statusCode <= 300) {
+    if (self.response.statusCode >= 200 && self.response.statusCode < 300) {
         
         for(NSOutputStream *stream in self.downloadStreams)
             [stream close];

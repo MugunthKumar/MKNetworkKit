@@ -31,6 +31,7 @@
 @synthesize yahooEngine = _yahooEngine;
 @synthesize twitPicUploader = _twitPicUploader;
 @synthesize sampleDownloader = _sampleDownloader;
+@synthesize samplePoster = _samplePoster;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -48,6 +49,7 @@
                                            customHeaderFields:nil];
     
     self.sampleDownloader = [[ExampleDownloader alloc] initWithHostName:nil customHeaderFields:nil];
+    self.samplePoster = [[ExamplePost alloc] initWithHostName:@"thgame.phpfog.com" customHeaderFields:nil];
 
     return YES;
 }
