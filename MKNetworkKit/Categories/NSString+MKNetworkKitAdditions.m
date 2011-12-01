@@ -26,7 +26,7 @@
 #import "NSString+MKNetworkKitAdditions.h"
 #import <CommonCrypto/CommonDigest.h>
 
-@implementation NSString (MD5)
+@implementation NSString (MKNetworkKitAdditions)
 
 - (NSString *) md5
 {
