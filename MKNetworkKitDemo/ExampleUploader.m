@@ -29,7 +29,7 @@
 
 -(MKNetworkOperation*) uploadImageFromFile:(NSString*) file 
                               onCompletion:(TwitPicBlock) completionBlock
-                                   onError:(ErrorBlock) errorBlock {
+                                   onError:(MKNKErrorBlock) errorBlock {
     
     MKNetworkOperation *op = [self operationWithPath:@"api/upload" 
                                               params:[NSDictionary dictionaryWithObjectsAndKeys:

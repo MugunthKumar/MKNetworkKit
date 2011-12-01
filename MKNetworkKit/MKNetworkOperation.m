@@ -60,7 +60,7 @@ typedef enum {
 @property (nonatomic, retain) NSMutableArray *downloadProgressChangedHandlers;
 @property (nonatomic, retain) NSMutableArray *downloadStreams;
 @property (nonatomic, retain) NSData *cachedResponse;
-@property (nonatomic, copy) ResponseBlock cacheHandlingBlock;
+@property (nonatomic, copy) MKNKResponseBlock cacheHandlingBlock;
 @property (nonatomic, assign) UIBackgroundTaskIdentifier backgroundTaskId;
 
 @property (strong, nonatomic) NSError *error;
@@ -340,18 +340,18 @@ typedef enum {
     self.password = password;
 }
 
--(void) onCompletion:(ResponseBlock) response onError:(ErrorBlock) error {
+-(void) onCompletion:(MKNKResponseBlock) response onError:(MKNKErrorBlock) error {
     
     [self.responseBlocks addObject:[response copy]];
     [self.errorBlocks addObject:[error copy]];
 }
 
--(void) onUploadProgressChanged:(ProgressBlock) uploadProgressBlock {
+-(void) onUploadProgressChanged:(MKNKProgressBlock) uploadProgressBlock {
     
     [self.uploadProgressChangedHandlers addObject:[uploadProgressBlock copy]];
 }
 
--(void) onDownloadProgressChanged:(ProgressBlock) downloadProgressBlock {
+-(void) onDownloadProgressChanged:(MKNKProgressBlock) downloadProgressBlock {
     
     [self.downloadProgressChangedHandlers addObject:[downloadProgressBlock copy]];
 }
@@ -577,7 +577,7 @@ typedef enum {
     return body;
 }
 
--(void) setCacheHandler:(ResponseBlock) cacheHandler {
+-(void) setCacheHandler:(MKNKResponseBlock) cacheHandler {
     
     self.cacheHandlingBlock = cacheHandler;
 }
@@ -717,7 +717,7 @@ typedef enum {
         }
     }
     
-    for(ProgressBlock downloadProgressBlock in self.downloadProgressChangedHandlers) {
+    for(MKNKProgressBlock downloadProgressBlock in self.downloadProgressChangedHandlers) {
         
         if([self.response expectedContentLength] > 0) {
             
@@ -731,7 +731,7 @@ typedef enum {
  totalBytesWritten:(NSInteger)totalBytesWritten
 totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
     
-    for(ProgressBlock uploadProgressBlock in self.uploadProgressChangedHandlers) {
+    for(MKNKProgressBlock uploadProgressBlock in self.uploadProgressChangedHandlers) {
         
         if(totalBytesExpectedToWrite > 0) {
             uploadProgressBlock(((double)totalBytesWritten/(double)totalBytesExpectedToWrite));
@@ -759,7 +759,7 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
                                              code:self.response.statusCode
                                          userInfo:self.response.allHeaderFields];
                 
-        for(ErrorBlock errorBlock in self.errorBlocks)
+        for(MKNKErrorBlock errorBlock in self.errorBlocks)
             errorBlock(error);
     }
 }
@@ -808,13 +808,13 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
 
 -(void) operationSucceeded {
 
-    for(ResponseBlock responseBlock in self.responseBlocks)
+    for(MKNKResponseBlock responseBlock in self.responseBlocks)
         responseBlock(self);
 }
 
 -(void) operationFailedWithError:(NSError*) error {
     
-    for(ErrorBlock errorBlock in self.errorBlocks)
+    for(MKNKErrorBlock errorBlock in self.errorBlocks)
         errorBlock(error);       
 }
 
