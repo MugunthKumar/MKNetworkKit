@@ -38,6 +38,11 @@ Marrying the feature set from both, MKNetworkKit throws in a bunch of new featur
 ###How to use
 Read the <a href="http://mk.sg/8w"> blog post</a> for more.
 
+### Documentation
+Install appledoc from gentlebytes github repo
+run this on the command line
+/usr/local/bin/appledoc --project-name MKNetworkKit -v 0.8 --project-company Steinlogic --company-id com.steinlogic.mknetworkkit -o ./Documentation -i .m -s ./MKNetworkKit .
+
 ###TODO
 
 * Method to freeze blocks (alternative techniques probably)
@@ -47,7 +52,7 @@ Read the <a href="http://mk.sg/8w"> blog post</a> for more.
 * Multiple encoding types in URL
 * Read about response redirects and implement delegate callbacks or use state variables
 * Integrate the ARC version of Reachability from https://gist.github.com/1182373
-* The generate header docs looks EXTREMELY UGLY FUGLY
+* Fix AppleDoc warnings
 
 I'll be working on this soon. But you can start forking it and getting it right
 
