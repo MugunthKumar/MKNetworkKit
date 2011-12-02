@@ -72,25 +72,27 @@ static NSOperationQueue *_sharedNetworkQueue;
             [_sharedNetworkQueue addObserver:[self self] forKeyPath:@"operationCount" options:0 context:NULL];
             [_sharedNetworkQueue setMaxConcurrentOperationCount:6];
         });
-    }        
-    
+    }            
 }
+
 - (id) initWithHostName:(NSString*) hostName customHeaderFields:(NSDictionary*) headers {
     
     if((self = [super init])) {        
-    
-        [[NSNotificationCenter defaultCenter] addObserver:self 
-                                                 selector:@selector(reachabilityChanged:) 
-                                                     name:kReachabilityChangedNotification 
-                                                   object:nil];
-
-        DLog(@"Engine initialized with host: %@", hostName);
-        self.hostName = hostName;
+        
+        if(hostName) {
+            [[NSNotificationCenter defaultCenter] addObserver:self 
+                                                     selector:@selector(reachabilityChanged:) 
+                                                         name:kReachabilityChangedNotification 
+                                                       object:nil];
+            
+            DLog(@"Engine initialized with host: %@", hostName);
+            self.hostName = hostName;
+            self.reachability = [Reachability reachabilityWithHostName:self.hostName];
+            [self.reachability startNotifier];
+        }
         self.customHeaders = headers;
-        self.reachability = [Reachability reachabilityWithHostName:self.hostName];
-        [self.reachability startNotifier];
     }
-
+    
     return self;
 }
 
@@ -156,7 +158,7 @@ static NSOperationQueue *_sharedNetworkQueue;
 -(void) freezeOperations {
     
     if(![self isCacheEnabled]) return;
-        
+    
     for(MKNetworkOperation *operation in _sharedNetworkQueue.operations) {
         
         if(![operation freezable]) continue; // freeze only freeable operations.
@@ -172,7 +174,7 @@ static NSOperationQueue *_sharedNetworkQueue;
 -(void) checkAndRestoreFrozenOperations {
     
     if(![self isCacheEnabled]) return;
-
+    
     NSError *error = nil;
     NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[self cacheDirectoryName] error:&error];
     if(error)
@@ -210,24 +212,24 @@ static NSOperationQueue *_sharedNetworkQueue;
 }
 
 -(MKNetworkOperation*) operationWithPath:(NSString*) path
-                         params:(NSMutableDictionary*) body {
-
+                                  params:(NSMutableDictionary*) body {
+    
     return [self operationWithPath:path 
-                     params:body 
-               httpMethod:@"GET"];
+                            params:body 
+                        httpMethod:@"GET"];
 }
 
 -(MKNetworkOperation*) operationWithPath:(NSString*) path
-                         params:(NSMutableDictionary*) body
-                   httpMethod:(NSString*)method  {
+                                  params:(NSMutableDictionary*) body
+                              httpMethod:(NSString*)method  {
     
     return [self operationWithPath:path params:body httpMethod:method ssl:NO];
 }
 
 -(MKNetworkOperation*) operationWithPath:(NSString*) path
-                         params:(NSMutableDictionary*) body
-                   httpMethod:(NSString*)method 
-                          ssl:(BOOL) useSSL {
+                                  params:(NSMutableDictionary*) body
+                              httpMethod:(NSString*)method 
+                                     ssl:(BOOL) useSSL {
     
     NSString *urlString = [NSString stringWithFormat:@"%@://%@/%@", useSSL ? @"https" : @"http", self.hostName, path];
     
@@ -235,21 +237,21 @@ static NSOperationQueue *_sharedNetworkQueue;
 }
 
 -(MKNetworkOperation*) operationWithURLString:(NSString*) urlString {
-
+    
     return [self operationWithURLString:urlString params:nil httpMethod:@"GET"];
 }
 
 -(MKNetworkOperation*) operationWithURLString:(NSString*) urlString
                                        params:(NSMutableDictionary*) body {
-
+    
     return [self operationWithURLString:urlString params:body httpMethod:@"GET"];
 }
 
 
 -(MKNetworkOperation*) operationWithURLString:(NSString*) urlString
-                         params:(NSMutableDictionary*) body
-                   httpMethod:(NSString*)method {
-
+                                       params:(NSMutableDictionary*) body
+                                   httpMethod:(NSString*)method {
+    
     MKNetworkOperation *operation = [MKNetworkOperation operationWithURLString:urlString params:body httpMethod:method];
     [operation addHeaders:self.customHeaders];
     return operation;
@@ -261,9 +263,9 @@ static NSOperationQueue *_sharedNetworkQueue;
     if(cachedData) return cachedData;
     
     NSString *filePath = [[self cacheDirectoryName] stringByAppendingPathComponent:[operation uniqueIdentifier]];    
-
+    
     if([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
-
+        
         NSData *cachedData = [NSData dataWithContentsOfFile:filePath];
         [self saveCacheData:cachedData forKey:[operation uniqueIdentifier]];
         return cachedData;
@@ -275,16 +277,16 @@ static NSOperationQueue *_sharedNetworkQueue;
 -(MKNetworkOperation*) imageAtURL:(NSString*) urlString onCompletion:(MKNKImageBlock) completionBlock onError:(MKNKErrorBlock) errorBlock {
     
     MKNetworkOperation * op = [self operationWithURLString:urlString params:nil httpMethod:@"GET"];
-
+    
     [op onCompletion:^(MKNetworkOperation *completedOperation) {
-            
+        
         completionBlock([completedOperation responseImage], urlString);
-            
+        
     } onError:^(NSError *error) {
-     
+        
         errorBlock(error);
     }];
-     
+    
     return op;     
 }
 
@@ -331,9 +333,9 @@ static NSOperationQueue *_sharedNetworkQueue;
     
     return MKNETWORKCACHE_DEFAULT_COST;
 }
-     
+
 -(void) saveCache {
-   
+    
     for(NSString *cacheKey in [self.memoryCache allKeys])
     {
         NSString *filePath = [[self cacheDirectoryName] stringByAppendingPathComponent:cacheKey];
@@ -371,13 +373,13 @@ static NSOperationQueue *_sharedNetworkQueue;
 }
 
 /*
-- (BOOL) dataOldness:(NSString*) imagePath
-{
-    NSDictionary *attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:imagePath error:nil];
-    NSDate *creationDate = [attributes valueForKey:NSFileCreationDate];
-    
-    return abs([creationDate timeIntervalSinceNow]);
-}*/
+ - (BOOL) dataOldness:(NSString*) imagePath
+ {
+ NSDictionary *attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:imagePath error:nil];
+ NSDate *creationDate = [attributes valueForKey:NSFileCreationDate];
+ 
+ return abs([creationDate timeIntervalSinceNow]);
+ }*/
 
 -(BOOL) isCacheEnabled {
     

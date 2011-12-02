@@ -69,11 +69,13 @@
     // upload and download operations are expected to run in background even when view disappears
 }
 
+-(IBAction)postDataToServer:(id)sender {
+    
+    [ApplicationDelegate.samplePoster postDataToServer];
+}
+
 -(IBAction)convertCurrencyTapped:(id)sender {
-    
-    self.currencyOperation = [ApplicationDelegate.samplePoster postDataToServer];
-    
-    /*
+        
     self.currencyOperation = [ApplicationDelegate.yahooEngine currencyRateFor:@"SGD" 
                                                                    inCurrency:@"USD" 
                                                                  onCompletion:^(double rate) {
@@ -90,7 +92,6 @@
                                                                           DLog(@"%@\t%@\t%@\t%@", [error localizedDescription], [error localizedFailureReason], 
                                                                                [error localizedRecoveryOptions], [error localizedRecoverySuggestion]);
                                                                       }];   
-     */
 }
 
 -(IBAction)uploadImageTapped:(id)sender {
