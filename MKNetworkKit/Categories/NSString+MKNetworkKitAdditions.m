@@ -53,15 +53,16 @@
 
 - (NSString*) urlEncodedString {
     
-    CFStringRef encodedString = CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, 
+    CFStringRef encodedCFString = CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, 
                                                                         (__bridge CFStringRef) self, 
                                                                         nil,
                                                                         CFSTR("?!@#$^&%*+,:;='\"`<>()[]{}/\\|~ "), 
                                                                         kCFStringEncodingUTF8);
-	if (encodedString) {
-		return (__bridge_transfer NSString*) encodedString;
-	}
-	return @"";
+    
+    NSString *encodedString = (__bridge NSString*) encodedCFString;    
+    CFRelease(encodedCFString);
+    
+    return encodedString ? encodedString : @"";
 }
 
 @end
