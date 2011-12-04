@@ -11,6 +11,6 @@
 #ifdef __OBJC__
     #import <UIKit/UIKit.h>
     #import <Foundation/Foundation.h>
-    #import "MKNetworkKit.h"
+    #import "../../MKNetworkKit/MKNetworkKit.h"
     #import "AppDelegate.h"
 #endif

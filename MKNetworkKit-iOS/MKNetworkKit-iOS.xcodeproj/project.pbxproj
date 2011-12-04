@@ -1,0 +1,314 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		ABB5C260148B3AE00056D3E9 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABB5C25F148B3AE00056D3E9 /* Foundation.framework */; };
+		ABB5C2B9148B3B360056D3E9 /* NSDictionary+RequestEncoding.h in Headers */ = {isa = PBXBuildFile; fileRef = ABB5C2AA148B3B360056D3E9 /* NSDictionary+RequestEncoding.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		ABB5C2BA148B3B360056D3E9 /* NSDictionary+RequestEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = ABB5C2AB148B3B360056D3E9 /* NSDictionary+RequestEncoding.m */; };
+		ABB5C2BB148B3B360056D3E9 /* NSString+MKNetworkKitAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = ABB5C2AC148B3B360056D3E9 /* NSString+MKNetworkKitAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		ABB5C2BC148B3B360056D3E9 /* NSString+MKNetworkKitAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = ABB5C2AD148B3B360056D3E9 /* NSString+MKNetworkKitAdditions.m */; };
+		ABB5C2BD148B3B360056D3E9 /* UIAlertView+MKNetworkKitAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = ABB5C2AE148B3B360056D3E9 /* UIAlertView+MKNetworkKitAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		ABB5C2BE148B3B360056D3E9 /* UIAlertView+MKNetworkKitAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = ABB5C2AF148B3B360056D3E9 /* UIAlertView+MKNetworkKitAdditions.m */; };
+		ABB5C2BF148B3B360056D3E9 /* MKNetworkEngine.h in Headers */ = {isa = PBXBuildFile; fileRef = ABB5C2B0148B3B360056D3E9 /* MKNetworkEngine.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		ABB5C2C0148B3B360056D3E9 /* MKNetworkEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = ABB5C2B1148B3B360056D3E9 /* MKNetworkEngine.m */; };
+		ABB5C2C1148B3B360056D3E9 /* MKNetworkKit.h in Headers */ = {isa = PBXBuildFile; fileRef = ABB5C2B2148B3B360056D3E9 /* MKNetworkKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		ABB5C2C2148B3B360056D3E9 /* MKNetworkOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = ABB5C2B3148B3B360056D3E9 /* MKNetworkOperation.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		ABB5C2C3148B3B360056D3E9 /* MKNetworkOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = ABB5C2B4148B3B360056D3E9 /* MKNetworkOperation.m */; };
+		ABB5C2C4148B3B360056D3E9 /* Reachability.h in Headers */ = {isa = PBXBuildFile; fileRef = ABB5C2B6148B3B360056D3E9 /* Reachability.h */; };
+		ABB5C2C5148B3B360056D3E9 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = ABB5C2B7148B3B360056D3E9 /* Reachability.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		ABB5C2CD148B40910056D3E9 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABB5C2CB148B40910056D3E9 /* SystemConfiguration.framework */; };
+		ABB5C2CE148B40910056D3E9 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABB5C2CC148B40910056D3E9 /* CFNetwork.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		ABB5C25C148B3AE00056D3E9 /* libMKNetworkKit-iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libMKNetworkKit-iOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		ABB5C25F148B3AE00056D3E9 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		ABB5C263148B3AE00056D3E9 /* MKNetworkKit-iOS-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MKNetworkKit-iOS-Prefix.pch"; sourceTree = "<group>"; };
+		ABB5C2AA148B3B360056D3E9 /* NSDictionary+RequestEncoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+RequestEncoding.h"; sourceTree = "<group>"; };
+		ABB5C2AB148B3B360056D3E9 /* NSDictionary+RequestEncoding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+RequestEncoding.m"; sourceTree = "<group>"; };
+		ABB5C2AC148B3B360056D3E9 /* NSString+MKNetworkKitAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+MKNetworkKitAdditions.h"; sourceTree = "<group>"; };
+		ABB5C2AD148B3B360056D3E9 /* NSString+MKNetworkKitAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+MKNetworkKitAdditions.m"; sourceTree = "<group>"; };
+		ABB5C2AE148B3B360056D3E9 /* UIAlertView+MKNetworkKitAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertView+MKNetworkKitAdditions.h"; sourceTree = "<group>"; };
+		ABB5C2AF148B3B360056D3E9 /* UIAlertView+MKNetworkKitAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAlertView+MKNetworkKitAdditions.m"; sourceTree = "<group>"; };
+		ABB5C2B0148B3B360056D3E9 /* MKNetworkEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MKNetworkEngine.h; path = ../../MKNetworkKit/MKNetworkEngine.h; sourceTree = "<group>"; };
+		ABB5C2B1148B3B360056D3E9 /* MKNetworkEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MKNetworkEngine.m; path = ../../MKNetworkKit/MKNetworkEngine.m; sourceTree = "<group>"; };
+		ABB5C2B2148B3B360056D3E9 /* MKNetworkKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MKNetworkKit.h; path = ../../MKNetworkKit/MKNetworkKit.h; sourceTree = "<group>"; };
+		ABB5C2B3148B3B360056D3E9 /* MKNetworkOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MKNetworkOperation.h; path = ../../MKNetworkKit/MKNetworkOperation.h; sourceTree = "<group>"; };
+		ABB5C2B4148B3B360056D3E9 /* MKNetworkOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MKNetworkOperation.m; path = ../../MKNetworkKit/MKNetworkOperation.m; sourceTree = "<group>"; };
+		ABB5C2B6148B3B360056D3E9 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
+		ABB5C2B7148B3B360056D3E9 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
+		ABB5C2CB148B40910056D3E9 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		ABB5C2CC148B40910056D3E9 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		ABB5C259148B3AE00056D3E9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ABB5C260148B3AE00056D3E9 /* Foundation.framework in Frameworks */,
+				ABB5C2CD148B40910056D3E9 /* SystemConfiguration.framework in Frameworks */,
+				ABB5C2CE148B40910056D3E9 /* CFNetwork.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		ABB5C251148B3AE00056D3E9 = {
+			isa = PBXGroup;
+			children = (
+				ABB5C261148B3AE00056D3E9 /* MKNetworkKit-iOS */,
+				ABB5C25E148B3AE00056D3E9 /* Frameworks */,
+				ABB5C25D148B3AE00056D3E9 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		ABB5C25D148B3AE00056D3E9 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				ABB5C25C148B3AE00056D3E9 /* libMKNetworkKit-iOS.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		ABB5C25E148B3AE00056D3E9 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				ABB5C2CB148B40910056D3E9 /* SystemConfiguration.framework */,
+				ABB5C2CC148B40910056D3E9 /* CFNetwork.framework */,
+				ABB5C25F148B3AE00056D3E9 /* Foundation.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		ABB5C261148B3AE00056D3E9 /* MKNetworkKit-iOS */ = {
+			isa = PBXGroup;
+			children = (
+				ABB5C2A9148B3B360056D3E9 /* Categories */,
+				ABB5C2B0148B3B360056D3E9 /* MKNetworkEngine.h */,
+				ABB5C2B1148B3B360056D3E9 /* MKNetworkEngine.m */,
+				ABB5C2B2148B3B360056D3E9 /* MKNetworkKit.h */,
+				ABB5C2B3148B3B360056D3E9 /* MKNetworkOperation.h */,
+				ABB5C2B4148B3B360056D3E9 /* MKNetworkOperation.m */,
+				ABB5C2B5148B3B360056D3E9 /* Reachability */,
+				ABB5C262148B3AE00056D3E9 /* Supporting Files */,
+			);
+			path = "MKNetworkKit-iOS";
+			sourceTree = "<group>";
+		};
+		ABB5C262148B3AE00056D3E9 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				ABB5C263148B3AE00056D3E9 /* MKNetworkKit-iOS-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		ABB5C2A9148B3B360056D3E9 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				ABB5C2AA148B3B360056D3E9 /* NSDictionary+RequestEncoding.h */,
+				ABB5C2AB148B3B360056D3E9 /* NSDictionary+RequestEncoding.m */,
+				ABB5C2AC148B3B360056D3E9 /* NSString+MKNetworkKitAdditions.h */,
+				ABB5C2AD148B3B360056D3E9 /* NSString+MKNetworkKitAdditions.m */,
+				ABB5C2AE148B3B360056D3E9 /* UIAlertView+MKNetworkKitAdditions.h */,
+				ABB5C2AF148B3B360056D3E9 /* UIAlertView+MKNetworkKitAdditions.m */,
+			);
+			name = Categories;
+			path = ../../MKNetworkKit/Categories;
+			sourceTree = "<group>";
+		};
+		ABB5C2B5148B3B360056D3E9 /* Reachability */ = {
+			isa = PBXGroup;
+			children = (
+				ABB5C2B6148B3B360056D3E9 /* Reachability.h */,
+				ABB5C2B7148B3B360056D3E9 /* Reachability.m */,
+				ABB5C2B8148B3B360056D3E9 /* Reachability_h */,
+			);
+			name = Reachability;
+			path = ../../MKNetworkKit/Reachability;
+			sourceTree = "<group>";
+		};
+		ABB5C2B8148B3B360056D3E9 /* Reachability_h */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Reachability_h;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		ABB5C25A148B3AE00056D3E9 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ABB5C2B9148B3B360056D3E9 /* NSDictionary+RequestEncoding.h in Headers */,
+				ABB5C2BB148B3B360056D3E9 /* NSString+MKNetworkKitAdditions.h in Headers */,
+				ABB5C2BD148B3B360056D3E9 /* UIAlertView+MKNetworkKitAdditions.h in Headers */,
+				ABB5C2BF148B3B360056D3E9 /* MKNetworkEngine.h in Headers */,
+				ABB5C2C1148B3B360056D3E9 /* MKNetworkKit.h in Headers */,
+				ABB5C2C2148B3B360056D3E9 /* MKNetworkOperation.h in Headers */,
+				ABB5C2C4148B3B360056D3E9 /* Reachability.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		ABB5C25B148B3AE00056D3E9 /* MKNetworkKit-iOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = ABB5C269148B3AE00056D3E9 /* Build configuration list for PBXNativeTarget "MKNetworkKit-iOS" */;
+			buildPhases = (
+				ABB5C258148B3AE00056D3E9 /* Sources */,
+				ABB5C259148B3AE00056D3E9 /* Frameworks */,
+				ABB5C25A148B3AE00056D3E9 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "MKNetworkKit-iOS";
+			productName = "MKNetworkKit-iOS";
+			productReference = ABB5C25C148B3AE00056D3E9 /* libMKNetworkKit-iOS.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		ABB5C253148B3AE00056D3E9 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+				ORGANIZATIONNAME = Steinlogic;
+			};
+			buildConfigurationList = ABB5C256148B3AE00056D3E9 /* Build configuration list for PBXProject "MKNetworkKit-iOS" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = ABB5C251148B3AE00056D3E9;
+			productRefGroup = ABB5C25D148B3AE00056D3E9 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				ABB5C25B148B3AE00056D3E9 /* MKNetworkKit-iOS */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		ABB5C258148B3AE00056D3E9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ABB5C2BA148B3B360056D3E9 /* NSDictionary+RequestEncoding.m in Sources */,
+				ABB5C2BC148B3B360056D3E9 /* NSString+MKNetworkKitAdditions.m in Sources */,
+				ABB5C2BE148B3B360056D3E9 /* UIAlertView+MKNetworkKitAdditions.m in Sources */,
+				ABB5C2C0148B3B360056D3E9 /* MKNetworkEngine.m in Sources */,
+				ABB5C2C3148B3B360056D3E9 /* MKNetworkOperation.m in Sources */,
+				ABB5C2C5148B3B360056D3E9 /* Reachability.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		ABB5C267148B3AE00056D3E9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		ABB5C268148B3AE00056D3E9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		ABB5C26A148B3AE00056D3E9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DSTROOT = /tmp/MKNetworkKit_iOS.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "MKNetworkKit-iOS/MKNetworkKit-iOS-Prefix.pch";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		ABB5C26B148B3AE00056D3E9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DSTROOT = /tmp/MKNetworkKit_iOS.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "MKNetworkKit-iOS/MKNetworkKit-iOS-Prefix.pch";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		ABB5C256148B3AE00056D3E9 /* Build configuration list for PBXProject "MKNetworkKit-iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ABB5C267148B3AE00056D3E9 /* Debug */,
+				ABB5C268148B3AE00056D3E9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		ABB5C269148B3AE00056D3E9 /* Build configuration list for PBXNativeTarget "MKNetworkKit-iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ABB5C26A148B3AE00056D3E9 /* Debug */,
+				ABB5C26B148B3AE00056D3E9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = ABB5C253148B3AE00056D3E9 /* Project object */;
+}

@@ -1,5 +1,5 @@
 //
-//  ExampleUploader.h
+//  YahooEngine.h
 //  MKNetworkKitDemo
 //
 //  Created by Mugunth Kumar (@mugunthkumar) on 11/11/11.
@@ -23,13 +23,12 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-#import "MKNetworkEngine.h"
+@interface YahooEngine : MKNetworkEngine
 
-@interface ExampleUploader : MKNetworkEngine
-typedef void (^TwitPicBlock)(NSString *twitPicURL);
+typedef void (^CurrencyResponseBlock)(double rate);
 
--(MKNetworkOperation*) uploadImageFromFile:(NSString*) file 
-                              onCompletion:(TwitPicBlock) completionBlock
-                                   onError:(MKNKErrorBlock) errorBlock;
-
+-(MKNetworkOperation*) currencyRateFor:(NSString*) sourceCurrency 
+                   inCurrency:(NSString*) targetCurrency 
+                 onCompletion:(CurrencyResponseBlock) completion
+                      onError:(MKNKErrorBlock) error;
 @end

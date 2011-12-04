@@ -24,7 +24,13 @@
 //  THE SOFTWARE.
 
 #import <UIKit/UIKit.h>
-#import "MKNetworkKit.h"
+
+@class MKNetworkOperation;
+
+typedef void (^MKNKProgressBlock)(double progress);
+typedef void (^MKNKResponseBlock)(MKNetworkOperation* operation);
+typedef void (^MKNKImageBlock) (UIImage* fetchedImage, NSString* urlString);
+typedef void (^MKNKErrorBlock)(NSError* error);
 
 /*!
  @header MKNetworkOperation.h

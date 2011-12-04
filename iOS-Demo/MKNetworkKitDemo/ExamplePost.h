@@ -6,8 +6,6 @@
 //  Copyright (c) 2011 Steinlogic. All rights reserved.
 //
 
-#import "MKNetworkEngine.h"
-
 @interface ExamplePost : MKNetworkEngine
 
 -(MKNetworkOperation*) postDataToServer;

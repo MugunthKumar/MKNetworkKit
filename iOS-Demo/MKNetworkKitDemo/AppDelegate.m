@@ -36,6 +36,8 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
+    NSString *str = @"TEST";
+    [str md5];
     
     NSMutableDictionary *headerFields = [NSMutableDictionary dictionary]; 
     [headerFields setValue:@"iOS" forKey:@"x-client-identifier"];

@@ -25,7 +25,6 @@
 
 #import "ViewController.h"
 #import "AppDelegate.h"
-#import "UIAlertView+MKNetworkKitAdditions.h"
 
 @implementation ViewController
 
@@ -103,7 +102,7 @@
                                    delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles: nil] show];
         return;
     }
-    NSString *uploadPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingFormat:@"/sample.JPG"];
+    NSString *uploadPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingFormat:@"/SampleImage.jpg"];
     self.uploadOperation = [ApplicationDelegate.twitPicUploader uploadImageFromFile:uploadPath 
                                                                        onCompletion:^(NSString *twitPicURL) {
                                                                            
