@@ -33,4 +33,5 @@
 
 @property (nonatomic, weak) IBOutlet UIProgressView *downloadProgessBar;
 @property (nonatomic, weak) IBOutlet UIProgressView *uploadProgessBar;
+
 @end

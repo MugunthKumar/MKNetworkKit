@@ -32,6 +32,7 @@
 @synthesize twitPicUploader = _twitPicUploader;
 @synthesize sampleDownloader = _sampleDownloader;
 @synthesize samplePoster = _samplePoster;
+@synthesize sampleAuth = _sampleAuth;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -52,7 +53,8 @@
     
     self.sampleDownloader = [[ExampleDownloader alloc] initWithHostName:nil customHeaderFields:nil];
     self.samplePoster = [[ExamplePost alloc] initWithHostName:@"thgame.phpfog.com" customHeaderFields:nil];
-
+    self.sampleAuth = [[AuthTestEngine alloc] initWithHostName:@"api.mk.sg" customHeaderFields:nil];
+    
     return YES;
 }
 							

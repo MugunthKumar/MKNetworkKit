@@ -83,24 +83,24 @@ typedef void (^MKNKErrorBlock)(NSError* error);
 
 /*!
  *  @abstract The internal request object
- *  @property request
+ *  @property readonlyRequest
  *  
  *  @discussion
  *	Returns the operation's actual request object
  *  This property is readonly cannot be modified. 
  *  To create an operation with a new request, use the operationWithURLString:params:httpMethod: 
  */
-@property (nonatomic, strong, readonly) NSMutableURLRequest *request;
+@property (nonatomic, strong, readonly) NSMutableURLRequest *readonlyRequest;
 
 /*!
  *  @abstract The internal HTTP Response Object
- *  @property response
+ *  @property readonlyResponse
  *  
  *  @discussion
  *	Returns the operation's actual response object
  *  This property is readonly cannot be updated. 
  */
-@property (nonatomic, strong, readonly) NSHTTPURLResponse *response;
+@property (nonatomic, strong, readonly) NSHTTPURLResponse *readonlyResponse;
 /*!
  *  @abstract String Encoding Property
  *  @property stringEncoding

@@ -167,4 +167,9 @@
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
 
+- (IBAction)testAuthTapped:(id)sender {
+    
+    [ApplicationDelegate.sampleAuth authenticateTest];
+
+}
 @end
