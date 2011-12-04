@@ -1,15 +1,13 @@
 This is version 0.8 of MKNetworkKit. Read the <a href="http://mk.sg/8w"> blog post</a> for more.
 
-##IMPORTANT
 ---
+##IMPORTANT
 
 The master branch is a live working branch that isn't stable right now. I'm adding a workspace with iOS and Mac Targets separately. The iOS project compiles, but OSX project doesn't. Till then, pickup the latest stable code at the tag <a href="https://github.com/MugunthKumar/MKNetworkKit/zipball/v0.8a"> v0.8a </a>
 
 ---
-
-
 ###Licensing
----
+
 MKNetworkKit is licensed under MIT License
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,9 +27,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
-
-###Why MKNetworkKit?
 ---
+###Why MKNetworkKit?
 
 MKNetworkKit is inspired by the other two popular network frameworks ASIHTTPRequest and AFNetworking.
 Mostly ASI, to some extent, AFNetworking. I've been an unofficial "evangelist" of ASIHTTPRequest till the plug was pulled.
@@ -46,18 +43,18 @@ Marrying the feature set from both, MKNetworkKit throws in a bunch of new featur
 * Full ARC support
 * cURL-able debug lines.
 
-###How to use
 ---
+###How to use
 Read the <a href="http://mk.sg/8w"> blog post</a> for more.
 
-### Documentation
 ---
+### Documentation
 Install appledoc from gentlebytes github repo
 run this on the command line
 /usr/local/bin/appledoc --project-name MKNetworkKit -v 0.8 --project-company Steinlogic --company-id com.steinlogic.mknetworkkit -o ./Documentation -i .m -s ./MKNetworkKit .
 
-###TODO
 ---
+###TODO
 
 * Method to freeze blocks (alternative techniques probably)
 * Obey cache-expires HTTP headers
@@ -70,10 +67,10 @@ run this on the command line
 
 I'll be working on this soon. But you can start forking it and getting it right
 
-###Known Issues
 ---
+###Known Issues
 * Frozen operations don't report progress/completion handlers back to the calling code.
 
-###A note on licensing
 ---
+###A note on licensing
 Attribution free licensing available upon request. Contact me at <a href="mailto:mknetworkkit@mk.sg"> mknetworkkit@mk.sg </a>
