@@ -1,9 +1,6 @@
-This is version 0.8 of MKNetworkKit. Read the <a href="http://mk.sg/8w"> blog post</a> for more.
+This is version 0.85 of MKNetworkKit. Read the <a href="http://mk.sg/8w"> blog post</a> for more. The master branch is a live working branch that is not stable yet (especially for Mac). 
 
----
-##IMPORTANT
-
-The master branch is a live working branch that isn't stable right now. I'm adding a workspace with iOS and Mac Targets separately. The iOS project compiles, but OSX project doesn't. Till then, pickup the latest stable code at the tag <a href="https://github.com/MugunthKumar/MKNetworkKit/zipball/v0.8a"> v0.8a </a>
+Till then, pickup the latest stable code at the tag <a href="https://github.com/MugunthKumar/MKNetworkKit/zipball/v0.8a"> v0.8a </a>
 
 ---
 ###Licensing
@@ -57,12 +54,12 @@ run this on the command line
 ###TODO
 
 * Method to freeze blocks (alternative techniques probably)
-* Obey cache-expires HTTP headers
 * UserAgent String (Don't advertise MKNetworkKit, this should be app name)
 * Multiple encoding types in URL
 * Read about response redirects and implement delegate callbacks or use state variables
-* Example code for Mac
 * Cache strategy for Mac
+* Obey cache-expires HTTP headers
+* Example code for Mac
 * Fix warning TODO in the code
 * Fix AppleDoc warnings
 

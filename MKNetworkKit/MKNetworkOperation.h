@@ -71,6 +71,37 @@ typedef void (^MKNKErrorBlock)(NSError* error);
 				httpMethod:(NSString *)method;
 
 /*!
+ *  @abstract Request URL Property
+ *  @property url
+ *  
+ *  @discussion
+ *	Returns the operation's URL
+ *  This property is readonly cannot be updated. 
+ *  To create an operation with a specific URL, use the operationWithURLString:params:httpMethod: 
+ */
+@property (nonatomic, readonly) NSString *url;
+
+/*!
+ *  @abstract The internal request object
+ *  @property request
+ *  
+ *  @discussion
+ *	Returns the operation's actual request object
+ *  This property is readonly cannot be modified. 
+ *  To create an operation with a new request, use the operationWithURLString:params:httpMethod: 
+ */
+@property (nonatomic, strong, readonly) NSMutableURLRequest *request;
+
+/*!
+ *  @abstract The internal HTTP Response Object
+ *  @property response
+ *  
+ *  @discussion
+ *	Returns the operation's actual response object
+ *  This property is readonly cannot be updated. 
+ */
+@property (nonatomic, strong, readonly) NSHTTPURLResponse *response;
+/*!
  *  @abstract String Encoding Property
  *  @property stringEncoding
  *  
@@ -88,6 +119,9 @@ typedef void (^MKNKErrorBlock)(NSError* error);
  *  
  *  @discussion
  *	Freezable operations are serialized when the network goes down and restored when the connectivity is up again.
+ *  Only POST, PUT and DELETE operations are freezable.
+ *  In short, any operation that changes the state of the server are freezable, creating a tweet, checking into a new location etc., Operations like fetching a list of tweets (think readonly GET operations) are not freezable.
+ *  MKNetworkKit doesn't freeze (readonly) GET operations even if they are marked as freezable
  */
 @property (nonatomic, assign) BOOL freezable;
 

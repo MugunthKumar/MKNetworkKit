@@ -132,6 +132,21 @@ typedef enum {
     return _freezable;
 }
 
+-(NSString*) url {
+    
+    return [[self.request URL] absoluteString];
+}
+
+-(NSMutableURLRequest*) request {
+    
+    return [self.request copy];
+}
+
+-(NSHTTPURLResponse*) response {
+    
+    return [self.response copy];
+}
+
 - (void)setFreezable:(BOOL)flag
 {
     // get method cannot be frozen. 
@@ -707,10 +722,6 @@ typedef enum {
     NSUInteger size = [self.response expectedContentLength] < 0 ? 0 : [self.response expectedContentLength];
     self.response = (NSHTTPURLResponse*) response;
     self.mutableData = [NSMutableData dataWithCapacity:size];
-
-    // handle response redirects here (TODO)
-    #warning POSSIBLY INCOMPLETE CODE (MKNETWORKKIT DOESN'T NOTIFY YOU OF RESPONSE REDIRECTS)
-    // This will be implemented soon.
     
     for(NSOutputStream *stream in self.downloadStreams)
         [stream open];

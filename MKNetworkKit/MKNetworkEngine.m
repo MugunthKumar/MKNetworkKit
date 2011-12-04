@@ -155,8 +155,6 @@ static NSOperationQueue *_sharedNetworkQueue;
     {
         DLog(@"Server [%@] is not reachable", self.hostName);        
         [self freezeOperations];
-#warning POSSIBLY INCOMPLETE FUNCTION (BETA CODE)
-        // FREEZE OPERATIONS ONLY FOR SERVER THAT WENT DOWN        
     }        
 }
 
@@ -167,7 +165,11 @@ static NSOperationQueue *_sharedNetworkQueue;
     
     for(MKNetworkOperation *operation in _sharedNetworkQueue.operations) {
         
-        if(![operation freezable]) continue; // freeze only freeable operations.
+        // freeze only freeable operations.
+        if(![operation freezable]) continue;
+        
+        // freeze only operations that belong to this server
+        if([[operation url] rangeOfString:self.hostName].location == NSNotFound) continue;
         
         NSString *archivePath = [[[self cacheDirectoryName] stringByAppendingPathComponent:[operation uniqueIdentifier]] 
                                  stringByAppendingPathExtension:kFreezableOperationExtension];
@@ -419,9 +421,13 @@ static NSOperationQueue *_sharedNetworkQueue;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveCache)
                                                  name:UIApplicationWillTerminateNotification
                                                object:nil];
+
+#elif TARGET_OS_MAC
+
+#warning POSSIBLY INCOMPLETE FUNCTION (Subscribe to Mac related notification for serializing caches)
+
 #endif
     
-#warning POSSIBLY INCOMPLETE FUNCTION (Subscribe to Mac related notification for serializing caches)
 
 }
 
