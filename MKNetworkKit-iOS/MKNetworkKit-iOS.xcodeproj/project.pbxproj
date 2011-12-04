@@ -20,7 +20,7 @@
 		ABB5C2C2148B3B360056D3E9 /* MKNetworkOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = ABB5C2B3148B3B360056D3E9 /* MKNetworkOperation.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		ABB5C2C3148B3B360056D3E9 /* MKNetworkOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = ABB5C2B4148B3B360056D3E9 /* MKNetworkOperation.m */; };
 		ABB5C2C4148B3B360056D3E9 /* Reachability.h in Headers */ = {isa = PBXBuildFile; fileRef = ABB5C2B6148B3B360056D3E9 /* Reachability.h */; };
-		ABB5C2C5148B3B360056D3E9 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = ABB5C2B7148B3B360056D3E9 /* Reachability.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		ABB5C2C5148B3B360056D3E9 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = ABB5C2B7148B3B360056D3E9 /* Reachability.m */; };
 		ABB5C2CD148B40910056D3E9 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABB5C2CB148B40910056D3E9 /* SystemConfiguration.framework */; };
 		ABB5C2CE148B40910056D3E9 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABB5C2CC148B40910056D3E9 /* CFNetwork.framework */; };
 /* End PBXBuildFile section */
@@ -307,6 +307,7 @@
 				ABB5C26B148B3AE00056D3E9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

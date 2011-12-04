@@ -20,7 +20,7 @@
 		ABB5C2A5148B3B160056D3E9 /* MKNetworkOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = ABB5C296148B3B160056D3E9 /* MKNetworkOperation.h */; };
 		ABB5C2A6148B3B160056D3E9 /* MKNetworkOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = ABB5C297148B3B160056D3E9 /* MKNetworkOperation.m */; };
 		ABB5C2A7148B3B160056D3E9 /* Reachability.h in Headers */ = {isa = PBXBuildFile; fileRef = ABB5C299148B3B160056D3E9 /* Reachability.h */; };
-		ABB5C2A8148B3B160056D3E9 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = ABB5C29A148B3B160056D3E9 /* Reachability.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		ABB5C2A8148B3B160056D3E9 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = ABB5C29A148B3B160056D3E9 /* Reachability.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */

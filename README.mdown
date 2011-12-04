@@ -58,11 +58,12 @@ run this on the command line
 
 * Method to freeze blocks (alternative techniques probably)
 * Obey cache-expires HTTP headers
-* Mac compatibility and XML support (NSXMLDocument)
 * UserAgent String (Don't advertise MKNetworkKit, this should be app name)
 * Multiple encoding types in URL
 * Read about response redirects and implement delegate callbacks or use state variables
-* Integrate the ARC version of Reachability from https://gist.github.com/1182373
+* Example code for Mac
+* Cache strategy for Mac
+* Fix warning TODO in the code
 * Fix AppleDoc warnings
 
 I'll be working on this soon. But you can start forking it and getting it right

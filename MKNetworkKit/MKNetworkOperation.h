@@ -264,6 +264,7 @@ typedef void (^MKNKErrorBlock)(NSError* error);
 -(UIImage*) responseImage;
 #elif TARGET_OS_MAC
 -(NSImage*) responseImage;
+-(NSXMLDocument*) responseXML;
 #endif
 
 #ifdef __IPHONE_5_0

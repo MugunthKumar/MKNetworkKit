@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AB80BBA0148B606700B6DC2A /* libMKNetworkKit-OSX.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AB80BB9F148B606600B6DC2A /* libMKNetworkKit-OSX.a */; };
 		ABB5C235148B3AC30056D3E9 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABB5C234148B3AC30056D3E9 /* Cocoa.framework */; };
 		ABB5C23F148B3AC30056D3E9 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = ABB5C23D148B3AC30056D3E9 /* InfoPlist.strings */; };
 		ABB5C241148B3AC30056D3E9 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = ABB5C240148B3AC30056D3E9 /* main.m */; };
@@ -16,6 +17,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		AB80BB9F148B606600B6DC2A /* libMKNetworkKit-OSX.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libMKNetworkKit-OSX.a"; path = "../../../../../../../../Library/Developer/Xcode/DerivedData/MKNetworkKit-cjhwoshwgsctpkanrccjokjaigdb/Build/Products/Debug/libMKNetworkKit-OSX.a"; sourceTree = "<group>"; };
 		ABB5C230148B3AC30056D3E9 /* MKNetworkKit-OSX-Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MKNetworkKit-OSX-Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ABB5C234148B3AC30056D3E9 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		ABB5C237148B3AC30056D3E9 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -36,6 +38,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AB80BBA0148B606700B6DC2A /* libMKNetworkKit-OSX.a in Frameworks */,
 				ABB5C235148B3AC30056D3E9 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -46,6 +49,7 @@
 		ABB5C225148B3AC30056D3E9 = {
 			isa = PBXGroup;
 			children = (
+				AB80BB9F148B606600B6DC2A /* libMKNetworkKit-OSX.a */,
 				ABB5C23A148B3AC30056D3E9 /* MKNetworkKit-OSX-Demo */,
 				ABB5C233148B3AC30056D3E9 /* Frameworks */,
 				ABB5C231148B3AC30056D3E9 /* Products */,
@@ -254,6 +258,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MKNetworkKit-OSX-Demo/MKNetworkKit-OSX-Demo-Prefix.pch";
 				INFOPLIST_FILE = "MKNetworkKit-OSX-Demo/MKNetworkKit-OSX-Demo-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../../../../../../../Library/Developer/Xcode/DerivedData/MKNetworkKit-cjhwoshwgsctpkanrccjokjaigdb/Build/Products/Debug\"",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -265,6 +273,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MKNetworkKit-OSX-Demo/MKNetworkKit-OSX-Demo-Prefix.pch";
 				INFOPLIST_FILE = "MKNetworkKit-OSX-Demo/MKNetworkKit-OSX-Demo-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../../../../../../../Library/Developer/Xcode/DerivedData/MKNetworkKit-cjhwoshwgsctpkanrccjokjaigdb/Build/Products/Debug\"",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -289,6 +301,7 @@
 				ABB5C250148B3AC30056D3E9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

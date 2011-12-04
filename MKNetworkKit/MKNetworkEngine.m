@@ -71,6 +71,7 @@ static NSOperationQueue *_sharedNetworkQueue;
             _sharedNetworkQueue = [[NSOperationQueue alloc] init];
             [_sharedNetworkQueue addObserver:[self self] forKeyPath:@"operationCount" options:0 context:NULL];
             [_sharedNetworkQueue setMaxConcurrentOperationCount:6];
+
         });
     }            
 }
@@ -86,9 +87,10 @@ static NSOperationQueue *_sharedNetworkQueue;
                                                        object:nil];
             
             DLog(@"Engine initialized with host: %@", hostName);
-            self.hostName = hostName;
-            self.reachability = [Reachability reachabilityWithHostName:self.hostName];
+            self.hostName = hostName;            
+            self.reachability = [Reachability reachabilityWithHostname:self.hostName];
             [self.reachability startNotifier];
+
         }
         self.customHeaders = headers;
     }
@@ -102,7 +104,9 @@ static NSOperationQueue *_sharedNetworkQueue;
 -(void) dealloc {
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kReachabilityChangedNotification object:nil];
+#if TARGET_OS_IPHONE    
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
+#endif
 }
 
 +(void) dealloc {
@@ -118,8 +122,10 @@ static NSOperationQueue *_sharedNetworkQueue;
 {
     if (object == _sharedNetworkQueue && [keyPath isEqualToString:@"operationCount"]) {
         
+#if TARGET_OS_IPHONE
         [UIApplication sharedApplication].networkActivityIndicatorVisible = 
         ([_sharedNetworkQueue.operations count] > 0);        
+#endif
     }
     else {
         [super observeValueForKeyPath:keyPath ofObject:object 
@@ -402,7 +408,8 @@ static NSOperationQueue *_sharedNetworkQueue;
         NSError *error = nil;
         [[NSFileManager defaultManager] createDirectoryAtPath:cacheDirectory withIntermediateDirectories:YES attributes:nil error:&error];
     }
-    
+
+#if TARGET_OS_IPHONE        
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveCache)
                                                  name:UIApplicationDidReceiveMemoryWarningNotification
                                                object:nil];
@@ -412,6 +419,10 @@ static NSOperationQueue *_sharedNetworkQueue;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveCache)
                                                  name:UIApplicationWillTerminateNotification
                                                object:nil];
+#endif
+    
+#warning POSSIBLY INCOMPLETE FUNCTION (Subscribe to Mac related notification for serializing caches)
+
 }
 
 @end

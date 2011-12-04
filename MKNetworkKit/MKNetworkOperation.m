@@ -61,8 +61,9 @@ typedef enum {
 @property (nonatomic, retain) NSMutableArray *downloadStreams;
 @property (nonatomic, retain) NSData *cachedResponse;
 @property (nonatomic, copy) MKNKResponseBlock cacheHandlingBlock;
+#if TARGET_OS_IPHONE    
 @property (nonatomic, assign) UIBackgroundTaskIdentifier backgroundTaskId;
-
+#endif
 @property (strong, nonatomic) NSError *error;
 
 - (id)initWithURLString:(NSString *)aURLString
@@ -105,7 +106,10 @@ typedef enum {
 
 @synthesize cachedResponse = _cachedResponse;
 @synthesize cacheHandlingBlock = _cacheHandlingBlock;
+
+#if TARGET_OS_IPHONE    
 @synthesize backgroundTaskId = _backgroundTaskId;
+#endif
 
 @synthesize error = _error;
 
@@ -219,14 +223,14 @@ typedef enum {
         case MKNetworkOperationStateFinished:
             [self didChangeValueForKey:@"isExecuting"];
             [self didChangeValueForKey:@"isFinished"];
-            
+#if TARGET_OS_IPHONE                
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (self.backgroundTaskId != UIBackgroundTaskInvalid) {
                     [[UIApplication sharedApplication] endBackgroundTask:self.backgroundTaskId];
                     self.backgroundTaskId = UIBackgroundTaskInvalid;
                 }
             });
-            
+#endif        
             break;
     }
 }
@@ -244,7 +248,7 @@ typedef enum {
     [encoder encodeObject:self.password forKey:@"password"];
     
     self.state = MKNetworkOperationStateReady;
-    [encoder encodeInteger:_state forKey:@"state"];
+    [encoder encodeInt32:_state forKey:@"state"];
     [encoder encodeBool:self.isCancelled forKey:@"isCancelled"];
     [encoder encodeObject:self.mutableData forKey:@"mutableData"];
     
@@ -266,7 +270,7 @@ typedef enum {
         self.username = [decoder decodeObjectForKey:@"username"];
         self.password = [decoder decodeObjectForKey:@"password"];
         
-        [self setState:[decoder decodeIntegerForKey:@"state"]];
+        [self setState:[decoder decodeInt32ForKey:@"state"]];
         self.isCancelled = [decoder decodeBoolForKey:@"isCancelled"];
         self.mutableData = [decoder decodeObjectForKey:@"mutableData"];
         
@@ -277,7 +281,7 @@ typedef enum {
 
 - (id)copyWithZone:(NSZone *)zone
 {
-    id theCopy = [[[self class] allocWithZone:zone] init];  // use designated initializer
+    MKNetworkOperation *theCopy = [[[self class] allocWithZone:zone] init];  // use designated initializer
     
     [theCopy setStringEncoding:self.stringEncoding];
     [theCopy setUniqueId:[self.uniqueId copy]];
@@ -598,7 +602,8 @@ typedef enum {
 
 - (void) start
 {
-    
+ 
+#if TARGET_OS_IPHONE
     self.backgroundTaskId = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
         
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -610,6 +615,8 @@ typedef enum {
             }
         });
     }];
+    
+#endif
     
     if(![NSThread isMainThread]){
         [self performSelectorOnMainThread:@selector(start) withObject:nil waitUntilDone:NO];
@@ -801,8 +808,12 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
     
     return [[NSImage alloc] initWithData:[self responseData]];
 }
-#endif
 
+-(NSXMLDocument*) responseXML {
+    
+    return [[NSXMLDocument alloc] initWithData:[self responseData] options:0 error:nil];
+}
+#endif
 
 #ifdef __IPHONE_5_0
 -(id) responseJSON {
