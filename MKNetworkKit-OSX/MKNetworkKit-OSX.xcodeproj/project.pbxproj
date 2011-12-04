@@ -7,23 +7,25 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AB8AF0CA148B445200ECE140 /* NSAlert+MKNetworkKitAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = AB8AF0C8148B445200ECE140 /* NSAlert+MKNetworkKitAdditions.h */; };
+		AB8AF0CB148B445200ECE140 /* NSAlert+MKNetworkKitAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = AB8AF0C9148B445200ECE140 /* NSAlert+MKNetworkKitAdditions.m */; };
 		ABB5C27B148B3B010056D3E9 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABB5C27A148B3B010056D3E9 /* Cocoa.framework */; };
 		ABB5C29C148B3B160056D3E9 /* NSDictionary+RequestEncoding.h in Headers */ = {isa = PBXBuildFile; fileRef = ABB5C28D148B3B160056D3E9 /* NSDictionary+RequestEncoding.h */; };
 		ABB5C29D148B3B160056D3E9 /* NSDictionary+RequestEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = ABB5C28E148B3B160056D3E9 /* NSDictionary+RequestEncoding.m */; };
 		ABB5C29E148B3B160056D3E9 /* NSString+MKNetworkKitAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = ABB5C28F148B3B160056D3E9 /* NSString+MKNetworkKitAdditions.h */; };
 		ABB5C29F148B3B160056D3E9 /* NSString+MKNetworkKitAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = ABB5C290148B3B160056D3E9 /* NSString+MKNetworkKitAdditions.m */; };
-		ABB5C2A0148B3B160056D3E9 /* UIAlertView+MKNetworkKitAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = ABB5C291148B3B160056D3E9 /* UIAlertView+MKNetworkKitAdditions.h */; };
-		ABB5C2A1148B3B160056D3E9 /* UIAlertView+MKNetworkKitAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = ABB5C292148B3B160056D3E9 /* UIAlertView+MKNetworkKitAdditions.m */; };
 		ABB5C2A2148B3B160056D3E9 /* MKNetworkEngine.h in Headers */ = {isa = PBXBuildFile; fileRef = ABB5C293148B3B160056D3E9 /* MKNetworkEngine.h */; };
 		ABB5C2A3148B3B160056D3E9 /* MKNetworkEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = ABB5C294148B3B160056D3E9 /* MKNetworkEngine.m */; };
 		ABB5C2A4148B3B160056D3E9 /* MKNetworkKit.h in Headers */ = {isa = PBXBuildFile; fileRef = ABB5C295148B3B160056D3E9 /* MKNetworkKit.h */; };
 		ABB5C2A5148B3B160056D3E9 /* MKNetworkOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = ABB5C296148B3B160056D3E9 /* MKNetworkOperation.h */; };
 		ABB5C2A6148B3B160056D3E9 /* MKNetworkOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = ABB5C297148B3B160056D3E9 /* MKNetworkOperation.m */; };
 		ABB5C2A7148B3B160056D3E9 /* Reachability.h in Headers */ = {isa = PBXBuildFile; fileRef = ABB5C299148B3B160056D3E9 /* Reachability.h */; };
-		ABB5C2A8148B3B160056D3E9 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = ABB5C29A148B3B160056D3E9 /* Reachability.m */; };
+		ABB5C2A8148B3B160056D3E9 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = ABB5C29A148B3B160056D3E9 /* Reachability.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		AB8AF0C8148B445200ECE140 /* NSAlert+MKNetworkKitAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSAlert+MKNetworkKitAdditions.h"; sourceTree = "<group>"; };
+		AB8AF0C9148B445200ECE140 /* NSAlert+MKNetworkKitAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSAlert+MKNetworkKitAdditions.m"; sourceTree = "<group>"; };
 		ABB5C277148B3B010056D3E9 /* libMKNetworkKit-OSX.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libMKNetworkKit-OSX.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ABB5C27A148B3B010056D3E9 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		ABB5C27D148B3B010056D3E9 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -34,8 +36,6 @@
 		ABB5C28E148B3B160056D3E9 /* NSDictionary+RequestEncoding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+RequestEncoding.m"; sourceTree = "<group>"; };
 		ABB5C28F148B3B160056D3E9 /* NSString+MKNetworkKitAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+MKNetworkKitAdditions.h"; sourceTree = "<group>"; };
 		ABB5C290148B3B160056D3E9 /* NSString+MKNetworkKitAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+MKNetworkKitAdditions.m"; sourceTree = "<group>"; };
-		ABB5C291148B3B160056D3E9 /* UIAlertView+MKNetworkKitAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertView+MKNetworkKitAdditions.h"; sourceTree = "<group>"; };
-		ABB5C292148B3B160056D3E9 /* UIAlertView+MKNetworkKitAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAlertView+MKNetworkKitAdditions.m"; sourceTree = "<group>"; };
 		ABB5C293148B3B160056D3E9 /* MKNetworkEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MKNetworkEngine.h; path = ../../MKNetworkKit/MKNetworkEngine.h; sourceTree = "<group>"; };
 		ABB5C294148B3B160056D3E9 /* MKNetworkEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MKNetworkEngine.m; path = ../../MKNetworkKit/MKNetworkEngine.m; sourceTree = "<group>"; };
 		ABB5C295148B3B160056D3E9 /* MKNetworkKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MKNetworkKit.h; path = ../../MKNetworkKit/MKNetworkKit.h; sourceTree = "<group>"; };
@@ -123,8 +123,8 @@
 				ABB5C28E148B3B160056D3E9 /* NSDictionary+RequestEncoding.m */,
 				ABB5C28F148B3B160056D3E9 /* NSString+MKNetworkKitAdditions.h */,
 				ABB5C290148B3B160056D3E9 /* NSString+MKNetworkKitAdditions.m */,
-				ABB5C291148B3B160056D3E9 /* UIAlertView+MKNetworkKitAdditions.h */,
-				ABB5C292148B3B160056D3E9 /* UIAlertView+MKNetworkKitAdditions.m */,
+				AB8AF0C8148B445200ECE140 /* NSAlert+MKNetworkKitAdditions.h */,
+				AB8AF0C9148B445200ECE140 /* NSAlert+MKNetworkKitAdditions.m */,
 			);
 			name = Categories;
 			path = ../../MKNetworkKit/Categories;
@@ -157,11 +157,11 @@
 			files = (
 				ABB5C29C148B3B160056D3E9 /* NSDictionary+RequestEncoding.h in Headers */,
 				ABB5C29E148B3B160056D3E9 /* NSString+MKNetworkKitAdditions.h in Headers */,
-				ABB5C2A0148B3B160056D3E9 /* UIAlertView+MKNetworkKitAdditions.h in Headers */,
 				ABB5C2A2148B3B160056D3E9 /* MKNetworkEngine.h in Headers */,
 				ABB5C2A4148B3B160056D3E9 /* MKNetworkKit.h in Headers */,
 				ABB5C2A5148B3B160056D3E9 /* MKNetworkOperation.h in Headers */,
 				ABB5C2A7148B3B160056D3E9 /* Reachability.h in Headers */,
+				AB8AF0CA148B445200ECE140 /* NSAlert+MKNetworkKitAdditions.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -218,10 +218,10 @@
 			files = (
 				ABB5C29D148B3B160056D3E9 /* NSDictionary+RequestEncoding.m in Sources */,
 				ABB5C29F148B3B160056D3E9 /* NSString+MKNetworkKitAdditions.m in Sources */,
-				ABB5C2A1148B3B160056D3E9 /* UIAlertView+MKNetworkKitAdditions.m in Sources */,
 				ABB5C2A3148B3B160056D3E9 /* MKNetworkEngine.m in Sources */,
 				ABB5C2A6148B3B160056D3E9 /* MKNetworkOperation.m in Sources */,
 				ABB5C2A8148B3B160056D3E9 /* Reachability.m in Sources */,
+				AB8AF0CB148B445200ECE140 /* NSAlert+MKNetworkKitAdditions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -312,6 +312,7 @@
 				ABB5C28A148B3B010056D3E9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

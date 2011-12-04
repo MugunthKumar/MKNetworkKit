@@ -791,10 +791,18 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
     return [[NSString alloc] initWithData:[self responseData] encoding:encoding];
 }
 
+#if TARGET_OS_IPHONE
 -(UIImage*) responseImage {
     
     return [UIImage imageWithData:[self responseData]];
 }
+#elif TARGET_OS_MAC
+-(NSImage*) responseImage {
+    
+    return [[NSImage alloc] initWithData:[self responseData]];
+}
+#endif
+
 
 #ifdef __IPHONE_5_0
 -(id) responseJSON {

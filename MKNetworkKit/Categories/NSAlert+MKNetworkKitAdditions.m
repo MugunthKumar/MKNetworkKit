@@ -1,6 +1,6 @@
 //
-//  MKNetworkKit.h
-//  MKNetworkKit
+//  NSAlert+MKNetworkKitAdditions.m
+//  MKNetworkKitDemo
 //
 //  Created by Mugunth Kumar (@mugunthkumar) on 11/11/11.
 //  Copyright (C) 2011-2020 by Steinlogic
@@ -23,47 +23,16 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-#ifndef MKNetworkKit_MKNetworkKit_h
-#define MKNetworkKit_MKNetworkKit_h
+#import "NSAlert+MKNetworkKitAdditions.h"
 
-#ifndef __IPHONE_4_0
-#warning "MKNetworkKit uses features only available in iOS SDK 4.0 and later."
-#endif
+@implementation NSAlert (MKNetworkKitAdditions)
 
-#import <Foundation/Foundation.h>
++(NSAlert*) showWithError:(NSError*) networkError {
 
-#if TARGET_OS_IPHONE
-#import <UIKit/UIKit.h>
-#elif TARGET_OS_MAC
-#import <AppKit/AppKit.h>
-#endif
-
-#ifdef DEBUG
-#   define DLog(fmt, ...) NSLog((@"%s [Line %d] " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__);
-#else
-#   define DLog(...)
-#endif
-
-// ALog always displays output regardless of the DEBUG setting
-#define ALog(fmt, ...) NSLog((@"%s [Line %d] " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__);
-
-#import "Categories/NSString+MKNetworkKitAdditions.h"
-#import "Categories/NSDictionary+RequestEncoding.h"
-
-#if TARGET_OS_IPHONE
-#import "Categories/UIAlertView+MKNetworkKitAdditions.h"
-#elif TARGET_OS_MAC
-#import "Categories/NSAlert+MKNetworkKitAdditions.h"
-#endif
-
-#import "Reachability/Reachability.h"
-
-#import "MKNetworkOperation.h"
-#import "MKNetworkEngine.h"
-
-#define MKNETWORKCACHE_DEFAULT_COST 10
-#define MKNETWORKCACHE_DEFAULT_DIRECTORY @"MKNetworkKitCache"
-
-#endif
-
-
+    DLog(@"%@", [networkError userInfo]);
+    
+    NSAlert *alert = [NSAlert alertWithError:networkError];
+    [alert runModal];
+    return alert;
+}
+@end

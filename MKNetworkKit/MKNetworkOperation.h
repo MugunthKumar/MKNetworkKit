@@ -23,13 +23,15 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-#import <UIKit/UIKit.h>
-
 @class MKNetworkOperation;
 
 typedef void (^MKNKProgressBlock)(double progress);
 typedef void (^MKNKResponseBlock)(MKNetworkOperation* operation);
+#if TARGET_OS_IPHONE
 typedef void (^MKNKImageBlock) (UIImage* fetchedImage, NSString* urlString);
+#elif TARGET_OS_MAC
+typedef void (^MKNKImageBlock) (NSImage* fetchedImage, NSString* urlString);
+#endif
 typedef void (^MKNKErrorBlock)(NSError* error);
 
 /*!
@@ -258,7 +260,12 @@ typedef void (^MKNKErrorBlock)(NSError* error);
  *  @seealso
  *  setDownloadStream:
  */
+#if TARGET_OS_IPHONE
 -(UIImage*) responseImage;
+#elif TARGET_OS_MAC
+-(NSImage*) responseImage;
+#endif
+
 #ifdef __IPHONE_5_0
 /*!
  *  @abstract Helper method to retrieve the contents as a NSDictionary or NSArray depending on the JSON contents
