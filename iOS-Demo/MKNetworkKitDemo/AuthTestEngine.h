@@ -8,5 +8,6 @@
 
 @interface AuthTestEngine : MKNetworkEngine
 
--(void) authenticateTest;
+-(void) basicAuthTest;
+-(void) digestAuthTest;
 @end
