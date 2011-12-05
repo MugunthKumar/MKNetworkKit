@@ -342,7 +342,7 @@ static NSOperationQueue *_sharedNetworkQueue;
         [op setCachedData:cachedData];
     }
     
-    if(0) { // If the cache is old
+    if(!cachedData) { // If the cache is old when caching is implemented, this should come from cache
         [self enqueueOperation:op];
     }
 }

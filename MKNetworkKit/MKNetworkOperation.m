@@ -173,9 +173,7 @@ typedef enum {
 
 -(NSString*) uniqueIdentifier {
     
-    NSString *str = [NSString stringWithFormat:@"%@ %@", 
-                     self.request.HTTPMethod,
-                     [self.request.URL absoluteString]];
+    NSString *str = [self curlCommandLineString];
     
     if(self.username || self.password) {
         
@@ -422,13 +420,17 @@ typedef enum {
         
         NSString *charset = (__bridge NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(self.stringEncoding));
         
-        [self.request addValue:
-         [NSString stringWithFormat:@"application/x-www-form-urlencoded; charset=%@", charset]
-            forHTTPHeaderField:@"Content-Type"];
-        
         [self.request addValue:[NSString stringWithFormat:@"%@, en-us", 
                                 [[NSLocale preferredLanguages] componentsJoinedByString:@", "]
                                 ] forHTTPHeaderField:@"Accept-Language"];
+        
+        if (([method isEqualToString:@"POST"] ||
+             [method isEqualToString:@"PUT"]) && (params && [params count] > 0)) {
+            
+            [self.request addValue:
+             [NSString stringWithFormat:@"application/x-www-form-urlencoded; charset=%@", charset]
+                forHTTPHeaderField:@"Content-Type"];
+        }
         
         self.state = MKNetworkOperationStateReady;
     }
@@ -449,8 +451,10 @@ typedef enum {
 
 -(NSString*) description {
     
-    NSMutableString *displayString = [[self curlCommandLineString] mutableCopy];
-    
+    NSMutableString *displayString = [NSMutableString stringWithFormat:@"%@\nRequest\n-------\n%@", 
+                                              [[NSDate date] descriptionWithLocale:[NSLocale currentLocale]],
+                                              [self curlCommandLineString]];
+
     NSString *responseString = [self responseString];    
     if([responseString length] > 0) {
         [displayString appendFormat:@"\n--------\nResponse\n--------\n%@\n", responseString];
@@ -461,9 +465,7 @@ typedef enum {
 
 -(NSString*) curlCommandLineString
 {
-    __block NSMutableString *displayString = [NSMutableString stringWithFormat:@"%@\nRequest\n-------\ncurl -X %@", 
-                                              [[NSDate date] descriptionWithLocale:[NSLocale currentLocale]],
-                                              self.request.HTTPMethod];
+    __block NSMutableString *displayString = [NSMutableString stringWithFormat:@"curl -X %@", self.request.HTTPMethod];
     
     if([self.filesToBePosted count] == 0 && [self.dataToBePosted count] == 0) {
         [[self.request allHTTPHeaderFields] enumerateKeysAndObjectsUsingBlock:^(id key, id val, BOOL *stop)
