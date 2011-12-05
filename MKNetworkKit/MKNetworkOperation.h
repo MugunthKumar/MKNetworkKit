@@ -28,9 +28,9 @@
 typedef void (^MKNKProgressBlock)(double progress);
 typedef void (^MKNKResponseBlock)(MKNetworkOperation* completedOperation);
 #if TARGET_OS_IPHONE
-typedef void (^MKNKImageBlock) (UIImage* fetchedImage, NSString* urlString);
+typedef void (^MKNKImageBlock) (UIImage* fetchedImage, NSURL* url, BOOL isInCache);
 #elif TARGET_OS_MAC
-typedef void (^MKNKImageBlock) (NSImage* fetchedImage, NSString* urlString);
+typedef void (^MKNKImageBlock) (NSImage* fetchedImage, NSURL* url, BOOL isInCache);
 #endif
 typedef void (^MKNKErrorBlock)(NSError* error);
 
@@ -271,6 +271,15 @@ typedef void (^MKNKErrorBlock)(NSError* error);
  *  stringEncoding
  */
 -(NSString*)responseString;
+
+/*!
+ *  @abstract Helper method to print the request as a cURL command
+ *  
+ *  @discussion
+ *	This method is used for displaying the request you created as a cURL command
+ *
+ */
+-(NSString*) curlCommandLineString;
 
 /*!
  *  @abstract Helper method to retrieve the contents as a NSString encoded using a specific string encoding

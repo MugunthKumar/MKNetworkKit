@@ -287,22 +287,6 @@ static NSOperationQueue *_sharedNetworkQueue;
     return nil;
 }
 
--(MKNetworkOperation*) imageAtURL:(NSString*) urlString onCompletion:(MKNKImageBlock) completionBlock onError:(MKNKErrorBlock) errorBlock {
-    
-    MKNetworkOperation * op = [self operationWithURLString:urlString params:nil httpMethod:@"GET"];
-    
-    [op onCompletion:^(MKNetworkOperation *completedOperation) {
-        
-        completionBlock([completedOperation responseImage], urlString);
-        
-    } onError:^(NSError *error) {
-        
-        errorBlock(error);
-    }];
-    
-    return op;     
-}
-
 -(void) enqueueOperation:(MKNetworkOperation*) operation {
     
     [operation setCacheHandler:^(MKNetworkOperation* completedCacheableOperation) {
@@ -329,6 +313,30 @@ static NSOperationQueue *_sharedNetworkQueue;
     
     if([self.reachability currentReachabilityStatus] == NotReachable)
         [self freezeOperations];
+}
+
+- (void)imageAtURL:(NSURL *)url onCompletion:(MKNKImageBlock) imageFetchedBlock
+{
+    if (url == nil) {
+        return;
+    }
+    
+    MKNetworkOperation *op = [self operationWithURLString:[url absoluteString]];
+    
+    [op 
+     onCompletion:^(MKNetworkOperation *completedOperation)
+     {
+         imageFetchedBlock([completedOperation responseImage], 
+                           url,
+                           [completedOperation isCachedResponse]);
+         
+     }
+     onError:^(NSError* error) {
+
+         DLog(@"%@", error);
+     }];    
+    
+    [self enqueueOperation:op];
 }
 
 #pragma -
@@ -369,7 +377,7 @@ static NSOperationQueue *_sharedNetworkQueue;
     if(index != NSNotFound)
         [self.memoryCacheKeys removeObjectAtIndex:index];    
     
-    [self.memoryCacheKeys insertObject:data atIndex:0]; // remove it and insert it at start
+    [self.memoryCacheKeys insertObject:cacheDataKey atIndex:0]; // remove it and insert it at start
     
     if([self.memoryCacheKeys count] > [self cacheMemoryCost])
     {

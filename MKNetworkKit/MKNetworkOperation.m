@@ -446,7 +446,20 @@ typedef enum {
 /*
  Printing a MKNetworkOperation object is printed in curl syntax
  */
--(NSString*) description
+
+-(NSString*) description {
+    
+    NSMutableString *displayString = [[self curlCommandLineString] mutableCopy];
+    
+    NSString *responseString = [self responseString];    
+    if([responseString length] > 0) {
+        [displayString appendFormat:@"\n--------\nResponse\n--------\n%@\n", responseString];
+    }
+        
+    return displayString;
+}
+
+-(NSString*) curlCommandLineString
 {
     __block NSMutableString *displayString = [NSMutableString stringWithFormat:@"%@\nRequest\n-------\ncurl -X %@", 
                                               [[NSDate date] descriptionWithLocale:[NSLocale currentLocale]],
@@ -459,7 +472,7 @@ typedef enum {
          }];
     }
     
-    [displayString appendFormat:@" \"%@\"",  [self.request.URL absoluteString]];
+    [displayString appendFormat:@" \"%@\"",  self.url];
     
     if ([self.request.HTTPMethod isEqualToString:@"POST"] || [self.request.HTTPMethod isEqualToString:@"PUT"]) {
         
@@ -484,12 +497,9 @@ typedef enum {
          }];*/
     }
     
-    if(self.mutableData && [self responseString]) {
-        [displayString appendFormat:@"\n--------\nResponse\n--------\n%@\n", [self responseString]];
-    }
-    
     return displayString;
 }
+
 
 -(void) addData:(NSData*) data forKey:(NSString*) key {
     
