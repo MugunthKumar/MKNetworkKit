@@ -57,10 +57,9 @@ run this on the command line
 * UserAgent String (Don't advertise MKNetworkKit, this should be app name)
 * Multiple encoding types in URL
 * Read about response redirects and implement delegate callbacks or use state variables
-* Cache strategy for Mac
 * Obey cache-expires HTTP headers
 * Example code for Mac
-* Fix warning TODO in the code
+* Cache strategy for Mac
 * Fix AppleDoc warnings
 
 I'll be working on this soon. But you can start forking it and getting it right
