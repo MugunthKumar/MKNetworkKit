@@ -26,7 +26,7 @@
 @class MKNetworkOperation;
 
 typedef void (^MKNKProgressBlock)(double progress);
-typedef void (^MKNKResponseBlock)(MKNetworkOperation* operation);
+typedef void (^MKNKResponseBlock)(MKNetworkOperation* completedOperation);
 #if TARGET_OS_IPHONE
 typedef void (^MKNKImageBlock) (UIImage* fetchedImage, NSString* urlString);
 #elif TARGET_OS_MAC
