@@ -206,6 +206,11 @@ static NSOperationQueue *_sharedNetworkQueue;
     }
 }
 
+-(NSString*) readonlyHostName {
+    
+    return [_hostName copy];
+}
+
 -(BOOL) isReachable {
     
     return ([self.reachability currentReachabilityStatus] != NotReachable);

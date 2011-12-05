@@ -58,13 +58,13 @@
                                                                         CFSTR("?!@#$^&%*+,:;='\"`<>()[]{}/\\|~ "), 
                                                                         kCFStringEncodingUTF8);
     
-    NSString *encodedString = (__bridge_transfer NSString*) encodedCFString;    
+    NSString *encodedString = [[NSString alloc] initWithString:(__bridge_transfer NSString*) encodedCFString];    
     CFRelease(encodedCFString);
     
     if(!encodedString)
         encodedString = @"";    
     
-    return [[NSString alloc] initWithString:encodedString];
+    return encodedString;
 }
 
 @end

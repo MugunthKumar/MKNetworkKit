@@ -430,14 +430,6 @@ typedef enum {
                                 [[NSLocale preferredLanguages] componentsJoinedByString:@", "]
                                 ] forHTTPHeaderField:@"Accept-Language"];
         
-        
-        if ([method isEqualToString:@"POST"] || [method isEqualToString:@"PUT"]) {
-            
-            // in case of multi-part form request, 
-            // this will be automatically over written later
-            self.request.HTTPBody = [[[body urlEncodedKeyValueString] dataUsingEncoding:self.stringEncoding] mutableCopy];
-        }
-        
         self.state = MKNetworkOperationStateReady;
     }
     

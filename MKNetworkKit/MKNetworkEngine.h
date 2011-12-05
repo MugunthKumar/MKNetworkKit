@@ -172,6 +172,17 @@
 -(void) enqueueOperation:(MKNetworkOperation*) request;
 
 /*!
+ *  @abstract HostName of the engine
+ *  @property readonlyHostName
+ *  
+ *  @discussion
+ *	Returns the host name of the engine
+ *  This property is readonly cannot be updated. 
+ *  You normally initialize an engine with its hostname using the initWithHostName:customHeaders: method
+ */
+@property (readonly, strong, nonatomic) NSString *readonlyHostName;
+
+/*!
  *  @abstract Cache Directory Name
  *  
  *  @discussion
