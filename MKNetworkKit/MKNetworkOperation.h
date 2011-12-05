@@ -62,12 +62,11 @@ typedef void (^MKNKErrorBlock)(NSError* error);
  *  
  *  @discussion
  *	Creates an operation with the given URL string.
- *  The default headers you specified in your MKNetworkEngine subclass gets added to the headers
  *  The params dictionary in this method gets attached to the URL as query parameters if the HTTP Method is GET/DELETE
  *  The params dictionary is attached to the body if the HTTP Method is POST/PUT
  */
 + (id)operationWithURLString:(NSString *)urlString
-                      params:(NSMutableDictionary *)body
+                      params:(NSMutableDictionary *)params
 				httpMethod:(NSString *)method;
 
 /*!

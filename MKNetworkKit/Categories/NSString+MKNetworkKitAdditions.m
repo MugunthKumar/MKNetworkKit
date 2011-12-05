@@ -59,8 +59,7 @@
                                                                         kCFStringEncodingUTF8);
     
     NSString *encodedString = [[NSString alloc] initWithString:(__bridge_transfer NSString*) encodedCFString];    
-    CFRelease(encodedCFString);
-    
+
     if(!encodedString)
         encodedString = @"";    
     

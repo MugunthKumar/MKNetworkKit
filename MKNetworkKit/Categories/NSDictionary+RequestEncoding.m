@@ -33,7 +33,11 @@
     NSMutableString *string = [NSMutableString string];
     for (NSString *key in self) {
 
-        [string appendFormat:@"%@=%@&", [key urlEncodedString], [[self valueForKey:key] urlEncodedString]];
+        NSObject *value = [self valueForKey:key];
+        if([value isKindOfClass:[NSString class]])
+            [string appendFormat:@"%@=%@&", [key urlEncodedString], [((NSString*)value) urlEncodedString]];
+        else
+            [string appendFormat:@"%@=%@&", [key urlEncodedString], value];
     }
     
     if([string length] > 0)

@@ -67,7 +67,7 @@ typedef enum {
 @property (strong, nonatomic) NSError *error;
 
 - (id)initWithURLString:(NSString *)aURLString
-                   body:(NSMutableDictionary *)body
+                 params:(NSMutableDictionary *)body
              httpMethod:(NSString *)method;
 
 -(NSData*) bodyData;
@@ -345,11 +345,11 @@ typedef enum {
 }
 
 + (id)operationWithURLString:(NSString *)urlString
-                      params:(NSMutableDictionary *)body
+                      params:(NSMutableDictionary *)params
                   httpMethod:(NSString *)method
 {
 	return [[self alloc] initWithURLString:urlString
-                                      body:body 
+                                      params:params 
                                 httpMethod:method];
 }
 
@@ -381,7 +381,7 @@ typedef enum {
 }
 
 - (id)initWithURLString:(NSString *)aURLString
-                   body:(NSMutableDictionary *)body
+                 params:(NSMutableDictionary *)params
              httpMethod:(NSString *)method
 
 {	
@@ -400,16 +400,16 @@ typedef enum {
         
         NSURL *finalURL = nil;
         
-        if(body)
-            self.fieldsToBePosted = body;
+        if(params)
+            self.fieldsToBePosted = params;
         
         self.stringEncoding = NSUTF8StringEncoding; // use a delegate to get these values later
         
         if (([method isEqualToString:@"GET"] ||
-             [method isEqualToString:@"DELETE"]) && (body && [body count] > 0)) {
+             [method isEqualToString:@"DELETE"]) && (params && [params count] > 0)) {
             
             finalURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@?%@", aURLString, 
-                                             [body urlEncodedKeyValueString]]];
+                                             [params urlEncodedKeyValueString]]];
         } else {
             finalURL = [NSURL URLWithString:aURLString];
         }
@@ -834,12 +834,14 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
 
 -(void) operationSucceeded {
 
+    DLog(@"%@", self);
     for(MKNKResponseBlock responseBlock in self.responseBlocks)
         responseBlock(self);
 }
 
 -(void) operationFailedWithError:(NSError*) error {
     
+    DLog(@"%@", self);
     for(MKNKErrorBlock errorBlock in self.errorBlocks)
         errorBlock(error);       
 }
