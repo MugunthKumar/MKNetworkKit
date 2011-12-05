@@ -336,7 +336,15 @@ static NSOperationQueue *_sharedNetworkQueue;
          DLog(@"%@", error);
      }];    
     
-    [self enqueueOperation:op];
+    NSData *cachedData = [self cachedDataForOperation:op];
+    
+    if(cachedData) {
+        [op setCachedData:cachedData];
+    }
+    
+    if(0) { // If the cache is old
+        [self enqueueOperation:op];
+    }
 }
 
 #pragma -
