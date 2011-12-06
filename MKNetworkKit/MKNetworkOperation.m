@@ -93,6 +93,8 @@ typedef enum {
 
 @synthesize username = _username;
 @synthesize password = _password;
+@synthesize clientCertificate = _clientCertificate;
+@synthesize authHandler = _authHandler;
 
 @synthesize responseBlocks = _responseBlocks;
 @synthesize errorBlocks = _errorBlocks;
@@ -261,6 +263,7 @@ typedef enum {
     [encoder encodeObject:self.dataToBePosted forKey:@"dataToBePosted"];
     [encoder encodeObject:self.username forKey:@"username"];
     [encoder encodeObject:self.password forKey:@"password"];
+    [encoder encodeObject:self.clientCertificate forKey:@"clientCertificate"];
     
     self.state = MKNetworkOperationStateReady;
     [encoder encodeInt32:_state forKey:@"state"];
@@ -284,7 +287,7 @@ typedef enum {
         self.dataToBePosted = [decoder decodeObjectForKey:@"dataToBePosted"];
         self.username = [decoder decodeObjectForKey:@"username"];
         self.password = [decoder decodeObjectForKey:@"password"];
-        
+        self.clientCertificate = [decoder decodeObjectForKey:@"clientCertificate"];
         [self setState:[decoder decodeInt32ForKey:@"state"]];
         self.isCancelled = [decoder decodeBoolForKey:@"isCancelled"];
         self.mutableData = [decoder decodeObjectForKey:@"mutableData"];
@@ -309,6 +312,7 @@ typedef enum {
     [theCopy setDataToBePosted:[self.dataToBePosted copy]];
     [theCopy setUsername:[self.username copy]];
     [theCopy setPassword:[self.password copy]];
+    [theCopy setClientCertificate:[self.clientCertificate copy]];
     [theCopy setResponseBlocks:[self.responseBlocks copy]];
     [theCopy setErrorBlocks:[self.errorBlocks copy]];
     [theCopy setState:self.state];
@@ -719,6 +723,7 @@ typedef enum {
     
     [self.connection cancel];
     
+    self.authHandler = nil;    
     self.mutableData = nil;
     self.isCancelled = YES; 
     
@@ -741,10 +746,10 @@ typedef enum {
 
 - (void)connection:(NSURLConnection *)connection willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
     
-    if ((([[challenge protectionSpace] authenticationMethod] == NSURLAuthenticationMethodDefault) ||
-         ([[challenge protectionSpace] authenticationMethod] == NSURLAuthenticationMethodHTTPBasic) ||
-         ([[challenge protectionSpace] authenticationMethod] == NSURLAuthenticationMethodHTTPDigest) ||
-         ([[challenge protectionSpace] authenticationMethod] == NSURLAuthenticationMethodNTLM)) && 
+    if (((challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodDefault) ||
+         (challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodHTTPBasic) ||
+         (challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodHTTPDigest) ||
+         (challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodNTLM)) && 
         (self.username && self.password))
     {
         
@@ -753,26 +758,62 @@ typedef enum {
                                                                  password:self.password
                                                               persistence:NSURLCredentialPersistenceForSession];
         
-        [[challenge sender] useCredential:credential forAuthenticationChallenge:challenge];
+        [challenge.sender useCredential:credential forAuthenticationChallenge:challenge];
     }
-    //    else if (([[challenge protectionSpace] authenticationMethod] == NSURLAuthenticationMethodClientCertificate) &&
-    //             self.username) {
-    //        
-    //        // create a NSURLCredential object based on the certificate
-    //    }
-    //    else if (([[challenge protectionSpace] authenticationMethod] == NSURLAuthenticationMethodServerTrust) &&
-    //             self.username) {
-    //        
-    //        // create a NSURLCredential object based on the certificate
-    //    }
-    //    else if ([[challenge protectionSpace] authenticationMethod] == NSURLAuthenticationMethodHTMLForm) {
-    //        
-    //        // Do some shit work like showing a modal webview controller and close it after authentication.
-    //        // I HATE THIS
-    //    }
-    //    else if (self.authHandler) {
-    //    self.authHandler(challenge); // forward the authentication to the view controller that created this operation
-    //    }
+    else if ((challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodClientCertificate) && self.clientCertificate) {
+         
+        NSData *certData = [[NSData alloc] initWithContentsOfFile:self.clientCertificate];
+        
+#warning method not implemented. Don't use client certicate authentication for now.
+        SecIdentityRef myIdentity;  // ???
+        
+        SecCertificateRef myCert = SecCertificateCreateWithData(NULL, (__bridge CFDataRef)certData);
+        SecCertificateRef certArray[1] = { myCert };
+        CFArrayRef myCerts = CFArrayCreate(NULL, (void *)certArray, 1, NULL);
+        CFRelease(myCert);
+        NSURLCredential *credential = [NSURLCredential credentialWithIdentity:myIdentity
+                                                                 certificates:(__bridge NSArray *)myCerts
+                                                                  persistence:NSURLCredentialPersistencePermanent];
+        CFRelease(myCerts);
+        [challenge.sender useCredential:credential forAuthenticationChallenge:challenge];
+    }
+    else if (challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust) {
+#warning method not tested. proceed at your own risk
+        SecTrustRef serverTrust = [[challenge protectionSpace] serverTrust];
+        SecTrustResultType result;
+        SecTrustEvaluate(serverTrust, &result);
+
+        if(result == kSecTrustResultProceed) {
+            
+             [challenge.sender useCredential:[NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust] forAuthenticationChallenge:challenge];
+        }
+        else if(result == kSecTrustResultConfirm) {
+            
+            // ask user
+            BOOL userOkWithWrongCert = NO; // (ACTUALLY CHEAT., DON'T BE A F***ING BROWSER, USERS ALWAYS TAP YES WHICH IS RISKY)
+            if(userOkWithWrongCert) {
+
+                // Cert not trusted, but user is OK with that
+                [challenge.sender useCredential:[NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust] forAuthenticationChallenge:challenge];
+            } else {
+
+                // Cert not trusted, and user is not OK with that. Don't proceed
+                [challenge.sender continueWithoutCredentialForAuthenticationChallenge:challenge];
+            }
+        } else {
+
+            // invalid or revoked certificate
+            [challenge.sender continueWithoutCredentialForAuthenticationChallenge:challenge];
+        }
+    }        
+    else if (self.authHandler) {
+    
+        // forward the authentication to the view controller that created this operation
+        // If this happens for NSURLAuthenticationMethodHTMLForm, you have to
+        // do some shit work like showing a modal webview controller and close it after authentication.
+        // I HATE THIS.
+        self.authHandler(challenge);
+    }
     else {
         [[challenge sender] continueWithoutCredentialForAuthenticationChallenge:challenge];
     }

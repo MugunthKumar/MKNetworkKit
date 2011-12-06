@@ -91,15 +91,14 @@ static NSOperationQueue *_sharedNetworkQueue;
             DLog(@"Engine initialized with host: %@", hostName);
             self.hostName = hostName;            
             self.reachability = [Reachability reachabilityWithHostname:self.hostName];
-            [self.reachability startNotifier];
-            
+            [self.reachability startNotifier];            
         }
         
         if([headers objectForKey:@"User-Agent"] == nil) {
             
             NSMutableDictionary *newHeadersDict = [headers mutableCopy];
             NSString *userAgentString = [NSString stringWithFormat:@"%@/%@", 
-             [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleIdentifierKey], 
+             [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleNameKey], 
              [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleVersionKey]];
             [newHeadersDict setObject:userAgentString forKey:@"User-Agent"];
             self.customHeaders = newHeadersDict;

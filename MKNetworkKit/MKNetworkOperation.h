@@ -34,6 +34,8 @@ typedef void (^MKNKImageBlock) (NSImage* fetchedImage, NSURL* url, BOOL isInCach
 #endif
 typedef void (^MKNKErrorBlock)(NSError* error);
 
+typedef void (^MKNKAuthBlock)(NSURLAuthenticationChallenge* challenge);
+
 /*!
  @header MKNetworkOperation.h
  @abstract   Represents a single unique network operation.
@@ -139,6 +141,25 @@ typedef void (^MKNKErrorBlock)(NSError* error);
  *	If your request needs to be authenticated, set your username and password using this method.
  */
 -(void) setUsername:(NSString*) name password:(NSString*) password;
+
+/*!
+ *  @abstract Authentication methods (Client Certificate)
+ *  @property clientCertificate
+ *  
+ *  @discussion
+ *	If your request needs to be authenticated using a client certificate, set the certificate path here
+ */
+@property (strong, nonatomic) NSString *clientCertificate;
+
+/*!
+ *  @abstract Custom authentication handler
+ *  @property authHandler
+ *  
+ *  @discussion
+ *	If your request needs to be authenticated using a custom method (like a Web page/HTML Form), add a block method here
+ *  and process the NSURLAuthenticationChallenge
+ */
+@property (nonatomic, copy) MKNKAuthBlock authHandler;
 
 /*!
  *  @abstract Add additional header parameters
