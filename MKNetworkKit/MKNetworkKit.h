@@ -65,6 +65,7 @@
 #define MKNETWORKCACHE_DEFAULT_COST 10
 #define MKNETWORKCACHE_DEFAULT_DIRECTORY @"MKNetworkKitCache"
 #define kMKNetworkKitDefaultCacheDuration 60 // 1 minute
+#define kMKNetworkKitDefaultImageHeadRequestDuration 3600*24*1 // 1 day (HEAD requests with eTag are sent only after expiry of this. Not that these are not RFC compliant, but needed for performance tuning)
 #define kMKNetworkKitDefaultImageCacheDuration 3600*24*7 // 1 day
 #endif
 

@@ -433,8 +433,12 @@ typedef enum {
             finalURL = [NSURL URLWithString:aURLString];
         }
         
+        // if your server takes longer than 30 seconds to provide real data,
+        // you should hire a better server developer.
+        // on iOS (or any mobile device), 30 seconds is already considered high.
+        
         self.request = [NSMutableURLRequest requestWithURL:finalURL                                                           
-                                               cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData                                            
+                                               cachePolicy:NSURLRequestUseProtocolCachePolicy                                            
                                            timeoutInterval:30.0f];
         
         [self.request setHTTPMethod:method];
@@ -813,7 +817,9 @@ typedef enum {
             
             // For images let's assume a expiry date of 7 days if there is no eTag or Last Modified.
             if(!eTag && !lastModified)
-                expiresOnDate = [[NSDate date] dateByAddingTimeInterval:kMKNetworkKitDefaultImageCacheDuration];            
+                expiresOnDate = [[NSDate date] dateByAddingTimeInterval:kMKNetworkKitDefaultImageCacheDuration];
+            else    
+                expiresOnDate = [[NSDate date] dateByAddingTimeInterval:kMKNetworkKitDefaultImageHeadRequestDuration];
         }
         
         for(NSString *substring in cacheControlEntities) {
