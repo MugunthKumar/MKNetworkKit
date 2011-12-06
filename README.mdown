@@ -44,6 +44,8 @@ Marrying the feature set from both, MKNetworkKit throws in a bunch of new featur
 * Full ARC support
 * cURL-able debug lines.
 
+MKNetworkKit's goal was to make it as feature rich as ASIHTTPRequest yet simple and elegant to use like AFNetworking
+
 ---
 ###How to use
 Read the <a href="http://mk.sg/8w"> blog post</a> for more.
@@ -57,20 +59,17 @@ run this on the command line
 ---
 ###TODO
 
-* Method to freeze blocks (alternative techniques probably)
-* UserAgent String (Don't advertise MKNetworkKit, this should be app name)
+* Stream post body 0.85
 * Multiple encoding types in URL
-* Read about response redirects and implement delegate callbacks or use state variables
-* Obey cache-expires HTTP headers
 * Example code for Mac
 * Cache strategy for Mac
 * Fix AppleDoc warnings
-
-I'll be working on this soon. But you can start forking it and getting it right
+* Test multiple file attachments in a single request
+* Persistent connections 0.90 (Obey response headers)
 
 ---
 ###Known Issues
-* Frozen operations don't report progress/completion handlers back to the calling code.
+* Frozen operations don't report progress/completion handlers back to the calling code. (Before 1.0)
 
 ---
 ###A note on licensing
