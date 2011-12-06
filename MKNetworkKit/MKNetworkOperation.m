@@ -347,7 +347,7 @@ typedef enum {
                   httpMethod:(NSString *)method
 {
 	return [[self alloc] initWithURLString:urlString
-                                      params:params 
+                                    params:params 
                                 httpMethod:method];
 }
 
@@ -452,14 +452,14 @@ typedef enum {
 -(NSString*) description {
     
     NSMutableString *displayString = [NSMutableString stringWithFormat:@"%@\nRequest\n-------\n%@", 
-                                              [[NSDate date] descriptionWithLocale:[NSLocale currentLocale]],
-                                              [self curlCommandLineString]];
-
+                                      [[NSDate date] descriptionWithLocale:[NSLocale currentLocale]],
+                                      [self curlCommandLineString]];
+    
     NSString *responseString = [self responseString];    
     if([responseString length] > 0) {
         [displayString appendFormat:@"\n--------\nResponse\n--------\n%@\n", responseString];
     }
-        
+    
     return displayString;
 }
 
@@ -546,11 +546,11 @@ typedef enum {
         
         return [[[self.fieldsToBePosted urlEncodedKeyValueString] dataUsingEncoding:self.stringEncoding] mutableCopy];
     }
-
+    
     NSString *boundary = @"0xKhTmLbOuNdArY";
     NSMutableData *body = [NSMutableData data];
     __block NSUInteger postLength = 0;    
-        
+    
     [self.fieldsToBePosted enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
         
         NSString *thisFieldString = [NSString stringWithFormat:
@@ -601,7 +601,7 @@ typedef enum {
         
         [self.request setValue:[NSString stringWithFormat:@"%d", [body length]] forHTTPHeaderField:@"Content-Length"];
     }
-        
+    
     return body;
 }
 
@@ -621,7 +621,7 @@ typedef enum {
 
 - (void) start
 {
- 
+    
 #if TARGET_OS_IPHONE
     self.backgroundTaskId = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
         
@@ -705,7 +705,7 @@ typedef enum {
     
     self.mutableData = nil;
     self.isCancelled = YES; 
-
+    
     [super cancel];
 }
 
@@ -725,28 +725,40 @@ typedef enum {
 
 - (void)connection:(NSURLConnection *)connection willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
     
-    if(!(self.username && self.password)) {
-        [[challenge sender] continueWithoutCredentialForAuthenticationChallenge:challenge];
+    if ((([[challenge protectionSpace] authenticationMethod] == NSURLAuthenticationMethodDefault) ||
+         ([[challenge protectionSpace] authenticationMethod] == NSURLAuthenticationMethodHTTPBasic) ||
+         ([[challenge protectionSpace] authenticationMethod] == NSURLAuthenticationMethodHTTPDigest) ||
+         ([[challenge protectionSpace] authenticationMethod] == NSURLAuthenticationMethodNTLM)) && 
+        (self.username && self.password))
+    {
+        
+        // for NTLM, we will assume user name to be of the form "domain\\username"
+        NSURLCredential *credential = [NSURLCredential credentialWithUser:self.username 
+                                                                 password:self.password
+                                                              persistence:NSURLCredentialPersistenceForSession];
+        
+        [[challenge sender] useCredential:credential forAuthenticationChallenge:challenge];
     }
+    //    else if (([[challenge protectionSpace] authenticationMethod] == NSURLAuthenticationMethodClientCertificate) &&
+    //             self.username) {
+    //        
+    //        // create a NSURLCredential object based on the certificate
+    //    }
+    //    else if (([[challenge protectionSpace] authenticationMethod] == NSURLAuthenticationMethodServerTrust) &&
+    //             self.username) {
+    //        
+    //        // create a NSURLCredential object based on the certificate
+    //    }
+    //    else if ([[challenge protectionSpace] authenticationMethod] == NSURLAuthenticationMethodHTMLForm) {
+    //        
+    //        // Do some shit work like showing a modal webview controller and close it after authentication.
+    //        // I HATE THIS
+    //    }
+    //    else if (self.authHandler) {
+    //    self.authHandler(challenge); // forward the authentication to the view controller that created this operation
+    //    }
     else {
-        
-        if (([[challenge protectionSpace] authenticationMethod] == NSURLAuthenticationMethodDefault) ||
-            ([[challenge protectionSpace] authenticationMethod] == NSURLAuthenticationMethodHTTPBasic) ||
-            ([[challenge protectionSpace] authenticationMethod] == NSURLAuthenticationMethodHTTPDigest) ||
-            ([[challenge protectionSpace] authenticationMethod] == NSURLAuthenticationMethodNTLM))
-        {
-            
-            // for NTLM, we will assume user name to be of the form "domain\\username"
-            NSURLCredential *credential = [NSURLCredential credentialWithUser:self.username 
-                                                                     password:self.password
-                                                                  persistence:NSURLCredentialPersistenceForSession];
-        
-            [[challenge sender] useCredential:credential forAuthenticationChallenge:challenge];
-        }
-        else {
-            
-            [[challenge sender] continueWithoutCredentialForAuthenticationChallenge:challenge];
-        }
+        [[challenge sender] continueWithoutCredentialForAuthenticationChallenge:challenge];
     }
 }
 
@@ -805,7 +817,7 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
             [stream close];
         
         [self notifyCache];
-
+        
         [self operationSucceeded];
         
     } else {                        
@@ -813,7 +825,7 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
         NSError *error = [NSError errorWithDomain:NSURLErrorDomain
                                              code:self.response.statusCode
                                          userInfo:self.response.allHeaderFields];
-                
+        
         for(MKNKErrorBlock errorBlock in self.errorBlocks)
             errorBlock(error);
     }
@@ -874,7 +886,7 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
 #pragma mark Overridable methods
 
 -(void) operationSucceeded {
-
+    
     DLog(@"%@", self);
     for(MKNKResponseBlock responseBlock in self.responseBlocks)
         responseBlock(self);
