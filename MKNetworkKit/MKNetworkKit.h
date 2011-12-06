@@ -49,6 +49,7 @@
 
 #import "Categories/NSString+MKNetworkKitAdditions.h"
 #import "Categories/NSDictionary+RequestEncoding.h"
+#import "Categories/NSDate+RFC1123.h"
 
 #if TARGET_OS_IPHONE
 #import "Categories/UIAlertView+MKNetworkKitAdditions.h"
@@ -63,7 +64,8 @@
 
 #define MKNETWORKCACHE_DEFAULT_COST 10
 #define MKNETWORKCACHE_DEFAULT_DIRECTORY @"MKNetworkKitCache"
-
+#define kMKNetworkKitDefaultCacheDuration 60 // 1 minute
+#define kMKNetworkKitDefaultImageCacheDuration 3600*24*7 // 1 day
 #endif
 
 

@@ -133,6 +133,16 @@ typedef void (^MKNKErrorBlock)(NSError* error);
  */
 @property (nonatomic, readonly, strong) NSError *error;
 
+/*!
+ *  @abstract Cache headers of the response
+ *  @property cacheHeaders
+ *  
+ *  @discussion
+ *	If the network operation is a GET, this dictionary will be populated with relevant cache related headers
+ *	MKNetworkKit assumes a 7 day cache for images and 1 minute cache for all requests with no-cache set
+ *	This property is internal to MKNetworkKit. Modifying this is not recommended and will result in unexpected behaviour
+ */
+@property (strong, nonatomic) NSMutableDictionary *cacheHeaders;
 
 /*!
  *  @abstract Authentication methods
@@ -352,6 +362,7 @@ typedef void (^MKNKErrorBlock)(NSError* error);
 -(void) setCachedData:(NSData*) cachedData;
 -(void) setCacheHandler:(MKNKResponseBlock) cacheHandler;
 -(void) updateHandlersFromOperation:(MKNetworkOperation*) operation;
+-(void) updateOperationBasedOnPreviousHeaders:(NSMutableDictionary*) headers;
 -(NSString*) uniqueIdentifier;
 
 @end

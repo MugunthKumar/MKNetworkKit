@@ -64,6 +64,7 @@ typedef enum {
 #if TARGET_OS_IPHONE    
 @property (nonatomic, assign) UIBackgroundTaskIdentifier backgroundTaskId;
 #endif
+
 @property (strong, nonatomic) NSError *error;
 
 - (id)initWithURLString:(NSString *)aURLString
@@ -111,6 +112,7 @@ typedef enum {
 @synthesize backgroundTaskId = _backgroundTaskId;
 #endif
 
+@synthesize cacheHeaders = _cacheHeaders;
 @synthesize error = _error;
 
 
@@ -342,6 +344,22 @@ typedef enum {
     [self operationSucceeded];
 }
 
+-(void) updateOperationBasedOnPreviousHeaders:(NSMutableDictionary*) headers {
+    
+    NSString *lastModified = [headers objectForKey:@"Last-Modified"];
+    NSString *eTag = [headers objectForKey:@"ETag"];
+    
+    if(lastModified) {
+        [self.request setHTTPMethod:@"HEAD"];
+        [self.request addValue:lastModified forHTTPHeaderField:@"IF-MODIFIED-SINCE"];
+    }
+    
+    if(eTag) {
+        [self.request setHTTPMethod:@"HEAD"];
+        [self.request addValue:eTag forHTTPHeaderField:@"IF-NONE-MATCH"];
+    }    
+}
+
 + (id)operationWithURLString:(NSString *)urlString
                       params:(NSMutableDictionary *)params
                   httpMethod:(NSString *)method
@@ -402,6 +420,9 @@ typedef enum {
             self.fieldsToBePosted = params;
         
         self.stringEncoding = NSUTF8StringEncoding; // use a delegate to get these values later
+        
+        if ([method isEqualToString:@"GET"])
+            self.cacheHeaders = [NSMutableDictionary dictionary];
         
         if (([method isEqualToString:@"GET"] ||
              [method isEqualToString:@"DELETE"]) && (params && [params count] > 0)) {
@@ -770,6 +791,66 @@ typedef enum {
     
     for(NSOutputStream *stream in self.downloadStreams)
         [stream open];
+    
+    NSDictionary *httpHeaders = [self.response allHeaderFields];
+    
+    if([self.request.HTTPMethod isEqualToString:@"GET"]) {
+        
+        // do cache processing only if the request is a "GET" method
+        NSString *lastModified = [httpHeaders objectForKey:@"Last-Modified"];
+        NSString *eTag = [httpHeaders objectForKey:@"ETag"];
+        NSString *expiresOn = [httpHeaders objectForKey:@"Expires"];
+        
+        NSString *contentType = [httpHeaders objectForKey:@"Content-Type"];
+        // if contentType is image, 
+        
+        NSString *cacheControl = [httpHeaders objectForKey:@"Cache-Control"]; // max-age, must-revalidate, no-cache
+        NSArray *cacheControlEntities = [cacheControl componentsSeparatedByString:@","];
+        
+        NSDate *expiresOnDate = nil;
+        
+        if([contentType rangeOfString:@"image"].location != NSNotFound) {
+            
+            // For images let's assume a expiry date of 7 days if there is no eTag or Last Modified.
+            if(!eTag && !lastModified)
+                expiresOnDate = [[NSDate date] dateByAddingTimeInterval:kMKNetworkKitDefaultImageCacheDuration];            
+        }
+        
+        for(NSString *substring in cacheControlEntities) {
+            
+            if([substring rangeOfString:@"max-age"].location != NSNotFound) {
+                
+                // do some processing to calculate expiresOn
+                NSString *maxAge = nil;
+                NSArray *array = [substring componentsSeparatedByString:@"="];
+                if([array count] > 1)
+                    maxAge = [array objectAtIndex:1];
+                
+                expiresOnDate = [[NSDate date] dateByAddingTimeInterval:[maxAge intValue]];
+            }
+            if([substring rangeOfString:@"no-cache"].location != NSNotFound) {
+                
+                // Don't cache this request
+                expiresOnDate = [[NSDate date] dateByAddingTimeInterval:kMKNetworkKitDefaultCacheDuration];
+            }
+        }
+        
+        // if there was a cacheControl entity, we would have a expiresOnDate that is not nil.        
+        // "Cache-Control" headers take precedence over "Expires" headers
+        
+        expiresOn = [expiresOnDate rfc1123String];
+        
+        // now remember lastModified, eTag and expires for this request in cache
+        if(expiresOn)
+            [self.cacheHeaders setObject:expiresOn forKey:@"Expires"];
+        if(lastModified)
+            [self.cacheHeaders setObject:lastModified forKey:@"Last-Modified"];
+        if(eTag)
+            [self.cacheHeaders setObject:eTag forKey:@"ETag"];
+    }
+    
+    
+    
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
@@ -811,23 +892,37 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
     self.state = MKNetworkOperationStateFinished;
     self.cachedResponse = nil; // remove cached data
     
+    for(NSOutputStream *stream in self.downloadStreams)
+        [stream close];
+    
     if (self.response.statusCode >= 200 && self.response.statusCode < 300) {
         
-        for(NSOutputStream *stream in self.downloadStreams)
-            [stream close];
-        
-        [self notifyCache];
-        
+        [self notifyCache];        
         [self operationSucceeded];
         
-    } else {                        
+    } 
+    if (self.response.statusCode >= 300 && self.response.statusCode < 400) {
+        
+        if(self.response.statusCode == 301) {
+            DLog(@"%@ has moved to %@", self.url, [self.response.URL absoluteString]);
+        }
+        else if(self.response.statusCode == 304) {
+            DLog(@"%@ not modified", self.url);
+        }
+        else if(self.response.statusCode == 307) {
+            DLog(@"%@ temporarily redirected", self.url);
+        }
+        else {
+            DLog(@"%@ returned status %d", self.url, self.response.statusCode);
+        }
+        
+    } else if (self.response.statusCode >= 400 && self.response.statusCode < 600) {                        
         
         NSError *error = [NSError errorWithDomain:NSURLErrorDomain
                                              code:self.response.statusCode
                                          userInfo:self.response.allHeaderFields];
         
-        for(MKNKErrorBlock errorBlock in self.errorBlocks)
-            errorBlock(error);
+        [self operationFailedWithError:error];
     }
 }
 
@@ -887,7 +982,10 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
 
 -(void) operationSucceeded {
     
-    DLog(@"%@", self);
+    // don't log for cached responses
+    if(![self isCachedResponse])
+        DLog(@"%@", self);
+    
     for(MKNKResponseBlock responseBlock in self.responseBlocks)
         responseBlock(self);
 }
