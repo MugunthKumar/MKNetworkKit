@@ -81,12 +81,13 @@ Gentle Bytes appledoc@gentlebytes.com
 ###TODO
 
 * Stream post body 0.85
-* Method to freeze blocks (alternative techniques probably)
 * Multiple encoding types in URL
-* Client certificate based encoding
+* Fix and test Client certificate/Server trust auth
+
 * Fix AppleDoc warnings
 * Example code for Mac
 * Cache strategy for Mac
+
 * Scheduling in current runloop
 * Test multiple file attachments in a single request
 
