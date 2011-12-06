@@ -34,6 +34,8 @@ typedef void (^MKNKImageBlock) (NSImage* fetchedImage, NSURL* url, BOOL isInCach
 #endif
 typedef void (^MKNKErrorBlock)(NSError* error);
 
+typedef void (^MKNKAuthBlock)(NSURLAuthenticationChallenge* challenge);
+
 /*!
  @header MKNetworkOperation.h
  @abstract   Represents a single unique network operation.
@@ -56,18 +58,6 @@ typedef void (^MKNKErrorBlock)(NSError* error);
     int _state;
     BOOL _freezable;
 }
-
-/*!
- *  @abstract Creates a simple network operation
- *  
- *  @discussion
- *	Creates an operation with the given URL string.
- *  The params dictionary in this method gets attached to the URL as query parameters if the HTTP Method is GET/DELETE
- *  The params dictionary is attached to the body if the HTTP Method is POST/PUT
- */
-+ (id)operationWithURLString:(NSString *)urlString
-                      params:(NSMutableDictionary *)params
-				httpMethod:(NSString *)method;
 
 /*!
  *  @abstract Request URL Property
@@ -133,6 +123,16 @@ typedef void (^MKNKErrorBlock)(NSError* error);
  */
 @property (nonatomic, readonly, strong) NSError *error;
 
+/*!
+ *  @abstract Cache headers of the response
+ *  @property cacheHeaders
+ *  
+ *  @discussion
+ *	If the network operation is a GET, this dictionary will be populated with relevant cache related headers
+ *	MKNetworkKit assumes a 7 day cache for images and 1 minute cache for all requests with no-cache set
+ *	This property is internal to MKNetworkKit. Modifying this is not recommended and will result in unexpected behaviour
+ */
+@property (strong, nonatomic) NSMutableDictionary *cacheHeaders;
 
 /*!
  *  @abstract Authentication methods
@@ -141,6 +141,25 @@ typedef void (^MKNKErrorBlock)(NSError* error);
  *	If your request needs to be authenticated, set your username and password using this method.
  */
 -(void) setUsername:(NSString*) name password:(NSString*) password;
+
+/*!
+ *  @abstract Authentication methods (Client Certificate)
+ *  @property clientCertificate
+ *  
+ *  @discussion
+ *	If your request needs to be authenticated using a client certificate, set the certificate path here
+ */
+@property (strong, nonatomic) NSString *clientCertificate;
+
+/*!
+ *  @abstract Custom authentication handler
+ *  @property authHandler
+ *  
+ *  @discussion
+ *	If your request needs to be authenticated using a custom method (like a Web page/HTML Form), add a block method here
+ *  and process the NSURLAuthenticationChallenge
+ */
+@property (nonatomic, copy) MKNKAuthBlock authHandler;
 
 /*!
  *  @abstract Add additional header parameters
@@ -352,6 +371,10 @@ typedef void (^MKNKErrorBlock)(NSError* error);
 -(void) setCachedData:(NSData*) cachedData;
 -(void) setCacheHandler:(MKNKResponseBlock) cacheHandler;
 -(void) updateHandlersFromOperation:(MKNetworkOperation*) operation;
+-(void) updateOperationBasedOnPreviousHeaders:(NSMutableDictionary*) headers;
 -(NSString*) uniqueIdentifier;
 
+- (id)initWithURLString:(NSString *)aURLString
+                 params:(NSMutableDictionary *)params
+             httpMethod:(NSString *)method;
 @end

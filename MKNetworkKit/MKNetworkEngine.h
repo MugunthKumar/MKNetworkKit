@@ -138,7 +138,7 @@
                                        params:(NSMutableDictionary*) body;
 
 /*!
- *  @abstract Creates a simple GET Operation with a request URL, parameters and HTTP Method
+ *  @abstract Creates a simple Operation with a request URL, parameters and HTTP Method
  *  
  *  @discussion
  *	Creates an operation with the given absolute URL.
@@ -146,11 +146,27 @@
  *  The default headers you specified in your MKNetworkEngine subclass gets added to the headers
  *  The params dictionary in this method gets attached to the URL as query parameters if the HTTP Method is GET/DELETE
  *  The params dictionary is attached to the body if the HTTP Method is POST/PUT
+ *	This method can be over-ridden by subclasses to tweak the operation creation mechanism.
+ *  You would typically over-ride this method to create a subclass of MKNetworkOperation (if you have one). After you create it, you should call [super prepareHeaders:operation] to attach any custom headers from super class.
+ *  @seealso
+ *  prepareHeaders:
  */
 -(MKNetworkOperation*) operationWithURLString:(NSString*) urlString
                               params:(NSMutableDictionary*) body
                         httpMethod:(NSString*) method;
 
+/*!
+ *  @abstract adds the custom default headers
+ *  
+ *  @discussion
+ *	This method adds custom default headers to the factory created MKNetworkOperation.
+ *	This method can be over-ridden by subclasses to add more default headers if necessary.
+ *  You would typically over-ride this method if you have over-ridden operationWithURLString:params:httpMethod:.
+ *  @seealso
+ *  operationWithURLString:params:httpMethod:
+ */
+
+-(void) prepareHeaders:(MKNetworkOperation*) operation;
 /*!
  *  @abstract Handy helper method for fetching images
  *  
@@ -164,9 +180,23 @@
  *  @abstract Enqueues your operation into the shared queue
  *  
  *  @discussion
- *	The operation you created is enqueued to the shared queue
+ *	The operation you created is enqueued to the shared queue. If the response for this operation was previously cached, the cached data will be returned.
+ *  @seealso
+ *  enqueueOperation:forceReload:
  */
 -(void) enqueueOperation:(MKNetworkOperation*) request;
+
+/*!
+ *  @abstract Enqueues your operation into the shared queue.
+ *  
+ *  @discussion
+ *	The operation you created is enqueued to the shared queue. 
+ *  When forceReload is NO, this method behaves like enqueueOperation:
+ *  When forceReload is YES, No cached data will be returned even if cached data is available.
+ *  @seealso
+ *  enqueueOperation:
+ */
+-(void) enqueueOperation:(MKNetworkOperation*) operation forceReload:(BOOL) forceReload;
 
 /*!
  *  @abstract HostName of the engine
