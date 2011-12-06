@@ -686,11 +686,27 @@ typedef enum {
     
     if([self isFinished]) return;
     
-    [super cancel];
+    [self.responseBlocks removeAllObjects];
+    self.responseBlocks = nil;
+    
+    [self.errorBlocks removeAllObjects];
+    self.errorBlocks = nil;
+    
+    [self.uploadProgressChangedHandlers removeAllObjects];
+    self.uploadProgressChangedHandlers = nil;
+    
+    [self.downloadProgressChangedHandlers removeAllObjects];
+    self.downloadProgressChangedHandlers = nil;
+    
+    [self.downloadStreams removeAllObjects];
+    self.downloadStreams = nil;
+    
     [self.connection cancel];
     
     self.mutableData = nil;
     self.isCancelled = YES; 
+
+    [super cancel];
 }
 
 #pragma mark -
@@ -713,11 +729,24 @@ typedef enum {
         [[challenge sender] continueWithoutCredentialForAuthenticationChallenge:challenge];
     }
     else {
-        NSURLCredential *credential = [NSURLCredential credentialWithUser:self.username 
-                                                                 password:self.password
-                                                              persistence:NSURLCredentialPersistenceForSession];
         
-        [[challenge sender] useCredential:credential forAuthenticationChallenge:challenge];
+        if (([[challenge protectionSpace] authenticationMethod] == NSURLAuthenticationMethodDefault) ||
+            ([[challenge protectionSpace] authenticationMethod] == NSURLAuthenticationMethodHTTPBasic) ||
+            ([[challenge protectionSpace] authenticationMethod] == NSURLAuthenticationMethodHTTPDigest) ||
+            ([[challenge protectionSpace] authenticationMethod] == NSURLAuthenticationMethodNTLM))
+        {
+            
+            // for NTLM, we will assume user name to be of the form "domain\\username"
+            NSURLCredential *credential = [NSURLCredential credentialWithUser:self.username 
+                                                                     password:self.password
+                                                                  persistence:NSURLCredentialPersistenceForSession];
+        
+            [[challenge sender] useCredential:credential forAuthenticationChallenge:challenge];
+        }
+        else {
+            
+            [[challenge sender] continueWithoutCredentialForAuthenticationChallenge:challenge];
+        }
     }
 }
 
