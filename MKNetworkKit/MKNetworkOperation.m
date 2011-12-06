@@ -360,15 +360,6 @@ typedef enum {
     }    
 }
 
-+ (id)operationWithURLString:(NSString *)urlString
-                      params:(NSMutableDictionary *)params
-                  httpMethod:(NSString *)method
-{
-	return [[self alloc] initWithURLString:urlString
-                                    params:params 
-                                httpMethod:method];
-}
-
 -(void) setUsername:(NSString*) username password:(NSString*) password {
     
     self.username = username;
@@ -800,6 +791,7 @@ typedef enum {
     
     if([self.request.HTTPMethod isEqualToString:@"GET"]) {
         
+        // We have all this complicated cache handling since NSURLRequestReloadRevalidatingCacheData is not implemented
         // do cache processing only if the request is a "GET" method
         NSString *lastModified = [httpHeaders objectForKey:@"Last-Modified"];
         NSString *eTag = [httpHeaders objectForKey:@"ETag"];
@@ -807,9 +799,6 @@ typedef enum {
         
         NSString *contentType = [httpHeaders objectForKey:@"Content-Type"];
         // if contentType is image, 
-        
-        NSString *cacheControl = [httpHeaders objectForKey:@"Cache-Control"]; // max-age, must-revalidate, no-cache
-        NSArray *cacheControlEntities = [cacheControl componentsSeparatedByString:@","];
         
         NSDate *expiresOnDate = nil;
         
@@ -821,6 +810,9 @@ typedef enum {
             else    
                 expiresOnDate = [[NSDate date] dateByAddingTimeInterval:kMKNetworkKitDefaultImageHeadRequestDuration];
         }
+        
+        NSString *cacheControl = [httpHeaders objectForKey:@"Cache-Control"]; // max-age, must-revalidate, no-cache
+        NSArray *cacheControlEntities = [cacheControl componentsSeparatedByString:@","];
         
         for(NSString *substring in cacheControlEntities) {
             

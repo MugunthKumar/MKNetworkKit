@@ -58,18 +58,6 @@ typedef void (^MKNKErrorBlock)(NSError* error);
 }
 
 /*!
- *  @abstract Creates a simple network operation
- *  
- *  @discussion
- *	Creates an operation with the given URL string.
- *  The params dictionary in this method gets attached to the URL as query parameters if the HTTP Method is GET/DELETE
- *  The params dictionary is attached to the body if the HTTP Method is POST/PUT
- */
-+ (id)operationWithURLString:(NSString *)urlString
-                      params:(NSMutableDictionary *)params
-				httpMethod:(NSString *)method;
-
-/*!
  *  @abstract Request URL Property
  *  @property url
  *  
@@ -365,4 +353,7 @@ typedef void (^MKNKErrorBlock)(NSError* error);
 -(void) updateOperationBasedOnPreviousHeaders:(NSMutableDictionary*) headers;
 -(NSString*) uniqueIdentifier;
 
+- (id)initWithURLString:(NSString *)aURLString
+                 params:(NSMutableDictionary *)params
+             httpMethod:(NSString *)method;
 @end

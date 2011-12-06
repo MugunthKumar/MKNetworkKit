@@ -58,13 +58,12 @@ run this on the command line
 ###TODO
 
 * Method to freeze blocks (alternative techniques probably)
-* UserAgent String (Don't advertise MKNetworkKit, this should be app name)
 * Multiple encoding types in URL
-* Read about response redirects and implement delegate callbacks or use state variables
-* Obey cache-expires HTTP headers
+* Fix AppleDoc warnings
 * Example code for Mac
 * Cache strategy for Mac
-* Fix AppleDoc warnings
+* Scheduling in current runloop
+* Caching NSURLConnection based on Keep-Alive
 
 I'll be working on this soon. But you can start forking it and getting it right
 

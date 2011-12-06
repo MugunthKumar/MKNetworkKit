@@ -73,7 +73,7 @@ static NSOperationQueue *_sharedNetworkQueue;
             _sharedNetworkQueue = [[NSOperationQueue alloc] init];
             [_sharedNetworkQueue addObserver:[self self] forKeyPath:@"operationCount" options:0 context:NULL];
             [_sharedNetworkQueue setMaxConcurrentOperationCount:6];
-
+            
         });
     }            
 }
@@ -92,9 +92,20 @@ static NSOperationQueue *_sharedNetworkQueue;
             self.hostName = hostName;            
             self.reachability = [Reachability reachabilityWithHostname:self.hostName];
             [self.reachability startNotifier];
-
+            
         }
-        self.customHeaders = headers;
+        
+        if([headers objectForKey:@"User-Agent"] == nil) {
+            
+            NSMutableDictionary *newHeadersDict = [headers mutableCopy];
+            NSString *userAgentString = [NSString stringWithFormat:@"%@/%@", 
+             [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleIdentifierKey], 
+             [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleVersionKey]];
+            [newHeadersDict setObject:userAgentString forKey:@"User-Agent"];
+            self.customHeaders = newHeadersDict;
+        } else {
+            self.customHeaders = headers;
+        }            
     }
     
     return self;
@@ -267,9 +278,15 @@ static NSOperationQueue *_sharedNetworkQueue;
                                        params:(NSMutableDictionary*) body
                                    httpMethod:(NSString*)method {
     
-    MKNetworkOperation *operation = [MKNetworkOperation operationWithURLString:urlString params:body httpMethod:method];
-    [operation addHeaders:self.customHeaders];
+    MKNetworkOperation *operation = [[MKNetworkOperation alloc] initWithURLString:urlString params:body httpMethod:method];
+        
+    [self prepareHeaders:operation];
     return operation;
+}
+
+-(void) prepareHeaders:(MKNetworkOperation*) operation {
+    
+    [operation addHeaders:self.customHeaders];
 }
 
 -(NSData*) cachedDataForOperation:(MKNetworkOperation*) operation {
@@ -291,6 +308,11 @@ static NSOperationQueue *_sharedNetworkQueue;
 
 -(void) enqueueOperation:(MKNetworkOperation*) operation {
     
+    [self enqueueOperation:operation forceReload:NO];
+}
+
+-(void) enqueueOperation:(MKNetworkOperation*) operation forceReload:(BOOL) forceReload {
+    
     [operation setCacheHandler:^(MKNetworkOperation* completedCacheableOperation) {
         
         // if this is not called, the request would have been a non cacheable request
@@ -302,29 +324,33 @@ static NSOperationQueue *_sharedNetworkQueue;
         [self.cacheInvalidationParams setObject:completedCacheableOperation.cacheHeaders forKey:uniqueId];
     }];
     
-    NSData *cachedData = [self cachedDataForOperation:operation];
-    double expiryTimeInSeconds = 0.0f;
+    double expiryTimeInSeconds = 0.0f;    
     
-    if(cachedData) {
-        [operation setCachedData:cachedData];
+    if(!forceReload) {
+        NSData *cachedData = [self cachedDataForOperation:operation];
+        if(cachedData) {
+            [operation setCachedData:cachedData];
             
-        NSString *uniqueId = [operation uniqueIdentifier];
-        NSMutableDictionary *savedCacheHeaders = [self.cacheInvalidationParams objectForKey:uniqueId];
-        // there is a cached version.
-        // this means, the current operation is a "GET"
-        if(savedCacheHeaders) {
-            NSString *expiresOn = [savedCacheHeaders objectForKey:@"Expires"];
-            NSDate *expiresOnDate = [NSDate dateFromRFC1123:expiresOn];
-            expiryTimeInSeconds = [expiresOnDate timeIntervalSinceNow];
-            
-            [operation updateOperationBasedOnPreviousHeaders:savedCacheHeaders];
+            NSString *uniqueId = [operation uniqueIdentifier];
+            NSMutableDictionary *savedCacheHeaders = [self.cacheInvalidationParams objectForKey:uniqueId];
+            // there is a cached version.
+            // this means, the current operation is a "GET"
+            if(savedCacheHeaders) {
+                NSString *expiresOn = [savedCacheHeaders objectForKey:@"Expires"];
+                NSDate *expiresOnDate = [NSDate dateFromRFC1123:expiresOn];
+                expiryTimeInSeconds = [expiresOnDate timeIntervalSinceNow];
+                
+                [operation updateOperationBasedOnPreviousHeaders:savedCacheHeaders];
+            }
         }
     }
     
     NSUInteger index = [_sharedNetworkQueue.operations indexOfObject:operation];
     if(index == NSNotFound) {
-                
+        
         if(expiryTimeInSeconds <= 0)
+            [_sharedNetworkQueue addOperation:operation];
+        else if(forceReload)
             [_sharedNetworkQueue addOperation:operation];
         // else don't do anything
     }
@@ -355,7 +381,7 @@ static NSOperationQueue *_sharedNetworkQueue;
          
      }
      onError:^(NSError* error) {
-
+         
          DLog(@"%@", error);
      }];    
     
@@ -450,7 +476,7 @@ static NSOperationQueue *_sharedNetworkQueue;
         NSError *error = nil;
         [[NSFileManager defaultManager] createDirectoryAtPath:cacheDirectory withIntermediateDirectories:YES attributes:nil error:&error];
     }
-
+    
     NSString *cacheInvalidationPlistFilePath = [cacheDirectory stringByAppendingPathExtension:@"plist"];
     
     BOOL fileExists = [[NSFileManager defaultManager] fileExistsAtPath:cacheInvalidationPlistFilePath];
@@ -459,7 +485,7 @@ static NSOperationQueue *_sharedNetworkQueue;
     {
         self.cacheInvalidationParams = [NSMutableDictionary dictionaryWithContentsOfFile:cacheInvalidationPlistFilePath];
     }
-
+    
 #if TARGET_OS_IPHONE        
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveCache)
                                                  name:UIApplicationDidReceiveMemoryWarningNotification
@@ -470,14 +496,14 @@ static NSOperationQueue *_sharedNetworkQueue;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveCache)
                                                  name:UIApplicationWillTerminateNotification
                                                object:nil];
-
+    
 #elif TARGET_OS_MAC
-
+    
 #warning POSSIBLY INCOMPLETE FUNCTION (Subscribe to Mac related notification for serializing caches)
-
+    
 #endif
     
-
+    
 }
 
 @end
