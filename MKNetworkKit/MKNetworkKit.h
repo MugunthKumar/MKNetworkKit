@@ -30,11 +30,11 @@
 #warning "MKNetworkKit uses features only available in iOS SDK 4.0 and later."
 #endif
 
-#import <Foundation/Foundation.h>
-
 #if TARGET_OS_IPHONE
+#import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #elif TARGET_OS_MAC
+#import <Cocoa/Cocoa.h>
 #import <AppKit/AppKit.h>
 #endif
 

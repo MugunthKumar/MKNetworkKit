@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AB3A308A148F099C00D06246 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB3A3089148F099C00D06246 /* Security.framework */; };
+		AB3A3098148F0A3B00D06246 /* NSDate+RFC1123.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3A3096148F0A3B00D06246 /* NSDate+RFC1123.h */; };
+		AB3A3099148F0A3B00D06246 /* NSDate+RFC1123.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3A3097148F0A3B00D06246 /* NSDate+RFC1123.m */; };
 		ABB5C260148B3AE00056D3E9 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABB5C25F148B3AE00056D3E9 /* Foundation.framework */; };
 		ABB5C2B9148B3B360056D3E9 /* NSDictionary+RequestEncoding.h in Headers */ = {isa = PBXBuildFile; fileRef = ABB5C2AA148B3B360056D3E9 /* NSDictionary+RequestEncoding.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		ABB5C2BA148B3B360056D3E9 /* NSDictionary+RequestEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = ABB5C2AB148B3B360056D3E9 /* NSDictionary+RequestEncoding.m */; };
@@ -26,6 +29,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		AB3A3089148F099C00D06246 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		AB3A3096148F0A3B00D06246 /* NSDate+RFC1123.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+RFC1123.h"; sourceTree = "<group>"; };
+		AB3A3097148F0A3B00D06246 /* NSDate+RFC1123.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+RFC1123.m"; sourceTree = "<group>"; };
 		ABB5C25C148B3AE00056D3E9 /* libMKNetworkKit-iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libMKNetworkKit-iOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ABB5C25F148B3AE00056D3E9 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		ABB5C263148B3AE00056D3E9 /* MKNetworkKit-iOS-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MKNetworkKit-iOS-Prefix.pch"; sourceTree = "<group>"; };
@@ -51,6 +57,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AB3A308A148F099C00D06246 /* Security.framework in Frameworks */,
 				ABB5C260148B3AE00056D3E9 /* Foundation.framework in Frameworks */,
 				ABB5C2CD148B40910056D3E9 /* SystemConfiguration.framework in Frameworks */,
 				ABB5C2CE148B40910056D3E9 /* CFNetwork.framework in Frameworks */,
@@ -80,6 +87,7 @@
 		ABB5C25E148B3AE00056D3E9 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				AB3A3089148F099C00D06246 /* Security.framework */,
 				ABB5C2CB148B40910056D3E9 /* SystemConfiguration.framework */,
 				ABB5C2CC148B40910056D3E9 /* CFNetwork.framework */,
 				ABB5C25F148B3AE00056D3E9 /* Foundation.framework */,
@@ -113,6 +121,8 @@
 		ABB5C2A9148B3B360056D3E9 /* Categories */ = {
 			isa = PBXGroup;
 			children = (
+				AB3A3096148F0A3B00D06246 /* NSDate+RFC1123.h */,
+				AB3A3097148F0A3B00D06246 /* NSDate+RFC1123.m */,
 				ABB5C2AA148B3B360056D3E9 /* NSDictionary+RequestEncoding.h */,
 				ABB5C2AB148B3B360056D3E9 /* NSDictionary+RequestEncoding.m */,
 				ABB5C2AC148B3B360056D3E9 /* NSString+MKNetworkKitAdditions.h */,
@@ -156,6 +166,7 @@
 				ABB5C2C1148B3B360056D3E9 /* MKNetworkKit.h in Headers */,
 				ABB5C2C2148B3B360056D3E9 /* MKNetworkOperation.h in Headers */,
 				ABB5C2C4148B3B360056D3E9 /* Reachability.h in Headers */,
+				AB3A3098148F0A3B00D06246 /* NSDate+RFC1123.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -216,6 +227,7 @@
 				ABB5C2C0148B3B360056D3E9 /* MKNetworkEngine.m in Sources */,
 				ABB5C2C3148B3B360056D3E9 /* MKNetworkOperation.m in Sources */,
 				ABB5C2C5148B3B360056D3E9 /* Reachability.m in Sources */,
+				AB3A3099148F0A3B00D06246 /* NSDate+RFC1123.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
