@@ -1,6 +1,6 @@
 This is version 0.85 of MKNetworkKit. Read the <a href="http://mk.sg/8w"> blog post</a> for more. The master branch is a live working branch that is not stable yet (especially for Mac). 
 
-Till then, pickup the latest stable code at the tag <a href="https://github.com/MugunthKumar/MKNetworkKit/zipball/v0.81"> v0.81 </a>
+Till then, pickup the latest stable code at the tag <a href="https://github.com/MugunthKumar/MKNetworkKit/zipball/v0.82"> v0.82 </a>
 
 The latest stable code is still not fully testing on Mac, though iOS is complete. I would call MKNetworkKit a beta framework since caching responses is still not implemented the right way (performance tweaks pending). Otherwise, it is ready for production use.
 
