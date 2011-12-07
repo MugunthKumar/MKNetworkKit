@@ -2,7 +2,7 @@
 //  AppDelegate.m
 //  MKNetworkKit-OSX-Demo
 //
-//  Created by Mugunth Kumar on 4/12/11.
+//  Created by Mugunth Kumar on 7/12/11.
 //  Copyright (c) 2011 Steinlogic. All rights reserved.
 //
 
