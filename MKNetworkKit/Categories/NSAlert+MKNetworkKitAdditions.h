@@ -23,8 +23,10 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
+#if TARGET_OS_MAC
 #import <AppKit/AppKit.h>
 
 @interface NSAlert (MKNetworkKitAdditions)
 +(NSAlert*) showWithError:(NSError*) networkError;
 @end
+#endif
