@@ -91,8 +91,6 @@ Gentle Bytes appledoc@gentlebytes.com
 * Scheduling in current runloop
 * Test multiple file attachments in a single request
 
-* Caching NSURLConnection (Persistent connections) based on Keep-Alive
-
 I'll be working on this soon. But you can start forking it and getting it right
 
 ---

@@ -1008,8 +1008,9 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
 #ifdef __IPHONE_5_0
 -(id) responseJSON {
     
+    if([self responseData] == nil) return nil;
     NSError *error = nil;
-    id returnValue = [NSJSONSerialization JSONObjectWithData:[self mutableData] options:0 error:&error];    
+    id returnValue = [NSJSONSerialization JSONObjectWithData:[self responseData] options:0 error:&error];    
     DLog(@"JSON Parsing Error: %@", error);
     return returnValue;
 }
