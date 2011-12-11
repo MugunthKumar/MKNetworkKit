@@ -79,7 +79,7 @@ typedef void (^MKNKAuthBlock)(NSURLAuthenticationChallenge* challenge);
  *  This property is readonly cannot be modified. 
  *  To create an operation with a new request, use the operationWithURLString:params:httpMethod: 
  */
-@property (nonatomic, strong, readonly) NSMutableURLRequest *readonlyRequest;
+@property (nonatomic, strong, readonly) NSURLRequest *readonlyRequest;
 
 /*!
  *  @abstract The internal HTTP Response Object

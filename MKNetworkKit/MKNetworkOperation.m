@@ -141,7 +141,7 @@ typedef enum {
     return [[self.request URL] absoluteString];
 }
 
--(NSMutableURLRequest*) readonlyRequest {
+-(NSURLRequest*) readonlyRequest {
     
     return [self.request copy];
 }
