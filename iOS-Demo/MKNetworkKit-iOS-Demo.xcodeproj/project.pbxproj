@@ -301,7 +301,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MKNetworkKitDemo/MKNetworkKit-iOS-Demo-Prefix.pch";
 				INFOPLIST_FILE = "MKNetworkKitDemo/MKNetworkKit-iOS-Demo-Info.plist";
-				OTHER_LDFLAGS = "-all_load";
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-all_load",
+				);
 				PRODUCT_NAME = "MKNetworkKit-iOS-Demo";
 				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
@@ -315,7 +318,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MKNetworkKitDemo/MKNetworkKit-iOS-Demo-Prefix.pch";
 				INFOPLIST_FILE = "MKNetworkKitDemo/MKNetworkKit-iOS-Demo-Info.plist";
-				OTHER_LDFLAGS = "-all_load";
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-all_load",
+				);
 				PRODUCT_NAME = "MKNetworkKit-iOS-Demo";
 				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;

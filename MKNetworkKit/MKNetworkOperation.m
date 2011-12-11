@@ -143,12 +143,12 @@ typedef enum {
 
 -(NSMutableURLRequest*) readonlyRequest {
     
-    return self.request;
+    return [self.request copy];
 }
 
 -(NSHTTPURLResponse*) readonlyResponse {
     
-    return self.response;
+    return [self.response copy];
 }
 
 -(NSString*) HTTPMethod {
@@ -156,11 +156,11 @@ typedef enum {
     return self.request.HTTPMethod;
 }
 
--(NSInteger) HTTPStatusCode {
+-(int) HTTPStatusCode {
     
     if(self.response)
         return self.response.statusCode;
-    else 
+    else
         return 0;
 }
 
@@ -900,9 +900,6 @@ typedef enum {
         if(eTag)
             [self.cacheHeaders setObject:eTag forKey:@"ETag"];
     }
-    
-    
-    
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
@@ -942,13 +939,13 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
     
     self.state = MKNetworkOperationStateFinished;
-    self.cachedResponse = nil; // remove cached data
     
     for(NSOutputStream *stream in self.downloadStreams)
         [stream close];
     
     if (self.response.statusCode >= 200 && self.response.statusCode < 300) {
         
+        self.cachedResponse = nil; // remove cached data
         [self notifyCache];        
         [self operationSucceeded];
         
@@ -965,7 +962,7 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
             DLog(@"%@ temporarily redirected", self.url);
         }
         else {
-            DLog(@"%@ returned status %ld", self.url, [self HTTPStatusCode]);
+            DLog(@"%@ returned status %d", self.url, self.response.statusCode);
         }
         
     } else if (self.response.statusCode >= 400 && self.response.statusCode < 600) {                        
