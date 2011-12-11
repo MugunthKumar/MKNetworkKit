@@ -385,18 +385,18 @@ typedef enum {
 
 -(void) onCompletion:(MKNKResponseBlock) response onError:(MKNKErrorBlock) error {
     
-    [self.responseBlocks addObject:response];
-    [self.errorBlocks addObject:error];
+    [self.responseBlocks addObject:[response copy]];
+    [self.errorBlocks addObject:[error copy]];
 }
 
 -(void) onUploadProgressChanged:(MKNKProgressBlock) uploadProgressBlock {
     
-    [self.uploadProgressChangedHandlers addObject:uploadProgressBlock];
+    [self.uploadProgressChangedHandlers addObject:[uploadProgressBlock copy]];
 }
 
 -(void) onDownloadProgressChanged:(MKNKProgressBlock) downloadProgressBlock {
     
-    [self.downloadProgressChangedHandlers addObject:downloadProgressBlock];
+    [self.downloadProgressChangedHandlers addObject:[downloadProgressBlock copy]];
 }
 
 -(void) setDownloadStream:(NSOutputStream*) outputStream {
