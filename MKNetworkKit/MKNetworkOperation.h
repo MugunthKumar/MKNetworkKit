@@ -90,6 +90,28 @@ typedef void (^MKNKAuthBlock)(NSURLAuthenticationChallenge* challenge);
  *  This property is readonly cannot be updated. 
  */
 @property (nonatomic, strong, readonly) NSHTTPURLResponse *readonlyResponse;
+
+/*!
+ *  @abstract The internal request object's method type
+ *  @property HTTPMethod
+ *  
+ *  @discussion
+ *	Returns the operation's method type
+ *  This property is readonly cannot be modified. 
+ *  To create an operation with a new method type, use the operationWithURLString:params:httpMethod: 
+ */
+@property (nonatomic, strong, readonly) NSString *HTTPMethod;
+
+/*!
+ *  @abstract The internal response object's status code
+ *  @property HTTPStatusCode
+ *  
+ *  @discussion
+ *	Returns the operation's response's status code.
+ *  Returns 0 when the operation has not yet started and the response is not available.
+ *  This property is readonly cannot be modified. 
+ */
+@property (nonatomic, assign, readonly) NSInteger HTTPStatusCode;
 /*!
  *  @abstract String Encoding Property
  *  @property stringEncoding

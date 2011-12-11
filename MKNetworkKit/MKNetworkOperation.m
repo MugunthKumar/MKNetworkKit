@@ -143,12 +143,25 @@ typedef enum {
 
 -(NSMutableURLRequest*) readonlyRequest {
     
-    return [self.request copy];
+    return self.request;
 }
 
 -(NSHTTPURLResponse*) readonlyResponse {
     
-    return [self.response copy];
+    return self.response;
+}
+
+-(NSString*) HTTPMethod {
+    
+    return self.request.HTTPMethod;
+}
+
+-(NSInteger) HTTPStatusCode {
+    
+    if(self.response)
+        return self.response.statusCode;
+    else 
+        return 0;
 }
 
 - (void)setFreezable:(BOOL)flag
@@ -372,18 +385,18 @@ typedef enum {
 
 -(void) onCompletion:(MKNKResponseBlock) response onError:(MKNKErrorBlock) error {
     
-    [self.responseBlocks addObject:[response copy]];
-    [self.errorBlocks addObject:[error copy]];
+    [self.responseBlocks addObject:response];
+    [self.errorBlocks addObject:error];
 }
 
 -(void) onUploadProgressChanged:(MKNKProgressBlock) uploadProgressBlock {
     
-    [self.uploadProgressChangedHandlers addObject:[uploadProgressBlock copy]];
+    [self.uploadProgressChangedHandlers addObject:uploadProgressBlock];
 }
 
 -(void) onDownloadProgressChanged:(MKNKProgressBlock) downloadProgressBlock {
     
-    [self.downloadProgressChangedHandlers addObject:[downloadProgressBlock copy]];
+    [self.downloadProgressChangedHandlers addObject:downloadProgressBlock];
 }
 
 -(void) setDownloadStream:(NSOutputStream*) outputStream {
@@ -564,7 +577,7 @@ typedef enum {
     
     if([self.filesToBePosted count] == 0 && [self.dataToBePosted count] == 0) {
         
-        return [[[self.fieldsToBePosted urlEncodedKeyValueString] dataUsingEncoding:self.stringEncoding] mutableCopy];
+        return [[self.fieldsToBePosted urlEncodedKeyValueString] dataUsingEncoding:self.stringEncoding];
     }
     
     NSString *boundary = @"0xKhTmLbOuNdArY";
@@ -952,7 +965,7 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
             DLog(@"%@ temporarily redirected", self.url);
         }
         else {
-            DLog(@"%@ returned status %d", self.url, self.response.statusCode);
+            DLog(@"%@ returned status %ld", self.url, [self HTTPStatusCode]);
         }
         
     } else if (self.response.statusCode >= 400 && self.response.statusCode < 600) {                        
@@ -971,7 +984,7 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
 -(NSData*) responseData {
     
     if([self isFinished])
-        return [self.mutableData copy];
+        return self.mutableData;
     else if(self.cachedResponse)
         return self.cachedResponse;
     else
