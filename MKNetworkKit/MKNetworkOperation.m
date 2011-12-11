@@ -156,7 +156,7 @@ typedef enum {
     return self.request.HTTPMethod;
 }
 
--(int) HTTPStatusCode {
+-(NSInteger) HTTPStatusCode {
     
     if(self.response)
         return self.response.statusCode;
@@ -962,7 +962,7 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
             DLog(@"%@ temporarily redirected", self.url);
         }
         else {
-            DLog(@"%@ returned status %d", self.url, self.response.statusCode);
+            DLog(@"%@ returned status %d", self.url, (int) self.response.statusCode);
         }
         
     } else if (self.response.statusCode >= 400 && self.response.statusCode < 600) {                        
