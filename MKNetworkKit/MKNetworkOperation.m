@@ -416,7 +416,7 @@ typedef enum {
         
         self.filesToBePosted = [NSMutableArray array];
         self.dataToBePosted = [NSMutableArray array];
-        self.fieldsToBePosted = [NSMutableArray array];
+        self.fieldsToBePosted = [NSMutableDictionary dictionary];
         
         self.uploadProgressChangedHandlers = [NSMutableArray array];
         self.downloadProgressChangedHandlers = [NSMutableArray array];
