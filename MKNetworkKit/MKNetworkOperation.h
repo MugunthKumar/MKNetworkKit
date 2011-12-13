@@ -104,7 +104,7 @@ typedef void (^MKNKAuthBlock)(NSURLAuthenticationChallenge* challenge);
  *  @seealso
  *   addHeaders:
  */
-@property (nonatomic, strong, readonly) NSHTTPURLResponse *readonlyPostDictionary;
+@property (nonatomic, strong, readonly) NSDictionary *readonlyPostDictionary;
 
 /*!
  *  @abstract The internal request object's method type
