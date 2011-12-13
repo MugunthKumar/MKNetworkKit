@@ -66,4 +66,9 @@
     return encodedString;
 }
 
+- (NSString*) urlDecodedString {
+    
+    return [self stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+}
+
 @end

@@ -92,6 +92,21 @@ typedef void (^MKNKAuthBlock)(NSURLAuthenticationChallenge* challenge);
 @property (nonatomic, strong, readonly) NSHTTPURLResponse *readonlyResponse;
 
 /*!
+ *  @abstract The internal HTTP Post data values
+ *  @property readonlyPostDictionary
+ *  
+ *  @discussion
+ *	Returns the operation's post data dictionary
+ *  This property is readonly cannot be updated.
+ *  Rather, updating this post dictionary doesn't have any effect on the MKNetworkOperation.
+ *  Use the addHeaders method to add post data parameters to the operation.
+ *
+ *  @seealso
+ *   addHeaders:
+ */
+@property (nonatomic, strong, readonly) NSHTTPURLResponse *readonlyPostDictionary;
+
+/*!
  *  @abstract The internal request object's method type
  *  @property HTTPMethod
  *  

@@ -151,6 +151,11 @@ typedef enum {
     return [self.response copy];
 }
 
+- (NSDictionary *) readonlyPostDictionary {
+
+    return [self.fieldsToBePosted copy];
+}
+
 -(NSString*) HTTPMethod {
     
     return self.request.HTTPMethod;
