@@ -80,8 +80,6 @@ Gentle Bytes appledoc@gentlebytes.com
 ---
 ###TODO
 
-* Stream post body 0.85
-* Multiple encoding types in URL
 * Fix and test Client certificate/Server trust auth
 
 * Fix AppleDoc warnings
@@ -90,6 +88,7 @@ Gentle Bytes appledoc@gentlebytes.com
 
 * Scheduling in current runloop
 * Test multiple file attachments in a single request
+* Test streaming
 
 I'll be working on this soon. But you can start forking it and getting it right
 

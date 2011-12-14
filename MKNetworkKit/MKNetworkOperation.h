@@ -36,6 +36,14 @@ typedef void (^MKNKErrorBlock)(NSError* error);
 
 typedef void (^MKNKAuthBlock)(NSURLAuthenticationChallenge* challenge);
 
+typedef NSString* (^MKNKEncodingBlock) (NSDictionary* postDataDict);
+
+typedef enum {
+    
+    MKNKPostDataEncodingTypeURL = 0, // default
+    MKNKPostDataEncodingTypeJSON,
+    MKNKPostDataEncodingTypePlist,
+} MKNKPostDataEncodingType;
 /*!
  @header MKNetworkOperation.h
  @abstract   Represents a single unique network operation.
@@ -127,15 +135,47 @@ typedef void (^MKNKAuthBlock)(NSURLAuthenticationChallenge* challenge);
  *  This property is readonly cannot be modified. 
  */
 @property (nonatomic, assign, readonly) NSInteger HTTPStatusCode;
+
+/*!
+ *  @abstract Post Data Encoding Type Property
+ *  @property postDataEncoding
+ *  
+ *  @discussion
+ *  Specifies which type of encoding should be used to encode post data.
+ *  MKNKPostDataEncodingTypeURL is the default which defaults to application/x-www-form-urlencoded
+ *  MKNKPostDataEncodingTypeJSON uses JSON encoding. 
+ *  JSON Encoding is supported only in iOS 5 or Mac OS X 10.7 and above.
+ *  On older operating systems, JSON Encoding reverts back to URL Encoding
+ *  You can use the postDataEncodingHandler to provide a custom postDataEncoding 
+ *  For example, JSON encoding using a third party library.
+ *
+ *  @seealso
+ *  setCustomPostDataEncodingHandler:forType:
+ *
+ */
+@property (nonatomic, assign) MKNKPostDataEncodingType postDataEncoding;
+
+/*!
+ *  @abstract Set a customized Post Data Encoding Handler for a given HTTP Content Type
+ *  
+ *  @discussion
+ *  If you need customized post data encoding support, provide a block method here.
+ *  This block method will be invoked only when your HTTP Method is POST or PUT
+ *  For default URL encoding or JSON encoding, use the property postDataEncoding
+ *  If you change the postData format, it's your responsiblity to provide a correct Content-Type.
+ *
+ *  @seealso
+ *  postDataEncoding
+ */
+
+-(void) setCustomPostDataEncodingHandler:(MKNKEncodingBlock) postDataEncodingHandler forType:(NSString*) contentType;
+
 /*!
  *  @abstract String Encoding Property
  *  @property stringEncoding
  *  
  *  @discussion
- *	Creates an operation with the given URL string.
- *  The default headers you specified in your MKNetworkEngine subclass gets added to the headers
- *  The params dictionary in this method gets attached to the URL as query parameters if the HTTP Method is GET/DELETE
- *  The params dictionary is attached to the body if the HTTP Method is POST/PUT
+ *  Specifies which type of encoding should be used to encode URL strings
  */
 @property (nonatomic, assign) NSStringEncoding stringEncoding;
 
@@ -295,6 +335,15 @@ typedef void (^MKNKAuthBlock)(NSURLAuthenticationChallenge* challenge);
 -(void) onDownloadProgressChanged:(MKNKProgressBlock) downloadProgressBlock;
 
 /*!
+ *  @abstract Uploads a resource from a stream
+ *  
+ *  @discussion
+ *	This method can be used to upload a resource for a post body directly from a stream.
+ *
+ */
+-(void) setUploadStream:(NSInputStream*) inputStream;
+
+/*!
  *  @abstract Downloads a resource directly to a file or any output stream
  *  
  *  @discussion
@@ -303,7 +352,7 @@ typedef void (^MKNKAuthBlock)(NSURLAuthenticationChallenge* challenge);
  *  A stream cannot be removed after it is added.
  *
  */
--(void) setDownloadStream:(NSOutputStream*) outputStream;
+-(void) addDownloadStream:(NSOutputStream*) outputStream;
 
 /*!
  *  @abstract Helper method to check if the response is from cache
@@ -323,7 +372,7 @@ typedef void (^MKNKAuthBlock)(NSURLAuthenticationChallenge* challenge);
  *	This method is used for accessing the downloaded data. If the operation is still in progress, the method returns nil instead of partial data. To access partial data, use a downloadStream.
  *
  *  @seealso
- *  setDownloadStream:
+ *  addDownloadStream:
  */
 -(NSData*) responseData;
 
@@ -334,7 +383,7 @@ typedef void (^MKNKAuthBlock)(NSURLAuthenticationChallenge* challenge);
  *	This method is used for accessing the downloaded data. If the operation is still in progress, the method returns nil instead of partial data. To access partial data, use a downloadStream. The method also converts the responseData to a NSString using the stringEncoding specified in the operation
  *
  *  @seealso
- *  setDownloadStream:
+ *  addDownloadStream:
  *  stringEncoding
  */
 -(NSString*)responseString;
@@ -355,7 +404,7 @@ typedef void (^MKNKAuthBlock)(NSURLAuthenticationChallenge* challenge);
  *	This method is used for accessing the downloaded data. If the operation is still in progress, the method returns nil instead of partial data. To access partial data, use a downloadStream. The method also converts the responseData to a NSString using the stringEncoding specified in the parameter
  *
  *  @seealso
- *  setDownloadStream:
+ *  addDownloadStream:
  *  stringEncoding
  */
 -(NSString*) responseStringWithEncoding:(NSStringEncoding) encoding;
@@ -367,7 +416,7 @@ typedef void (^MKNKAuthBlock)(NSURLAuthenticationChallenge* challenge);
  *	This method is used for accessing the downloaded data as a UIImage. If the operation is still in progress, the method returns nil instead of a partial image. To access partial data, use a downloadStream. If the response is not a valid image, this method returns nil. This method doesn't obey the response mime type property. If the server response with a proper image data but set the mime type incorrectly, this method will still be able access the response as an image.
  *
  *  @seealso
- *  setDownloadStream:
+ *  addDownloadStream:
  */
 #if TARGET_OS_IPHONE
 -(UIImage*) responseImage;
@@ -376,7 +425,6 @@ typedef void (^MKNKAuthBlock)(NSURLAuthenticationChallenge* challenge);
 -(NSXMLDocument*) responseXML;
 #endif
 
-#ifdef __IPHONE_5_0
 /*!
  *  @abstract Helper method to retrieve the contents as a NSDictionary or NSArray depending on the JSON contents
  *  
@@ -384,10 +432,9 @@ typedef void (^MKNKAuthBlock)(NSURLAuthenticationChallenge* challenge);
  *	This method is used for accessing the downloaded data as a NSDictionary or an NSArray. If the operation is still in progress, the method returns nil. If the response is not a valid JSON, this method returns nil.
  *
  *  @availability
- *  iOS 5 and above
+ *  iOS 5 and above or Mac OS 10.7 and above
  */
 -(id) responseJSON;
-#endif
 
 /*!
  *  @abstract Overridable custom method where you can add your custom business logic error handling

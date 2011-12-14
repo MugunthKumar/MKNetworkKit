@@ -44,5 +44,5 @@
 @end
 
 
-#define kTwitterUserName @""
-#define kTwitterPassword @""
+#define kTwitterUserName @"mksg"
+#define kTwitterPassword @"fQJz74jGAs2hs2m"

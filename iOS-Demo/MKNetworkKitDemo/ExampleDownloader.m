@@ -34,7 +34,7 @@
                                                         params:nil
                                                   httpMethod:@"GET"];
     
-    [op setDownloadStream:[NSOutputStream outputStreamToFileAtPath:filePath
+    [op addDownloadStream:[NSOutputStream outputStreamToFileAtPath:filePath
                                                                  append:YES]];
     
     [self enqueueOperation:op];
