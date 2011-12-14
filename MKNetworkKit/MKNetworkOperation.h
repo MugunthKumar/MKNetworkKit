@@ -180,6 +180,17 @@ typedef void (^MKNKAuthBlock)(NSURLAuthenticationChallenge* challenge);
 -(void) setUsername:(NSString*) name password:(NSString*) password;
 
 /*!
+ *  @abstract Authentication methods
+ *  
+ *  @discussion
+ *	If your request needs to be authenticated using HTTP Basic, use this method to set your username and password.
+ *  Calling this method with basicAuth:NO is same as calling setUserName:password:
+ *  @seealso
+ *  setUserName:password:
+ */
+-(void) setUsername:(NSString*) username password:(NSString*) password basicAuth:(BOOL) bYesOrNo;
+
+/*!
  *  @abstract Authentication methods (Client Certificate)
  *  @property clientCertificate
  *  

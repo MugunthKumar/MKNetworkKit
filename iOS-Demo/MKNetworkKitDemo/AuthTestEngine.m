@@ -16,7 +16,7 @@
                                               params:nil 
                                           httpMethod:@"GET"];
     
-    [op setUsername:@"admin" password:@"password"];
+    [op setUsername:@"admin" password:@"password" basicAuth:YES];
     
     [op onCompletion:^(MKNetworkOperation *operation) {
         
