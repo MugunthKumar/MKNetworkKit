@@ -489,13 +489,9 @@ typedef enum {
             finalURL = [NSURL URLWithString:aURLString];
         }
         
-        // if your server takes longer than 30 seconds to provide real data,
-        // you should hire a better server developer.
-        // on iOS (or any mobile device), 30 seconds is already considered high.
-        
         self.request = [NSMutableURLRequest requestWithURL:finalURL                                                           
                                                cachePolicy:NSURLRequestUseProtocolCachePolicy                                            
-                                           timeoutInterval:30.0f];
+                                           timeoutInterval:kMKNetworkKitRequestTimeOutInSeconds];
         
         [self.request setHTTPMethod:method];
         
