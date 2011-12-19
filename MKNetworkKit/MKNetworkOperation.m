@@ -1006,6 +1006,21 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
     }
 }
 
+// http://stackoverflow.com/questions/1446509/handling-redirects-correctly-with-nsurlconnection
+- (NSURLRequest *)connection: (NSURLConnection *)inConnection
+             willSendRequest: (NSURLRequest *)inRequest
+            redirectResponse: (NSURLResponse *)inRedirectResponse;
+{
+    if (inRedirectResponse) {
+        NSMutableURLRequest *r = [self.request mutableCopy];
+        [r setURL: [inRequest URL]];
+        DLog(@"Redirected to %@", [[inRequest URL] absoluteString]);
+
+        return r;
+    } else {
+        return inRequest;
+    }
+}
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
     
     self.state = MKNetworkOperationStateFinished;
