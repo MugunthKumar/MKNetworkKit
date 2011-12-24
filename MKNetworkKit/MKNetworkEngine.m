@@ -170,7 +170,7 @@ static NSOperationQueue *_sharedNetworkQueue;
     }        
 }
 
-#pragma Freezing operations (Called when network connectivity fails)
+#pragma mark Freezing operations (Called when network connectivity fails)
 -(void) freezeOperations {
     
     if(![self isCacheEnabled]) return;
@@ -228,8 +228,8 @@ static NSOperationQueue *_sharedNetworkQueue;
     return ([self.reachability currentReachabilityStatus] != NotReachable);
 }
 
-#pragma -
-#pragma Create methods
+#pragma mark -
+#pragma mark Create methods
 
 -(MKNetworkOperation*) operationWithPath:(NSString*) path {
     
@@ -387,8 +387,8 @@ static NSOperationQueue *_sharedNetworkQueue;
     [self enqueueOperation:op];
 }
 
-#pragma -
-#pragma Cache related
+#pragma mark -
+#pragma mark Cache related
 
 -(NSString*) cacheDirectoryName {
     
