@@ -304,7 +304,7 @@ static NSOperationQueue *_sharedNetworkQueue;
     
     if([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
         
-        NSData *cachedData = [NSData dataWithContentsOfFile:filePath];
+        cachedData = [NSData dataWithContentsOfFile:filePath];
         [self saveCacheData:cachedData forKey:[operation uniqueIdentifier]]; // bring it back to the in-memory cache
         return cachedData;
     }
