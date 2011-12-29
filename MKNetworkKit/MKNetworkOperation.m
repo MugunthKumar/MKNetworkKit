@@ -101,6 +101,7 @@ typedef enum {
 @synthesize password = _password;
 @synthesize clientCertificate = _clientCertificate;
 @synthesize authHandler = _authHandler;
+@synthesize operationStateChangedHandler = _operationStateChangedHandler;
 
 @synthesize responseBlocks = _responseBlocks;
 @synthesize errorBlocks = _errorBlocks;
@@ -296,6 +297,10 @@ typedef enum {
             });
 #endif        
             break;
+    }
+    
+    if(self.operationStateChangedHandler) {
+        self.operationStateChangedHandler(newState);
     }
 }
 
