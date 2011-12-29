@@ -10,4 +10,5 @@
 
 -(void) basicAuthTest;
 -(void) digestAuthTest;
+-(void) clientCertTest;
 @end

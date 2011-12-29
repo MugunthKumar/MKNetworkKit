@@ -169,7 +169,8 @@
 
 - (IBAction)testAuthTapped:(id)sender {
     
-    [ApplicationDelegate.sampleAuth basicAuthTest];
-    [ApplicationDelegate.sampleAuth digestAuthTest];
+    //[ApplicationDelegate.sampleAuth basicAuthTest];
+    //[ApplicationDelegate.sampleAuth digestAuthTest];
+    [ApplicationDelegate.sampleAuth clientCertTest];
 }
 @end

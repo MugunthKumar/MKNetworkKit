@@ -63,6 +63,7 @@
 #import "MKNetworkOperation.h"
 #import "MKNetworkEngine.h"
 
+#define kMKNetworkEngineOperationCountChanged @"kMKNetworkEngineOperationCountChanged"
 #define MKNETWORKCACHE_DEFAULT_COST 10
 #define MKNETWORKCACHE_DEFAULT_DIRECTORY @"MKNetworkKitCache"
 #define kMKNetworkKitDefaultCacheDuration 60 // 1 minute

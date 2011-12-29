@@ -57,6 +57,7 @@ static NSOperationQueue *_sharedNetworkQueue;
 @synthesize memoryCacheKeys = _memoryCacheKeys;
 @synthesize cacheInvalidationParams = _cacheInvalidationParams;
 
+@synthesize reachabilityChangedHandler = _reachabilityChangedHandler;
 
 // Network Queue is a shared singleton object.
 // no matter how many instances of MKNetworkEngine is created, there is one and only one network queue
@@ -133,7 +134,9 @@ static NSOperationQueue *_sharedNetworkQueue;
                          change:(NSDictionary *)change context:(void *)context
 {
     if (object == _sharedNetworkQueue && [keyPath isEqualToString:@"operationCount"]) {
-        
+       
+        [[NSNotificationCenter defaultCenter] postNotificationName:kMKNetworkEngineOperationCountChanged 
+                                                            object:[NSNumber numberWithInteger:[_sharedNetworkQueue operationCount]]];
 #if TARGET_OS_IPHONE
         [UIApplication sharedApplication].networkActivityIndicatorVisible = 
         ([_sharedNetworkQueue.operations count] > 0);        
@@ -167,7 +170,11 @@ static NSOperationQueue *_sharedNetworkQueue;
     {
         DLog(@"Server [%@] is not reachable", self.hostName);        
         [self freezeOperations];
-    }        
+    }   
+    
+    if(self.reachabilityChangedHandler) {
+        self.reachabilityChangedHandler([self.reachability currentReachabilityStatus]);
+    }
 }
 
 #pragma Freezing operations (Called when network connectivity fails)
