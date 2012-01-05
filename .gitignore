@@ -12,3 +12,13 @@ xcuserdata
 profile
 *.moved-aside
 .DS_Store
+
+.idea/vcs.xml
+.gitignore
+.idea/.name
+.idea/encodings.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/scopes/scope_settings.xml
+.idea/workspace.xml
+.idea/xcode.xml
