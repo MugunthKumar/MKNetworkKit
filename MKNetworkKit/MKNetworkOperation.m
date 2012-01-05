@@ -993,7 +993,7 @@
         NSString *rangeString = [[self request] valueForHTTPHeaderField:@"Range"];
         if ([rangeString hasPrefix:@"bytes="] && [rangeString hasSuffix:@"-"]) {
             NSString *bytesText = [rangeString substringWithRange:NSMakeRange(6, [rangeString length] - 7)];
-            startPoint = [bytesText integerValue];
+            self.startPoint = [bytesText integerValue];
             DLog(@"Resuming at %d bytes", startPoint);
         }
     }
