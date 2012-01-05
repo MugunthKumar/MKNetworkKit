@@ -28,13 +28,6 @@
 #import "NSString+MKNetworkKitAdditions.h"
 
 
-// Should there be a cancelled state? or something similar.
-typedef enum {
-    MKNetworkOperationStateReady = 1,
-    MKNetworkOperationStateExecuting = 2,
-    MKNetworkOperationStateFinished = 3
-} MKNetworkOperationState;
-
 @interface MKNetworkOperation (/*Private Methods*/)
 @property (strong, nonatomic) NSURLConnection *connection;
 @property (strong, nonatomic) NSString *uniqueId;
