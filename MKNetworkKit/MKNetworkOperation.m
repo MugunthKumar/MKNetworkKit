@@ -53,9 +53,12 @@
 @property (nonatomic, strong) NSMutableArray *downloadProgressChangedHandlers;
 @property (nonatomic, copy) MKNKEncodingBlock postDataEncodingHandler;
 
+@property (nonatomic, assign) NSInteger startPosition;
+
 @property (nonatomic, strong) NSMutableArray *downloadStreams;
 @property (nonatomic, strong) NSData *cachedResponse;
 @property (nonatomic, copy) MKNKResponseBlock cacheHandlingBlock;
+
 #if TARGET_OS_IPHONE    
 @property (nonatomic, assign) UIBackgroundTaskIdentifier backgroundTaskId;
 #endif
@@ -110,6 +113,8 @@
 @synthesize cachedResponse = _cachedResponse;
 @synthesize cacheHandlingBlock = _cacheHandlingBlock;
 @synthesize credentialPersistence = _credentialPersistence;
+
+@synthesize startPosition = _startPosition;
 
 #if TARGET_OS_IPHONE    
 @synthesize backgroundTaskId = _backgroundTaskId;
@@ -981,7 +986,18 @@
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
-    
+
+    if ([self.mutableData length] == 0) {
+        // This is the first batch of data
+        // Check for a range header and make changes as neccesary
+        NSString *rangeString = [[self request] valueForHTTPHeaderField:@"Range"];
+        if ([rangeString hasPrefix:@"bytes="] && [rangeString hasSuffix:@"-"]) {
+            NSString *bytesText = [rangeString substringWithRange:NSMakeRange(6, [rangeString length] - 7)];
+            startPoint = [bytesText integerValue];
+            DLog(@"Resuming at %d bytes", startPoint);
+        }
+    }
+
     [self.mutableData appendData:data];
     
     for(NSOutputStream *stream in self.downloadStreams) {
@@ -996,7 +1012,7 @@
         
         if([self.response expectedContentLength] > 0) {
             
-            double progress = (double)[self.mutableData length] / (double)[self.response expectedContentLength];
+            double progress = (double)(self.startPoint + [self.mutableData length]) / (double)(self.startPoint + [self.response expectedContentLength]);
             downloadProgressBlock(progress);
         }        
     }
