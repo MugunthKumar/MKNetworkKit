@@ -56,7 +56,7 @@
 
 - (void)viewDidAppear:(BOOL)animated
 {
-    [ApplicationDelegate.flickrEngine imagesForTag:@"Singapore" onCompletion:^(NSMutableArray* images) {
+    [ApplicationDelegate.flickrEngine imagesForTag:@"New York City" onCompletion:^(NSMutableArray* images) {
         
         self.flickrImages = images;
         [self.tableView reloadData];        
