@@ -10,5 +10,7 @@
 
 -(void) basicAuthTest;
 -(void) digestAuthTest;
+-(void)digestAuthTestWithUser:(NSString*)username password:(NSString*)password;
 -(void) clientCertTest;
+-(int) cacheMemoryCost;
 @end

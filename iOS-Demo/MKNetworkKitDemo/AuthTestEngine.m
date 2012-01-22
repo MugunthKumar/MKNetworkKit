@@ -47,6 +47,25 @@
     [self enqueueOperation:op];
 }
 
+-(void)digestAuthTestWithUser:(NSString*)username password:(NSString*)password {
+    MKNetworkOperation *op = [self operationWithURLString:@"http://teeqemm.dnsalias.org:82/Users/11220/Catalogs/"
+                                              params:nil 
+                                          httpMethod:@"GET"];
+    
+    [op setUsername:username password:password];
+    [op setCredentialPersistence:NSURLCredentialPersistenceNone];
+    
+    [op onCompletion:^(MKNetworkOperation *operation) {
+        
+        DLog(@"%@", [operation responseString]); 
+    } onError:^(NSError *error) {
+        
+        DLog(@"%@", [error localizedDescription]);         
+    }];
+    [self enqueueOperation:op];
+}
+
+
 -(void) clientCertTest {
     
     MKNetworkOperation *op = [self operationWithPath:@"mknetworkkit/client_auth.php"
@@ -66,4 +85,9 @@
     }];
     [self enqueueOperation:op];
 }
+
+-(int) cacheMemoryCost {
+    return 0;
+}
+
 @end

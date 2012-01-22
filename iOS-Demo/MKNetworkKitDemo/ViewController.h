@@ -33,5 +33,7 @@
 
 @property (nonatomic, weak) IBOutlet UIProgressView *downloadProgessBar;
 @property (nonatomic, weak) IBOutlet UIProgressView *uploadProgessBar;
+@property (nonatomic, weak) IBOutlet UITextField *userTextField;
+@property (nonatomic, weak) IBOutlet UITextField *passwordTextField;
 
 @end

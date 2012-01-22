@@ -109,6 +109,7 @@
 
 @synthesize cachedResponse = _cachedResponse;
 @synthesize cacheHandlingBlock = _cacheHandlingBlock;
+@synthesize credentialPersistence = _credentialPersistence;
 
 #if TARGET_OS_IPHONE    
 @synthesize backgroundTaskId = _backgroundTaskId;
@@ -468,6 +469,8 @@
         self.downloadProgressChangedHandlers = [NSMutableArray array];
         self.downloadStreams = [NSMutableArray array];
         
+        self.credentialPersistence = NSURLCredentialPersistenceForSession;
+        
         NSURL *finalURL = nil;
         
         if(params)
@@ -488,7 +491,7 @@
         }
         
         self.request = [NSMutableURLRequest requestWithURL:finalURL                                                           
-                                               cachePolicy:NSURLRequestUseProtocolCachePolicy                                            
+                                               cachePolicy:NSURLRequestReloadIgnoringLocalCacheData                                            
                                            timeoutInterval:kMKNetworkKitRequestTimeOutInSeconds];
         
         [self.request setHTTPMethod:method];
@@ -826,78 +829,83 @@
 }
 
 - (void)connection:(NSURLConnection *)connection willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
-    
-    if (((challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodDefault) ||
-         (challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodHTTPBasic) ||
-         (challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodHTTPDigest) ||
-         (challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodNTLM)) && 
-        (self.username && self.password))
-    {
-        
-        // for NTLM, we will assume user name to be of the form "domain\\username"
-        NSURLCredential *credential = [NSURLCredential credentialWithUser:self.username 
-                                                                 password:self.password
-                                                              persistence:NSURLCredentialPersistenceForSession];
-        
-        [challenge.sender useCredential:credential forAuthenticationChallenge:challenge];
-    }
-    else if ((challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodClientCertificate) && self.clientCertificate) {
-        
-        NSData *certData = [[NSData alloc] initWithContentsOfFile:self.clientCertificate];
-        
-#warning method not implemented. Don't use client certicate authentication for now.
-        SecIdentityRef myIdentity;  // ???
-        
-        SecCertificateRef myCert = SecCertificateCreateWithData(NULL, (__bridge CFDataRef)certData);
-        SecCertificateRef certArray[1] = { myCert };
-        CFArrayRef myCerts = CFArrayCreate(NULL, (void *)certArray, 1, NULL);
-        CFRelease(myCert);
-        NSURLCredential *credential = [NSURLCredential credentialWithIdentity:myIdentity
-                                                                 certificates:(__bridge NSArray *)myCerts
-                                                                  persistence:NSURLCredentialPersistencePermanent];
-        CFRelease(myCerts);
-        [challenge.sender useCredential:credential forAuthenticationChallenge:challenge];
-    }
-    else if (challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust) {
-#warning method not tested. proceed at your own risk
-        SecTrustRef serverTrust = [[challenge protectionSpace] serverTrust];
-        SecTrustResultType result;
-        SecTrustEvaluate(serverTrust, &result);
-        
-        if(result == kSecTrustResultProceed) {
+    if ([challenge previousFailureCount] == 0) {
+        if (((challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodDefault) ||
+             (challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodHTTPBasic) ||
+             (challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodHTTPDigest) ||
+             (challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodNTLM)) && 
+            (self.username && self.password))
+        {
             
-            [challenge.sender useCredential:[NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust] forAuthenticationChallenge:challenge];
+            // for NTLM, we will assume user name to be of the form "domain\\username"
+            NSURLCredential *credential = [NSURLCredential credentialWithUser:self.username 
+                                                                     password:self.password
+                                                                  persistence:self.credentialPersistence];
+            
+            [challenge.sender useCredential:credential forAuthenticationChallenge:challenge];
         }
-        else if(result == kSecTrustResultConfirm) {
+        else if ((challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodClientCertificate) && self.clientCertificate) {
             
-            // ask user
-            BOOL userOkWithWrongCert = NO; // (ACTUALLY CHEAT., DON'T BE A F***ING BROWSER, USERS ALWAYS TAP YES WHICH IS RISKY)
-            if(userOkWithWrongCert) {
+            NSData *certData = [[NSData alloc] initWithContentsOfFile:self.clientCertificate];
+            
+    #warning method not implemented. Don't use client certicate authentication for now.
+            SecIdentityRef myIdentity;  // ???
+            
+            SecCertificateRef myCert = SecCertificateCreateWithData(NULL, (__bridge CFDataRef)certData);
+            SecCertificateRef certArray[1] = { myCert };
+            CFArrayRef myCerts = CFArrayCreate(NULL, (void *)certArray, 1, NULL);
+            CFRelease(myCert);
+            NSURLCredential *credential = [NSURLCredential credentialWithIdentity:myIdentity
+                                                                     certificates:(__bridge NSArray *)myCerts
+                                                                      persistence:NSURLCredentialPersistencePermanent];
+            CFRelease(myCerts);
+            [challenge.sender useCredential:credential forAuthenticationChallenge:challenge];
+        }
+        else if (challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust) {
+    #warning method not tested. proceed at your own risk
+            SecTrustRef serverTrust = [[challenge protectionSpace] serverTrust];
+            SecTrustResultType result;
+            SecTrustEvaluate(serverTrust, &result);
+            
+            if(result == kSecTrustResultProceed) {
                 
-                // Cert not trusted, but user is OK with that
                 [challenge.sender useCredential:[NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust] forAuthenticationChallenge:challenge];
-            } else {
-                
-                // Cert not trusted, and user is not OK with that. Don't proceed
-                [challenge.sender continueWithoutCredentialForAuthenticationChallenge:challenge];
             }
-        } 
-        else {
+            else if(result == kSecTrustResultConfirm) {
+                
+                // ask user
+                BOOL userOkWithWrongCert = NO; // (ACTUALLY CHEAT., DON'T BE A F***ING BROWSER, USERS ALWAYS TAP YES WHICH IS RISKY)
+                if(userOkWithWrongCert) {
+                    
+                    // Cert not trusted, but user is OK with that
+                    [challenge.sender useCredential:[NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust] forAuthenticationChallenge:challenge];
+                } else {
+                    
+                    // Cert not trusted, and user is not OK with that. Don't proceed
+                    [challenge.sender continueWithoutCredentialForAuthenticationChallenge:challenge];
+                }
+            } 
+            else {
+                
+                // invalid or revoked certificate
+                [challenge.sender useCredential:[NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust] forAuthenticationChallenge:challenge];
+                //[challenge.sender continueWithoutCredentialForAuthenticationChallenge:challenge];
+            }
+        }        
+        else if (self.authHandler) {
             
-            // invalid or revoked certificate
-            [challenge.sender useCredential:[NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust] forAuthenticationChallenge:challenge];
-            //[challenge.sender continueWithoutCredentialForAuthenticationChallenge:challenge];
+            // forward the authentication to the view controller that created this operation
+            // If this happens for NSURLAuthenticationMethodHTMLForm, you have to
+            // do some shit work like showing a modal webview controller and close it after authentication.
+            // I HATE THIS.
+            self.authHandler(challenge);
         }
-    }        
-    else if (self.authHandler) {
-        
-        // forward the authentication to the view controller that created this operation
-        // If this happens for NSURLAuthenticationMethodHTMLForm, you have to
-        // do some shit work like showing a modal webview controller and close it after authentication.
-        // I HATE THIS.
-        self.authHandler(challenge);
-    }
-    else {
+        else {
+            [[challenge sender] continueWithoutCredentialForAuthenticationChallenge:challenge];
+        }
+    } else {
+        //  apple proposes to cancel authentication, which results in NSURLErrorDomain error -1012, but we prefer to trigger a 401
+        //        [[challenge sender] cancelAuthenticationChallenge:challenge];
         [[challenge sender] continueWithoutCredentialForAuthenticationChallenge:challenge];
     }
 }

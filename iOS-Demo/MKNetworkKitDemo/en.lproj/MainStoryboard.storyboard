@@ -14,7 +14,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="Xhr-JR-Dgb">
-                                <rect key="frame" x="85" y="57" width="151" height="37"/>
+                                <rect key="frame" x="20" y="57" width="151" height="37"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                 <state key="normal" title="Convert Currency">
@@ -81,7 +81,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="Axl-TC-OtQ">
-                                <rect key="frame" x="20" y="134" width="136" height="37"/>
+                                <rect key="frame" x="179" y="57" width="136" height="37"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                 <state key="normal" title="Test Post">
@@ -96,7 +96,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="8Fc-e9-wj7">
-                                <rect key="frame" x="164" y="134" width="136" height="37"/>
+                                <rect key="frame" x="179" y="102" width="136" height="70"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                 <state key="normal" title="Test Auth">
@@ -110,13 +110,27 @@
                                     <action selector="testAuthTapped:" destination="2" eventType="touchUpInside" id="aXy-Rn-hqI"/>
                                 </connections>
                             </button>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="username" minimumFontSize="17" id="RTo-3I-DXZ">
+                                <rect key="frame" x="20" y="102" width="151" height="31"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="password" minimumFontSize="17" id="yEM-GJ-ODv">
+                                <rect key="frame" x="20" y="141" width="151" height="31"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
                         </subviews>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                     </view>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <connections>
                         <outlet property="downloadProgessBar" destination="JgO-2H-s3n" id="OdQ-cT-7Aq"/>
+                        <outlet property="passwordTextField" destination="yEM-GJ-ODv" id="IVm-Bp-EuA"/>
                         <outlet property="uploadProgessBar" destination="2bg-jm-Swi" id="HCu-Pv-t3d"/>
+                        <outlet property="userTextField" destination="RTo-3I-DXZ" id="ODo-N6-qAE"/>
                     </connections>
                 </viewController>
             </objects>
@@ -126,9 +140,10 @@
         <class className="ViewController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/ViewController.h"/>
             <relationships>
-                <relationship kind="action" name="testAuthTapped:"/>
                 <relationship kind="outlet" name="downloadProgessBar" candidateClass="UIProgressView"/>
+                <relationship kind="outlet" name="passwordTextField" candidateClass="UITextField"/>
                 <relationship kind="outlet" name="uploadProgessBar" candidateClass="UIProgressView"/>
+                <relationship kind="outlet" name="userTextField" candidateClass="UITextField"/>
             </relationships>
         </class>
     </classes>

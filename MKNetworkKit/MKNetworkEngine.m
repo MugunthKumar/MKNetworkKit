@@ -437,7 +437,7 @@ static NSOperationQueue *_sharedNetworkQueue;
     
     [self.memoryCacheKeys insertObject:cacheDataKey atIndex:0]; // remove it and insert it at start
     
-    if([self.memoryCacheKeys count] > [self cacheMemoryCost])
+    if([self.memoryCacheKeys count] >= [self cacheMemoryCost])
     {
         NSString *lastKey = [self.memoryCacheKeys lastObject];        
         NSData *data = [self.memoryCache objectForKey:lastKey];        

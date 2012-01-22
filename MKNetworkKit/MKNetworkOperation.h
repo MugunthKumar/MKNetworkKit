@@ -267,6 +267,15 @@ typedef enum {
 @property (copy, nonatomic) void (^operationStateChangedHandler)(MKNetworkOperationState newState);
 
 /*!
+ *  @abstract controls persistence of authentication credentials
+ *  @property credentialPersistence
+ *  
+ *  @discussion
+ *  The default value is set to NSURLCredentialPersistenceForSession, change it to NSURLCredentialPersistenceNon to avoid caching issues (isse #35)
+ */
+@property (nonatomic, assign) NSURLCredentialPersistence credentialPersistence;
+
+/*!
  *  @abstract Add additional header parameters
  *  
  *  @discussion
