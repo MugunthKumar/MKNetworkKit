@@ -55,7 +55,7 @@
     CFStringRef encodedCFString = CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, 
                                                                         (__bridge CFStringRef) self, 
                                                                         nil,
-                                                                        CFSTR("?!@#$^&%*+,:;='\"`<>()[]{}/\\|~ "), 
+                                                                        CFSTR("?!@#$^&%*+,:;='\"`<>()[]{}/\\| "), 
                                                                         kCFStringEncodingUTF8);
     
     NSString *encodedString = [[NSString alloc] initWithString:(__bridge_transfer NSString*) encodedCFString];    
