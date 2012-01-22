@@ -14,6 +14,7 @@
 @property (nonatomic, assign) IBOutlet UILabel *titleLabel;
 @property (nonatomic, assign) IBOutlet UILabel *authorNameLabel;
 
-@property (nonatomic, assign) NSString* loadingImageURLString;
+@property (nonatomic, strong) NSString* loadingImageURLString;
+@property (nonatomic, strong) MKNetworkOperation* imageLoadingOperation;
 -(void) setFlickrData:(NSDictionary*) thisFlickrImage;
 @end

@@ -13,6 +13,7 @@
 @synthesize authorNameLabel = authorNameLabel_;
 @synthesize thumbnailImage = thumbnailImage_;
 @synthesize loadingImageURLString = loadingImageURLString_;
+@synthesize imageLoadingOperation = imageLoadingOperation_;
 
 //=========================================================== 
 // + (BOOL)automaticallyNotifiesObserversForKey:
@@ -34,6 +35,8 @@
 -(void) prepareForReuse {
     
     self.thumbnailImage.image = nil;
+    DLog(@"%@", self.imageLoadingOperation);
+    [self.imageLoadingOperation cancel];
 }
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -61,7 +64,7 @@
      [thisFlickrImage objectForKey:@"farm"], [thisFlickrImage objectForKey:@"server"], 
      [thisFlickrImage objectForKey:@"id"], [thisFlickrImage objectForKey:@"secret"]];
     
-    [ApplicationDelegate.flickrEngine imageAtURL:[NSURL URLWithString:self.loadingImageURLString] 
+    self.imageLoadingOperation = [ApplicationDelegate.flickrEngine imageAtURL:[NSURL URLWithString:self.loadingImageURLString] 
                                     onCompletion:^(UIImage *fetchedImage, NSURL *url, BOOL isInCache) {
                                         
                                         if([self.loadingImageURLString isEqualToString:[url absoluteString]]) {
