@@ -135,6 +135,8 @@ static NSOperationQueue *_sharedNetworkQueue;
 {
     if (object == _sharedNetworkQueue && [keyPath isEqualToString:@"operationCount"]) {
         
+        DLog(@"*** Running: %d ***", (int) [_sharedNetworkQueue.operations count]);
+        
         [[NSNotificationCenter defaultCenter] postNotificationName:kMKNetworkEngineOperationCountChanged 
                                                             object:[NSNumber numberWithInteger:[_sharedNetworkQueue operationCount]]];
 #if TARGET_OS_IPHONE
@@ -370,7 +372,7 @@ static NSOperationQueue *_sharedNetworkQueue;
         [self freezeOperations];
 }
 
-- (void)imageAtURL:(NSURL *)url onCompletion:(MKNKImageBlock) imageFetchedBlock
+- (MKNetworkOperation*)imageAtURL:(NSURL *)url onCompletion:(MKNKImageBlock) imageFetchedBlock
 {
 #ifdef DEBUG
     // I could enable caching here, but that hits performance and inturn affects table view scrolling
@@ -398,6 +400,8 @@ static NSOperationQueue *_sharedNetworkQueue;
      }];    
     
     [self enqueueOperation:op];
+    
+    return op;
 }
 
 #pragma mark -
