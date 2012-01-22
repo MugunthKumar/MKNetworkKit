@@ -1,8 +1,8 @@
 //
-//  AppDelegate.h
-//  MKNetworkKit
+//  FlickrEngine.m
+//  MKNetworkKit-iOS-Demo
 //
-//  Created by Mugunth Kumar (@mugunthkumar) on 11/11/11.
+//  Created by Mugunth Kumar (@mugunthkumar) on 22/1/12.
 //  Copyright (C) 2011-2020 by Steinlogic
 
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,28 +23,33 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-#import <UIKit/UIKit.h>
-#import "YahooEngine.h"
-#import "ExampleUploader.h"
-#import "ExampleDownloader.h"
-#import "ExamplePost.h"
-#import "AuthTestEngine.h"
 #import "FlickrEngine.h"
 
-#define ApplicationDelegate ((AppDelegate *)[UIApplication sharedApplication].delegate)
+@implementation FlickrEngine
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+-(void) imagesForTag:(NSString*) tag onCompletion:(FlickrImagesResponseBlock) imageURLBlock onError:(MKNKErrorBlock) errorBlock {
 
-@property (strong, nonatomic) UIWindow *window;
+    MKNetworkOperation *op = [self operationWithPath:FLICKR_IMAGE_URL(tag)];
 
-@property (strong, nonatomic) YahooEngine *yahooEngine;
-@property (strong, nonatomic) ExampleUploader *twitPicUploader;
-@property (strong, nonatomic) ExampleDownloader *sampleDownloader;
-@property (strong, nonatomic) ExamplePost *samplePoster;
-@property (strong, nonatomic) AuthTestEngine *sampleAuth;
-@property (strong, nonatomic) FlickrEngine *flickrEngine;
+    [op onCompletion:^(MKNetworkOperation *completedOperation) {
+    
+        NSDictionary *response = [completedOperation responseJSON];
+        imageURLBlock([[response objectForKey:@"photos"] objectForKey:@"photo"]);
+        
+    } onError:^(NSError *error) {
+        
+        errorBlock(error);
+    }];
+    
+    [self enqueueOperation:op];
+}
+
+-(NSString*) cacheDirectoryName {
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    NSString *cacheDirectoryName = [documentsDirectory stringByAppendingPathComponent:@"FlickrImages"];
+    return cacheDirectoryName;
+}
+
 @end
-
-
-#define kTwitterUserName @""
-#define kTwitterPassword @""

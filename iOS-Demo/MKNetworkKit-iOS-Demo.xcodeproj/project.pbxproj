@@ -12,6 +12,9 @@
 		AB148FD6147F5167001F4A86 /* ExampleDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = AB148FD5147F5167001F4A86 /* ExampleDownloader.m */; };
 		AB20C3401487C854004B0825 /* ExamplePost.m in Sources */ = {isa = PBXBuildFile; fileRef = AB20C33F1487C854004B0825 /* ExamplePost.m */; };
 		AB3A3090148F09AE00D06246 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB3A308F148F09AE00D06246 /* Security.framework */; };
+		AB6E44DB14CBA3CC0089D19C /* FlickrTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB6E44DA14CBA3CC0089D19C /* FlickrTableViewController.m */; };
+		AB6E44DE14CBA43F0089D19C /* FlickrCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AB6E44DD14CBA43F0089D19C /* FlickrCell.m */; };
+		AB6E44E114CBA62B0089D19C /* FlickrEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = AB6E44E014CBA62B0089D19C /* FlickrEngine.m */; };
 		AB74B0C21467CC120088BF09 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB74B0C11467CC120088BF09 /* UIKit.framework */; };
 		AB74B0C41467CC120088BF09 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB74B0C31467CC120088BF09 /* Foundation.framework */; };
 		AB74B0C61467CC120088BF09 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB74B0C51467CC120088BF09 /* CoreGraphics.framework */; };
@@ -37,6 +40,12 @@
 		AB20C33E1487C854004B0825 /* ExamplePost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExamplePost.h; sourceTree = "<group>"; };
 		AB20C33F1487C854004B0825 /* ExamplePost.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExamplePost.m; sourceTree = "<group>"; };
 		AB3A308F148F09AE00D06246 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		AB6E44D914CBA3CC0089D19C /* FlickrTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlickrTableViewController.h; sourceTree = "<group>"; };
+		AB6E44DA14CBA3CC0089D19C /* FlickrTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlickrTableViewController.m; sourceTree = "<group>"; };
+		AB6E44DC14CBA43F0089D19C /* FlickrCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlickrCell.h; sourceTree = "<group>"; };
+		AB6E44DD14CBA43F0089D19C /* FlickrCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlickrCell.m; sourceTree = "<group>"; };
+		AB6E44DF14CBA62B0089D19C /* FlickrEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlickrEngine.h; sourceTree = "<group>"; };
+		AB6E44E014CBA62B0089D19C /* FlickrEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlickrEngine.m; sourceTree = "<group>"; };
 		AB74B0BD1467CC120088BF09 /* MKNetworkKit-iOS-Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MKNetworkKit-iOS-Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB74B0C11467CC120088BF09 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		AB74B0C31467CC120088BF09 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -133,6 +142,12 @@
 				AB20C33F1487C854004B0825 /* ExamplePost.m */,
 				AB80BBB4148B672100B6DC2A /* AuthTestEngine.h */,
 				AB80BBB5148B672100B6DC2A /* AuthTestEngine.m */,
+				AB6E44D914CBA3CC0089D19C /* FlickrTableViewController.h */,
+				AB6E44DA14CBA3CC0089D19C /* FlickrTableViewController.m */,
+				AB6E44DC14CBA43F0089D19C /* FlickrCell.h */,
+				AB6E44DD14CBA43F0089D19C /* FlickrCell.m */,
+				AB6E44DF14CBA62B0089D19C /* FlickrEngine.h */,
+				AB6E44E014CBA62B0089D19C /* FlickrEngine.m */,
 			);
 			name = "MKNetworkKit-iOS-Demo";
 			path = MKNetworkKitDemo;
@@ -228,6 +243,9 @@
 				AB148FD6147F5167001F4A86 /* ExampleDownloader.m in Sources */,
 				AB20C3401487C854004B0825 /* ExamplePost.m in Sources */,
 				AB80BBB6148B672100B6DC2A /* AuthTestEngine.m in Sources */,
+				AB6E44DB14CBA3CC0089D19C /* FlickrTableViewController.m in Sources */,
+				AB6E44DE14CBA43F0089D19C /* FlickrCell.m in Sources */,
+				AB6E44E114CBA62B0089D19C /* FlickrEngine.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

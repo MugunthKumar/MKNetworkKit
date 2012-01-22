@@ -249,4 +249,15 @@
  *  The cacheMemoryCost and cacheDirectoryName will be used when you turn caching on using this method.
  */
 -(void) useCache;
+
+/*!
+ *  @abstract Empties previously cached data
+ *  
+ *  @discussion
+ *	This method is a handy helper that you can use to clear cached data.
+ *  By default, MKNetworkKit doens't cache your requests. Use this only when you enabled caching
+ *  @seealso
+ *  useCache
+ */
+-(void) emptyCache;
 @end
