@@ -33,6 +33,7 @@
 @synthesize sampleDownloader = _sampleDownloader;
 @synthesize samplePoster = _samplePoster;
 @synthesize sampleAuth = _sampleAuth;
+@synthesize flickrEngine = flickrEngine_;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -55,7 +56,8 @@
     self.samplePoster = [[ExamplePost alloc] initWithHostName:@"thgame.phpfog.com" customHeaderFields:nil];
     self.sampleAuth = [[AuthTestEngine alloc] initWithHostName:@"api.mk.sg" customHeaderFields:nil];
     [self.sampleAuth useCache];
-    
+    self.flickrEngine = [[FlickrEngine alloc] initWithHostName:@"api.flickr.com" customHeaderFields:nil];
+    [self.flickrEngine useCache];
     return YES;
 }
 							

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="1.0" toolsVersion="1938" systemVersion="11C74" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="2">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="1.0" toolsVersion="1938" systemVersion="11C74" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="9VJ-YU-mm5">
     <dependencies>
         <development defaultVersion="4200" identifier="xcode"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="933"/>
@@ -29,7 +29,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="ohz-ld-lJI">
-                                <rect key="frame" x="85" y="207" width="151" height="37"/>
+                                <rect key="frame" x="85" y="164" width="151" height="37"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                 <state key="normal" title="Upload Image">
@@ -44,7 +44,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="O1r-PZ-6BG">
-                                <rect key="frame" x="85" y="304" width="151" height="37"/>
+                                <rect key="frame" x="85" y="233" width="151" height="37"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                 <state key="normal" title="Download File">
@@ -59,11 +59,11 @@
                                 </connections>
                             </button>
                             <progressView opaque="NO" contentMode="scaleToFill" id="2bg-jm-Swi">
-                                <rect key="frame" x="20" y="252" width="280" height="9"/>
+                                <rect key="frame" x="20" y="209" width="280" height="9"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </progressView>
                             <progressView opaque="NO" contentMode="scaleToFill" id="JgO-2H-s3n">
-                                <rect key="frame" x="20" y="349" width="280" height="9"/>
+                                <rect key="frame" x="20" y="278" width="280" height="9"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </progressView>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="MKNetworkKit Demo" textAlignment="center" lineBreakMode="tailTruncation" minimumFontSize="10" id="Cq6-9L-04t">
@@ -81,7 +81,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="Axl-TC-OtQ">
-                                <rect key="frame" x="179" y="57" width="136" height="37"/>
+                                <rect key="frame" x="20" y="108" width="136" height="37"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                 <state key="normal" title="Test Post">
@@ -96,7 +96,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="8Fc-e9-wj7">
-                                <rect key="frame" x="179" y="102" width="136" height="70"/>
+                                <rect key="frame" x="164" y="108" width="136" height="37"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                 <state key="normal" title="Test Auth">
@@ -122,9 +122,40 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="DEJ-bd-I5d">
+                                <rect key="frame" x="85" y="305" width="151" height="37"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                <state key="normal" title="Load Images">
+                                    <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <state key="highlighted">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <segue destination="hO6-6F-jyb" kind="push" id="Ulh-R3-7PH"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="5gM-Tf-lph">
+                                <rect key="frame" x="85" y="350" width="151" height="37"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                <state key="normal" title="Empty Cache">
+                                    <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <state key="highlighted">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="emptyCacheTapped:" destination="2" eventType="touchUpInside" id="1cG-KQ-Nka"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                     </view>
+                    <navigationItem key="navigationItem" id="H2a-n0-QQc"/>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <connections>
                         <outlet property="downloadProgessBar" destination="JgO-2H-s3n" id="OdQ-cT-7Aq"/>
@@ -134,9 +165,105 @@
                     </connections>
                 </viewController>
             </objects>
+            <point key="canvasLocation" x="337" y="-201"/>
+        </scene>
+        <scene sceneID="nVy-01-meB">
+            <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Xpb-E9-mb6" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <viewController id="dxL-P4-nyu" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="OvZ-nW-3xH">
+                        <rect key="frame" x="0.0" y="20" width="320" height="460"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="Root View Controller" id="iFd-Vj-NuA"/>
+                </viewController>
+            </objects>
+            <point key="canvasLocation" x="1063" y="-451"/>
+        </scene>
+        <scene sceneID="2tA-nM-urH">
+            <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="iBU-EW-OUe" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <navigationController definesPresentationContext="YES" id="9VJ-YU-mm5" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="7ld-28-gUM">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="2" kind="relationship" relationship="rootViewController" id="cln-Oo-nMu"/>
+                    </connections>
+                </navigationController>
+            </objects>
+            <point key="canvasLocation" x="-197" y="-206"/>
+        </scene>
+        <scene sceneID="haG-Xr-eAE">
+            <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ja6-fg-gTq" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tableViewController id="hO6-6F-jyb" customClass="FlickrTableViewController" sceneMemberID="viewController">
+                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="72" sectionHeaderHeight="22" sectionFooterHeight="22" id="oxp-VI-LZp">
+                        <rect key="frame" x="0.0" y="64" width="320" height="416"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="FlickrCell" rowHeight="72" id="LP0-Im-9Tq" customClass="FlickrCell">
+                                <rect key="frame" x="0.0" y="22" width="320" height="72"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="71"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" id="a6a-H5-zPt">
+                                            <rect key="frame" x="20" y="11" width="50" height="50"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        </imageView>
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Nice Sunset" lineBreakMode="tailTruncation" minimumFontSize="10" id="Yx6-1N-NVt">
+                                            <rect key="frame" x="78" y="11" width="222" height="21"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Mugunth" lineBreakMode="tailTruncation" minimumFontSize="10" id="9be-63-dg7">
+                                            <rect key="frame" x="78" y="40" width="222" height="21"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                            <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </view>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <outlet property="authorNameLabel" destination="9be-63-dg7" id="ei5-n5-o7E"/>
+                                    <outlet property="thumbnailImage" destination="a6a-H5-zPt" id="cS4-dr-lNs"/>
+                                    <outlet property="titleLabel" destination="Yx6-1N-NVt" id="scw-41-OUc"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <sections/>
+                        <connections>
+                            <outlet property="dataSource" destination="hO6-6F-jyb" id="eu2-ge-LZZ"/>
+                            <outlet property="delegate" destination="hO6-6F-jyb" id="h67-Q5-gQT"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" id="f4v-fy-2qy"/>
+                </tableViewController>
+            </objects>
+            <point key="canvasLocation" x="745" y="-126"/>
         </scene>
     </scenes>
     <classes>
+        <class className="FlickrCell" superclassName="UITableViewCell">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/FlickrCell.h"/>
+            <relationships>
+                <relationship kind="outlet" name="authorNameLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="thumbnailImage" candidateClass="UIImageView"/>
+                <relationship kind="outlet" name="titleLabel" candidateClass="UILabel"/>
+            </relationships>
+        </class>
+        <class className="FlickrTableViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/FlickrTableViewController.h"/>
+        </class>
         <class className="ViewController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/ViewController.h"/>
             <relationships>
