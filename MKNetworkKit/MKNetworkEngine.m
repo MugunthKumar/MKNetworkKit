@@ -381,7 +381,7 @@ static NSOperationQueue *_sharedNetworkQueue;
 #endif
     
     if (url == nil) {
-        return;
+        return nil;
     }
     
     MKNetworkOperation *op = [self operationWithURLString:[url absoluteString]];
