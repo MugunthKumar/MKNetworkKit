@@ -25,6 +25,12 @@
 
 @class MKNetworkOperation;
 
+typedef enum {
+    MKNetworkOperationStateReady = 1,
+    MKNetworkOperationStateExecuting = 2,
+    MKNetworkOperationStateFinished = 3
+} MKNetworkOperationState;
+
 typedef void (^MKNKProgressBlock)(double progress);
 typedef void (^MKNKResponseBlock)(MKNetworkOperation* completedOperation);
 #if TARGET_OS_IPHONE

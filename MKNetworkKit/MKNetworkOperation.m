@@ -28,13 +28,6 @@
 #import "NSString+MKNetworkKitAdditions.h"
 
 
-// Should there be a cancelled state? or something similar.
-typedef enum {
-    MKNetworkOperationStateReady = 1,
-    MKNetworkOperationStateExecuting = 2,
-    MKNetworkOperationStateFinished = 3
-} MKNetworkOperationState;
-
 @interface MKNetworkOperation (/*Private Methods*/)
 @property (strong, nonatomic) NSURLConnection *connection;
 @property (strong, nonatomic) NSString *uniqueId;
@@ -797,7 +790,8 @@ typedef enum {
 
 -(void) cancel {
     
-    if([self isFinished]) return;
+    if([self isFinished]) 
+        return;
     
     [self.responseBlocks removeAllObjects];
     self.responseBlocks = nil;
@@ -818,7 +812,9 @@ typedef enum {
     
     self.authHandler = nil;    
     self.mutableData = nil;
-    self.isCancelled = YES; 
+    self.isCancelled = YES;
+    self.state = MKNetworkOperationStateFinished; // This notifies the queue and removes the operation.
+    // if the operation is not removed, the spinner continues to spin, not a good UX
     
     [super cancel];
 }
@@ -925,7 +921,10 @@ typedef enum {
     
     NSDictionary *httpHeaders = [self.response allHeaderFields];
     
-    if([self.request.HTTPMethod isEqualToString:@"GET"]) {
+    // if you attach a stream, MKNetworkKit will not cache the response.
+    // Streams are usually "big data chunks" that doesn't need caching anyways.
+    
+    if([self.request.HTTPMethod isEqualToString:@"GET"] && [self.downloadStreams count] == 0) {
         
         // We have all this complicated cache handling since NSURLRequestReloadRevalidatingCacheData is not implemented
         // do cache processing only if the request is a "GET" method
@@ -1129,7 +1128,7 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
         if([self responseData] == nil) return nil;
         NSError *error = nil;
         id returnValue = [NSJSONSerialization JSONObjectWithData:[self responseData] options:0 error:&error];    
-        DLog(@"JSON Parsing Error: %@", error);
+        if(error) DLog(@"JSON Parsing Error: %@", error);
         return returnValue;
     } else {
         DLog("No valid JSON Serializers found");

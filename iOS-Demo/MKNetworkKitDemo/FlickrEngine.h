@@ -1,8 +1,8 @@
 //
-//  AppDelegate.h
-//  MKNetworkKit
+//  FlickrEngine.h
+//  MKNetworkKit-iOS-Demo
 //
-//  Created by Mugunth Kumar (@mugunthkumar) on 11/11/11.
+//  Created by Mugunth Kumar (@mugunthkumar) on 22/1/12.
 //  Copyright (C) 2011-2020 by Steinlogic
 
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,28 +23,12 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-#import <UIKit/UIKit.h>
-#import "YahooEngine.h"
-#import "ExampleUploader.h"
-#import "ExampleDownloader.h"
-#import "ExamplePost.h"
-#import "AuthTestEngine.h"
-#import "FlickrEngine.h"
+#warning Insert your flickr key here
+#define FLICKR_KEY @"210af0ac7c5dad997a19f7667e5779d3"
+#define FLICKR_IMAGE_URL(__TAG__) [NSString stringWithFormat:@"services/rest/?method=flickr.photos.search&api_key=%@&tags=%@&per_page=200&format=json&nojsoncallback=1", FLICKR_KEY, __TAG__]
 
-#define ApplicationDelegate ((AppDelegate *)[UIApplication sharedApplication].delegate)
+@interface FlickrEngine : MKNetworkEngine
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
-
-@property (strong, nonatomic) UIWindow *window;
-
-@property (strong, nonatomic) YahooEngine *yahooEngine;
-@property (strong, nonatomic) ExampleUploader *twitPicUploader;
-@property (strong, nonatomic) ExampleDownloader *sampleDownloader;
-@property (strong, nonatomic) ExamplePost *samplePoster;
-@property (strong, nonatomic) AuthTestEngine *sampleAuth;
-@property (strong, nonatomic) FlickrEngine *flickrEngine;
+typedef void (^FlickrImagesResponseBlock)(NSMutableArray* imageURLs);
+-(void) imagesForTag:(NSString*) tag onCompletion:(FlickrImagesResponseBlock) imageURLBlock onError:(MKNKErrorBlock) errorBlock;
 @end
-
-
-#define kTwitterUserName @""
-#define kTwitterPassword @""

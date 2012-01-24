@@ -99,8 +99,8 @@ static NSOperationQueue *_sharedNetworkQueue;
             
             NSMutableDictionary *newHeadersDict = [headers mutableCopy];
             NSString *userAgentString = [NSString stringWithFormat:@"%@/%@", 
-             [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleNameKey], 
-             [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleVersionKey]];
+                                         [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleNameKey], 
+                                         [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleVersionKey]];
             [newHeadersDict setObject:userAgentString forKey:@"User-Agent"];
             self.customHeaders = newHeadersDict;
         } else {
@@ -134,7 +134,9 @@ static NSOperationQueue *_sharedNetworkQueue;
                          change:(NSDictionary *)change context:(void *)context
 {
     if (object == _sharedNetworkQueue && [keyPath isEqualToString:@"operationCount"]) {
-       
+        
+        DLog(@"*** Running: %d ***", (int) [_sharedNetworkQueue.operations count]);
+        
         [[NSNotificationCenter defaultCenter] postNotificationName:kMKNetworkEngineOperationCountChanged 
                                                             object:[NSNumber numberWithInteger:[_sharedNetworkQueue operationCount]]];
 #if TARGET_OS_IPHONE
@@ -285,7 +287,7 @@ static NSOperationQueue *_sharedNetworkQueue;
                                    httpMethod:(NSString*)method {
     
     MKNetworkOperation *operation = [[MKNetworkOperation alloc] initWithURLString:urlString params:body httpMethod:method];
-        
+    
     [self prepareHeaders:operation];
     return operation;
 }
@@ -378,10 +380,16 @@ static NSOperationQueue *_sharedNetworkQueue;
     });
 }
 
-- (void)imageAtURL:(NSURL *)url onCompletion:(MKNKImageBlock) imageFetchedBlock
+- (MKNetworkOperation*)imageAtURL:(NSURL *)url onCompletion:(MKNKImageBlock) imageFetchedBlock
 {
+#ifdef DEBUG
+    // I could enable caching here, but that hits performance and inturn affects table view scrolling
+    // if imageAtURL is called for loading thumbnails.
+    if(![self isCacheEnabled]) DLog(@"imageAtURL:onCompletion: requires caching to be enabled.")
+#endif
+    
     if (url == nil) {
-        return;
+        return nil;
     }
     
     MKNetworkOperation *op = [self operationWithURLString:[url absoluteString]];
@@ -400,6 +408,8 @@ static NSOperationQueue *_sharedNetworkQueue;
      }];    
     
     [self enqueueOperation:op];
+    
+    return op;
 }
 
 #pragma mark -
@@ -518,6 +528,28 @@ static NSOperationQueue *_sharedNetworkQueue;
 #endif
     
     
+}
+
+-(void) emptyCache {
+            
+    [self saveCache]; // ensures that invalidation params are written to disk properly
+    NSError *error = nil;
+    NSArray *directoryContents = [[NSFileManager defaultManager] 
+                                  contentsOfDirectoryAtPath:[self cacheDirectoryName] error:&error];
+    if(error) DLog(@"%@", error);
+    
+    error = nil;
+    for(NSString *fileName in directoryContents) {
+        
+        NSString *path = [[self cacheDirectoryName] stringByAppendingPathComponent:fileName];
+        [[NSFileManager defaultManager] removeItemAtPath:path error:&error];
+        if(error) DLog(@"%@", error);
+    }    
+
+    error = nil;
+    NSString *cacheInvalidationPlistFilePath = [[self cacheDirectoryName] stringByAppendingPathExtension:@"plist"];
+    [[NSFileManager defaultManager] removeItemAtPath:cacheInvalidationPlistFilePath error:&error];
+    if(error) DLog(@"%@", error);
 }
 
 @end

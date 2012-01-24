@@ -161,6 +161,12 @@
     
 }
 
+
+-(IBAction)emptyCacheTapped:(id)sender {
+    
+    [ApplicationDelegate.flickrEngine emptyCache];
+}
+
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     // Return YES for supported orientations

@@ -174,7 +174,7 @@
  *  The hostname of the engine is *NOT* prefixed.
  *  The image is returned to the caller via MKNKImageBlock callback block. 
  */
-- (void)imageAtURL:(NSURL *)url onCompletion:(MKNKImageBlock) imageFetchedBlock;
+- (MKNetworkOperation*)imageAtURL:(NSURL *)url onCompletion:(MKNKImageBlock) imageFetchedBlock;
 /*!
  *  @abstract Enqueues your operation into the shared queue
  *  
@@ -249,4 +249,15 @@
  *  The cacheMemoryCost and cacheDirectoryName will be used when you turn caching on using this method.
  */
 -(void) useCache;
+
+/*!
+ *  @abstract Empties previously cached data
+ *  
+ *  @discussion
+ *	This method is a handy helper that you can use to clear cached data.
+ *  By default, MKNetworkKit doens't cache your requests. Use this only when you enabled caching
+ *  @seealso
+ *  useCache
+ */
+-(void) emptyCache;
 @end
