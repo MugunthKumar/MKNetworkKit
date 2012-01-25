@@ -271,7 +271,7 @@ typedef enum {
  *  @property credentialPersistence
  *  
  *  @discussion
- *  The default value is set to NSURLCredentialPersistenceForSession, change it to NSURLCredentialPersistenceNon to avoid caching issues (isse #35)
+ *  The default value is set to NSURLCredentialPersistenceForSession, change it to NSURLCredentialPersistenceNone to avoid caching issues (isse #35)
  */
 @property (nonatomic, assign) NSURLCredentialPersistence credentialPersistence;
 

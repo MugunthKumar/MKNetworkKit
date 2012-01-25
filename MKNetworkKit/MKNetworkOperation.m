@@ -212,7 +212,7 @@
 
 -(BOOL) isEqual:(id)object {
     
-    if([self isCacheable]) {
+    if([self.request.HTTPMethod isEqualToString:@"GET"] || [self.request.HTTPMethod isEqualToString:@"HEAD"]) {
         
         MKNetworkOperation *anotherObject = (MKNetworkOperation*) object;
         return ([[self uniqueIdentifier] isEqualToString:[anotherObject uniqueIdentifier]]);
@@ -322,6 +322,8 @@
     [encoder encodeObject:self.mutableData forKey:@"mutableData"];
     
     [encoder encodeObject:self.downloadStreams forKey:@"downloadStreams"];
+    [encoder encodeInteger:self.startPosition forKey:@"startPosition"];
+    [encoder encodeInteger:self.credentialPersistence forKey:@"credentialPersistence"];
 }
 
 - (id)initWithCoder:(NSCoder *)decoder 
@@ -344,6 +346,8 @@
         self.mutableData = [decoder decodeObjectForKey:@"mutableData"];
         
         self.downloadStreams = [decoder decodeObjectForKey:@"downloadStreams"];
+        self.startPosition = [decoder decodeIntegerForKey:@"startPosition"];
+        self.credentialPersistence = [decoder decodeIntegerForKey:@"credentialPersistence"];
     }
     return self;
 }
@@ -374,6 +378,8 @@
     [theCopy setDownloadStreams:[self.downloadStreams copy]];
     [theCopy setCachedResponse:[self.cachedResponse copy]];
     [theCopy setCacheHandlingBlock:self.cacheHandlingBlock];
+    [theCopy setStartPosition:self.startPosition];
+    [theCopy setCredentialPersistence:self.credentialPersistence];
     
     return theCopy;
 }
