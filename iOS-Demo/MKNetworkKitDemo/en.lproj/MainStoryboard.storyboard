@@ -14,7 +14,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="Xhr-JR-Dgb">
-                                <rect key="frame" x="20" y="57" width="151" height="37"/>
+                                <rect key="frame" x="13" y="57" width="136" height="37"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                 <state key="normal" title="Convert Currency">
@@ -29,7 +29,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="ohz-ld-lJI">
-                                <rect key="frame" x="85" y="164" width="151" height="37"/>
+                                <rect key="frame" x="85" y="169" width="151" height="37"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                 <state key="normal" title="Upload Image">
@@ -44,7 +44,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="O1r-PZ-6BG">
-                                <rect key="frame" x="85" y="233" width="151" height="37"/>
+                                <rect key="frame" x="85" y="231" width="151" height="37"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                 <state key="normal" title="Download File">
@@ -59,11 +59,11 @@
                                 </connections>
                             </button>
                             <progressView opaque="NO" contentMode="scaleToFill" id="2bg-jm-Swi">
-                                <rect key="frame" x="20" y="209" width="280" height="9"/>
+                                <rect key="frame" x="20" y="214" width="280" height="9"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </progressView>
                             <progressView opaque="NO" contentMode="scaleToFill" id="JgO-2H-s3n">
-                                <rect key="frame" x="20" y="278" width="280" height="9"/>
+                                <rect key="frame" x="20" y="276" width="280" height="9"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </progressView>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="MKNetworkKit Demo" textAlignment="center" lineBreakMode="tailTruncation" minimumFontSize="10" id="Cq6-9L-04t">
@@ -81,7 +81,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="Axl-TC-OtQ">
-                                <rect key="frame" x="20" y="108" width="136" height="37"/>
+                                <rect key="frame" x="13" y="108" width="136" height="37"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                 <state key="normal" title="Test Post">
@@ -96,7 +96,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="8Fc-e9-wj7">
-                                <rect key="frame" x="164" y="108" width="136" height="37"/>
+                                <rect key="frame" x="164" y="124" width="136" height="37"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                 <state key="normal" title="Test Auth">
@@ -111,13 +111,13 @@
                                 </connections>
                             </button>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="username" minimumFontSize="17" id="RTo-3I-DXZ">
-                                <rect key="frame" x="20" y="102" width="151" height="31"/>
+                                <rect key="frame" x="157" y="51" width="151" height="31"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="password" minimumFontSize="17" id="yEM-GJ-ODv">
-                                <rect key="frame" x="20" y="141" width="151" height="31"/>
+                                <rect key="frame" x="157" y="90" width="151" height="31"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
@@ -165,7 +165,7 @@
                     </connections>
                 </viewController>
             </objects>
-            <point key="canvasLocation" x="337" y="-201"/>
+            <point key="canvasLocation" x="429" y="-206"/>
         </scene>
         <scene sceneID="nVy-01-meB">
             <objects>
@@ -249,7 +249,7 @@
                     <navigationItem key="navigationItem" id="f4v-fy-2qy"/>
                 </tableViewController>
             </objects>
-            <point key="canvasLocation" x="745" y="-126"/>
+            <point key="canvasLocation" x="802" y="-164"/>
         </scene>
     </scenes>
     <classes>
