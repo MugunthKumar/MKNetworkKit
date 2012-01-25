@@ -44,7 +44,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="O1r-PZ-6BG">
-                                <rect key="frame" x="85" y="231" width="151" height="37"/>
+                                <rect key="frame" x="85" y="236" width="151" height="37"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                 <state key="normal" title="Download File">
@@ -59,15 +59,15 @@
                                 </connections>
                             </button>
                             <progressView opaque="NO" contentMode="scaleToFill" id="2bg-jm-Swi">
-                                <rect key="frame" x="20" y="214" width="280" height="9"/>
+                                <rect key="frame" x="20" y="219" width="280" height="9"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </progressView>
                             <progressView opaque="NO" contentMode="scaleToFill" id="JgO-2H-s3n">
-                                <rect key="frame" x="20" y="276" width="280" height="9"/>
+                                <rect key="frame" x="20" y="281" width="280" height="9"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </progressView>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="MKNetworkKit Demo" textAlignment="center" lineBreakMode="tailTruncation" minimumFontSize="10" id="Cq6-9L-04t">
-                                <rect key="frame" x="20" y="15" width="280" height="34"/>
+                                <rect key="frame" x="20" y="9" width="280" height="34"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
