@@ -991,8 +991,8 @@
         NSString *rangeString = [[self request] valueForHTTPHeaderField:@"Range"];
         if ([rangeString hasPrefix:@"bytes="] && [rangeString hasSuffix:@"-"]) {
             NSString *bytesText = [rangeString substringWithRange:NSMakeRange(6, [rangeString length] - 7)];
-            self.startPoint = [bytesText integerValue];
-            DLog(@"Resuming at %d bytes", startPoint);
+            self.startPosition = [bytesText integerValue];
+            DLog(@"Resuming at %d bytes", self.startPosition);
         }
     }
 
@@ -1010,7 +1010,7 @@
         
         if([self.response expectedContentLength] > 0) {
             
-            double progress = (double)(self.startPoint + [self.mutableData length]) / (double)(self.startPoint + [self.response expectedContentLength]);
+            double progress = (double)(self.startPosition + [self.mutableData length]) / (double)(self.startPosition + [self.response expectedContentLength]);
             downloadProgressBlock(progress);
         }        
     }
