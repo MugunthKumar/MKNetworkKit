@@ -153,7 +153,7 @@
     NSString *charset = (__bridge NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(self.stringEncoding));
     
     self.postDataEncodingHandler = postDataEncodingHandler;
-    [self.request addValue:
+    [self.request setValue:
      [NSString stringWithFormat:@"%@; charset=%@", contentType, charset]
         forHTTPHeaderField:@"Content-Type"];
 }
@@ -412,12 +412,12 @@
     
     if(lastModified) {
         [self.request setHTTPMethod:@"HEAD"];
-        [self.request addValue:lastModified forHTTPHeaderField:@"IF-MODIFIED-SINCE"];
+        [self.request setValue:lastModified forHTTPHeaderField:@"IF-MODIFIED-SINCE"];
     }
     
     if(eTag) {
         [self.request setHTTPMethod:@"HEAD"];
-        [self.request addValue:eTag forHTTPHeaderField:@"IF-NONE-MATCH"];
+        [self.request setValue:eTag forHTTPHeaderField:@"IF-NONE-MATCH"];
     }    
 }
 
@@ -509,7 +509,7 @@
         
         NSString *charset = (__bridge NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(self.stringEncoding));
         
-        [self.request addValue:[NSString stringWithFormat:@"%@, en-us", 
+        [self.request setValue:[NSString stringWithFormat:@"%@, en-us", 
                                 [[NSLocale preferredLanguages] componentsJoinedByString:@", "]
                                 ] forHTTPHeaderField:@"Accept-Language"];
         
@@ -519,25 +519,25 @@
             switch (self.postDataEncoding) {
                     
                 case MKNKPostDataEncodingTypeURL: {
-                    [self.request addValue:
+                    [self.request setValue:
                      [NSString stringWithFormat:@"application/x-www-form-urlencoded; charset=%@", charset]
                         forHTTPHeaderField:@"Content-Type"];
                 }
                     break;
                 case MKNKPostDataEncodingTypeJSON: {
                     if([NSJSONSerialization class]) {
-                    [self.request addValue:
+                    [self.request setValue:
                      [NSString stringWithFormat:@"application/json; charset=%@", charset]
                         forHTTPHeaderField:@"Content-Type"];
                     } else {
-                        [self.request addValue:
+                        [self.request setValue:
                          [NSString stringWithFormat:@"application/x-www-form-urlencoded; charset=%@", charset]
                             forHTTPHeaderField:@"Content-Type"];
                     }
                 }
                     break;
                 case MKNKPostDataEncodingTypePlist: {
-                    [self.request addValue:
+                    [self.request setValue:
                      [NSString stringWithFormat:@"application/x-plist; charset=%@", charset]
                         forHTTPHeaderField:@"Content-Type"];
                 }
