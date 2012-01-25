@@ -35,7 +35,6 @@
 -(void) prepareForReuse {
     
     self.thumbnailImage.image = nil;
-    DLog(@"%@", self.imageLoadingOperation);
     [self.imageLoadingOperation cancel];
 }
 

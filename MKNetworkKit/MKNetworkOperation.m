@@ -822,8 +822,12 @@
     self.authHandler = nil;    
     self.mutableData = nil;
     self.isCancelled = YES;
-    self.state = MKNetworkOperationStateFinished; // This notifies the queue and removes the operation.
-    // if the operation is not removed, the spinner continues to spin, not a good UX
+        
+    self.cacheHandlingBlock = nil;
+    
+    if(self.state == MKNetworkOperationStateExecuting)
+        self.state = MKNetworkOperationStateFinished; // This notifies the queue and removes the operation.
+        // if the operation is not removed, the spinner continues to spin, not a good UX
     
     [super cancel];
 }
