@@ -837,7 +837,9 @@
 }
 
 - (void)connection:(NSURLConnection *)connection willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
+    
     if ([challenge previousFailureCount] == 0) {
+    
         if (((challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodDefault) ||
              (challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodHTTPBasic) ||
              (challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodHTTPDigest) ||
