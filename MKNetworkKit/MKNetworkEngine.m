@@ -32,10 +32,12 @@
 @property (strong, nonatomic) NSString *hostName;
 @property (strong, nonatomic) Reachability *reachability;
 @property (strong, nonatomic) NSDictionary *customHeaders;
+@property (assign, nonatomic) Class customOperationSubclass;
 
 @property (nonatomic, strong) NSMutableDictionary *memoryCache;
 @property (nonatomic, strong) NSMutableArray *memoryCacheKeys;
 @property (nonatomic, strong) NSMutableDictionary *cacheInvalidationParams;
+
 
 -(void) saveCache;
 -(void) saveCacheData:(NSData*) data forKey:(NSString*) cacheDataKey;
@@ -49,15 +51,16 @@
 static NSOperationQueue *_sharedNetworkQueue;
 
 @implementation MKNetworkEngine
-@synthesize hostName = _hostName;
-@synthesize reachability = _reachability;
-@synthesize customHeaders = _customHeaders;
+@synthesize hostName = hostName_;
+@synthesize reachability = reachability_;
+@synthesize customHeaders = customHeaders_;
+@synthesize customOperationSubclass = customOperationSubclass_;
 
-@synthesize memoryCache = _memoryCache;
-@synthesize memoryCacheKeys = _memoryCacheKeys;
-@synthesize cacheInvalidationParams = _cacheInvalidationParams;
+@synthesize memoryCache = memoryCache_;
+@synthesize memoryCacheKeys = memoryCacheKeys_;
+@synthesize cacheInvalidationParams = cacheInvalidationParams_;
 
-@synthesize reachabilityChangedHandler = _reachabilityChangedHandler;
+@synthesize reachabilityChangedHandler = reachabilityChangedHandler_;
 
 // Network Queue is a shared singleton object.
 // no matter how many instances of MKNetworkEngine is created, there is one and only one network queue
@@ -105,7 +108,9 @@ static NSOperationQueue *_sharedNetworkQueue;
             self.customHeaders = newHeadersDict;
         } else {
             self.customHeaders = headers;
-        }            
+        }    
+        
+        self.customOperationSubclass = [MKNetworkOperation class];
     }
     
     return self;
@@ -229,7 +234,7 @@ static NSOperationQueue *_sharedNetworkQueue;
 
 -(NSString*) readonlyHostName {
     
-    return [_hostName copy];
+    return [hostName_ copy];
 }
 
 -(BOOL) isReachable {
@@ -239,6 +244,11 @@ static NSOperationQueue *_sharedNetworkQueue;
 
 #pragma mark -
 #pragma mark Create methods
+
+-(void) registerOperationSubclass:(Class) aClass {
+    
+    self.customOperationSubclass = aClass;
+}
 
 -(MKNetworkOperation*) operationWithPath:(NSString*) path {
     
@@ -286,7 +296,7 @@ static NSOperationQueue *_sharedNetworkQueue;
                                        params:(NSMutableDictionary*) body
                                    httpMethod:(NSString*)method {
     
-    MKNetworkOperation *operation = [[MKNetworkOperation alloc] initWithURLString:urlString params:body httpMethod:method];
+    MKNetworkOperation *operation = [[self.customOperationSubclass alloc] initWithURLString:urlString params:body httpMethod:method];
     
     [self prepareHeaders:operation];
     return operation;

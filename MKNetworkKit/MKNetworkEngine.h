@@ -220,6 +220,15 @@
 @property (copy, nonatomic) void (^reachabilityChangedHandler)(NetworkStatus ns);
 
 /*!
+ *  @abstract Registers an associated operation subclass
+ *  
+ *  @discussion
+ *	When you override both MKNetworkEngine and MKNetworkOperation, you might want the engine's factory method
+ *  to prepare operations of your MKNetworkOperation subclass. To create your own MKNetworkOperation subclasses from the factory method, you can register your MKNetworkOperation subclass using this method.
+ *  This method is optional. If you don't use, factory methods in MKNetworkEngine creates MKNetworkOperation objects.
+ */
+-(void) registerOperationSubclass:(Class) aClass;
+/*!
  *  @abstract Cache Directory Name
  *  
  *  @discussion
