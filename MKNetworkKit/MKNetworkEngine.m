@@ -531,7 +531,15 @@ static NSOperationQueue *_sharedNetworkQueue;
     
 #elif TARGET_OS_MAC
     
-#warning POSSIBLY INCOMPLETE FUNCTION (Subscribe to Mac related notification for serializing caches)
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveCache)
+                                                 name:NSApplicationWillHideNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveCache)
+                                                 name:NSApplicationWillResignActiveNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveCache)
+                                                 name:NSApplicationWillTerminateNotification
+                                               object:nil];
     
 #endif
     
