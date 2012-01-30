@@ -736,6 +736,10 @@
 
 - (void) start
 {
+    if(![NSThread isMainThread]){
+        [self performSelectorOnMainThread:@selector(start) withObject:nil waitUntilDone:NO];
+        return;
+    }
     
 #if TARGET_OS_IPHONE
     self.backgroundTaskId = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
@@ -752,10 +756,6 @@
     
 #endif
     
-    if(![NSThread isMainThread]){
-        [self performSelectorOnMainThread:@selector(start) withObject:nil waitUntilDone:NO];
-        return;
-    }
     if(!self.isCancelled) {
         
         if ([self.request.HTTPMethod isEqualToString:@"POST"] || [self.request.HTTPMethod isEqualToString:@"PUT"]) {            
@@ -767,6 +767,7 @@
         self.connection = [[NSURLConnection alloc] initWithRequest:self.request 
                                                           delegate:self 
                                                   startImmediately:YES]; 
+        
         self.state = MKNetworkOperationStateExecuting;
     }
     else {

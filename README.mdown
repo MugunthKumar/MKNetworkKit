@@ -81,14 +81,13 @@ Gentle Bytes appledoc@gentlebytes.com
 ###TODO
 
 * Fix and test Client certificate/Server trust auth
-
-* Fix AppleDoc warnings
-* Example code for Mac
-* Cache strategy for Mac
-
 * Scheduling in current runloop
-* Test multiple file attachments in a single request
 * Test streaming
+* Test multiple file attachments in a single request
+
+* Example code for Mac
+* Fix AppleDoc warnings
+
 
 I'll be working on this soon. But you can start forking it and getting it right
 
