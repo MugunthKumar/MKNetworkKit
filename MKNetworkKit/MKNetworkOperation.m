@@ -48,6 +48,7 @@
 @property (nonatomic, assign) BOOL isCancelled;
 
 @property (strong, nonatomic) NSMutableData *mutableData;
+@property (assign, nonatomic) NSUInteger downloadedDataSize;
 
 @property (nonatomic, strong) NSMutableArray *uploadProgressChangedHandlers;
 @property (nonatomic, strong) NSMutableArray *downloadProgressChangedHandlers;
@@ -104,6 +105,7 @@
 
 @synthesize isCancelled = _isCancelled;
 @synthesize mutableData = _mutableData;
+@synthesize downloadedDataSize = downloadedDataSize_;
 
 @synthesize uploadProgressChangedHandlers = _uploadProgressChangedHandlers;
 @synthesize downloadProgressChangedHandlers = _downloadProgressChangedHandlers;
@@ -320,7 +322,7 @@
     [encoder encodeInt32:_state forKey:@"state"];
     [encoder encodeBool:self.isCancelled forKey:@"isCancelled"];
     [encoder encodeObject:self.mutableData forKey:@"mutableData"];
-    
+    [encoder encodeInteger:self.downloadedDataSize forKey:@"downloadedDataSize"];
     [encoder encodeObject:self.downloadStreams forKey:@"downloadStreams"];
     [encoder encodeInteger:self.startPosition forKey:@"startPosition"];
     [encoder encodeInteger:self.credentialPersistence forKey:@"credentialPersistence"];
@@ -344,7 +346,7 @@
         [self setState:[decoder decodeInt32ForKey:@"state"]];
         self.isCancelled = [decoder decodeBoolForKey:@"isCancelled"];
         self.mutableData = [decoder decodeObjectForKey:@"mutableData"];
-        
+        self.downloadedDataSize = [decoder decodeIntegerForKey:@"downloadedDataSize"];
         self.downloadStreams = [decoder decodeObjectForKey:@"downloadStreams"];
         self.startPosition = [decoder decodeIntegerForKey:@"startPosition"];
         self.credentialPersistence = [decoder decodeIntegerForKey:@"credentialPersistence"];
@@ -373,6 +375,7 @@
     [theCopy setState:self.state];
     [theCopy setIsCancelled:self.isCancelled];
     [theCopy setMutableData:[self.mutableData copy]];
+    [theCopy setDownloadedDataSize:self.downloadedDataSize];
     [theCopy setUploadProgressChangedHandlers:[self.uploadProgressChangedHandlers copy]];
     [theCopy setDownloadProgressChangedHandlers:[self.downloadProgressChangedHandlers copy]];
     [theCopy setDownloadStreams:[self.downloadStreams copy]];
@@ -822,6 +825,7 @@
     
     self.authHandler = nil;    
     self.mutableData = nil;
+    self.downloadedDataSize = 0;
     self.isCancelled = YES;
         
     self.cacheHandlingBlock = nil;
@@ -840,6 +844,7 @@
     
     self.error = error;
     self.mutableData = nil;
+    self.downloadedDataSize = 0;
     for(NSOutputStream *stream in self.downloadStreams)
         [stream close];
     self.state = MKNetworkOperationStateFinished;
@@ -935,14 +940,19 @@
     
     NSUInteger size = [self.response expectedContentLength] < 0 ? 0 : [self.response expectedContentLength];
     self.response = (NSHTTPURLResponse*) response;
-    self.mutableData = [NSMutableData dataWithCapacity:size];
+
+    // dont' save data if the operation was created to download directly to a stream.
+    if([self.downloadStreams count] == 0)
+        self.mutableData = [NSMutableData dataWithCapacity:size];
+    else
+        self.mutableData = nil;
     
     for(NSOutputStream *stream in self.downloadStreams)
         [stream open];
     
     NSDictionary *httpHeaders = [self.response allHeaderFields];
     
-    // if you attach a stream, MKNetworkKit will not cache the response.
+    // if you attach a stream to the operation, MKNetworkKit will not cache the response.
     // Streams are usually "big data chunks" that doesn't need caching anyways.
     
     if([self.request.HTTPMethod isEqualToString:@"GET"] && [self.downloadStreams count] == 0) {
@@ -1006,32 +1016,36 @@
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
 
-    if ([self.mutableData length] == 0) {
+    if ([self.mutableData length] == 0 || [self.downloadStreams count] > 0) {
         // This is the first batch of data
         // Check for a range header and make changes as neccesary
         NSString *rangeString = [[self request] valueForHTTPHeaderField:@"Range"];
         if ([rangeString hasPrefix:@"bytes="] && [rangeString hasSuffix:@"-"]) {
             NSString *bytesText = [rangeString substringWithRange:NSMakeRange(6, [rangeString length] - 7)];
             self.startPosition = [bytesText integerValue];
+            self.downloadedDataSize = self.startPosition;
             DLog(@"Resuming at %d bytes", self.startPosition);
         }
     }
 
-    [self.mutableData appendData:data];
+    if([self.downloadStreams count] == 0)
+        [self.mutableData appendData:data];
     
     for(NSOutputStream *stream in self.downloadStreams) {
         
         if ([stream hasSpaceAvailable]) {
             const uint8_t *dataBuffer = [data bytes];
             [stream write:&dataBuffer[0] maxLength:[data length]];
-        }
+        }        
     }
+    
+    self.downloadedDataSize += [data length];
     
     for(MKNKProgressBlock downloadProgressBlock in self.downloadProgressChangedHandlers) {
         
         if([self.response expectedContentLength] > 0) {
             
-            double progress = (double)(self.startPosition + [self.mutableData length]) / (double)(self.startPosition + [self.response expectedContentLength]);
+            double progress = (double)(self.downloadedDataSize) / (double)(self.startPosition + [self.response expectedContentLength]);
             downloadProgressBlock(progress);
         }        
     }
