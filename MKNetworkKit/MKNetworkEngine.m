@@ -345,7 +345,7 @@ static NSOperationQueue *_sharedNetworkQueue;
             [self.cacheInvalidationParams setObject:completedCacheableOperation.cacheHeaders forKey:uniqueId];
         }];
         
-        double expiryTimeInSeconds = 0.0f;    
+        __block double expiryTimeInSeconds = 0.0f;    
         
         if(!forceReload) {
             NSData *cachedData = [self cachedDataForOperation:operation];
@@ -362,8 +362,11 @@ static NSOperationQueue *_sharedNetworkQueue;
                 // this means, the current operation is a "GET"
                 if(savedCacheHeaders) {
                     NSString *expiresOn = [savedCacheHeaders objectForKey:@"Expires"];
-                    NSDate *expiresOnDate = [NSDate dateFromRFC1123:expiresOn];
-                    expiryTimeInSeconds = [expiresOnDate timeIntervalSinceNow];
+
+                    dispatch_sync(originalQueue, ^{
+                        NSDate *expiresOnDate = [NSDate dateFromRFC1123:expiresOn];
+                        expiryTimeInSeconds = [expiresOnDate timeIntervalSinceNow];
+                    });
                     
                     [operation updateOperationBasedOnPreviousHeaders:savedCacheHeaders];
                 }

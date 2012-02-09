@@ -412,14 +412,14 @@
     
     NSString *lastModified = [headers objectForKey:@"Last-Modified"];
     NSString *eTag = [headers objectForKey:@"ETag"];
-    
+    /* Not really necessary to set the method as "HEAD" We do need the complete data if it was modified */
     if(lastModified) {
-        [self.request setHTTPMethod:@"HEAD"];
+        //[self.request setHTTPMethod:@"HEAD"];
         [self.request setValue:lastModified forHTTPHeaderField:@"IF-MODIFIED-SINCE"];
     }
     
     if(eTag) {
-        [self.request setHTTPMethod:@"HEAD"];
+        //[self.request setHTTPMethod:@"HEAD"];
         [self.request setValue:eTag forHTTPHeaderField:@"IF-NONE-MATCH"];
     }    
 }
