@@ -345,7 +345,7 @@ static NSOperationQueue *_sharedNetworkQueue;
             [self.cacheInvalidationParams setObject:completedCacheableOperation.cacheHeaders forKey:uniqueId];
         }];
         
-        double expiryTimeInSeconds = 0.0f;    
+        __block double expiryTimeInSeconds = 0.0f;    
         
         if(!forceReload) {
             NSData *cachedData = [self cachedDataForOperation:operation];
@@ -362,8 +362,11 @@ static NSOperationQueue *_sharedNetworkQueue;
                 // this means, the current operation is a "GET"
                 if(savedCacheHeaders) {
                     NSString *expiresOn = [savedCacheHeaders objectForKey:@"Expires"];
-                    NSDate *expiresOnDate = [NSDate dateFromRFC1123:expiresOn];
-                    expiryTimeInSeconds = [expiresOnDate timeIntervalSinceNow];
+
+                    dispatch_sync(originalQueue, ^{
+                        NSDate *expiresOnDate = [NSDate dateFromRFC1123:expiresOn];
+                        expiryTimeInSeconds = [expiresOnDate timeIntervalSinceNow];
+                    });
                     
                     [operation updateOperationBasedOnPreviousHeaders:savedCacheHeaders];
                 }
@@ -455,26 +458,29 @@ static NSOperationQueue *_sharedNetworkQueue;
 
 -(void) saveCacheData:(NSData*) data forKey:(NSString*) cacheDataKey
 {    
-    [self.memoryCache setObject:data forKey:cacheDataKey];
-    
-    NSUInteger index = [self.memoryCacheKeys indexOfObject:cacheDataKey];
-    if(index != NSNotFound)
-        [self.memoryCacheKeys removeObjectAtIndex:index];    
-    
-    [self.memoryCacheKeys insertObject:cacheDataKey atIndex:0]; // remove it and insert it at start
-    
-    if([self.memoryCacheKeys count] >= [self cacheMemoryCost])
-    {
-        NSString *lastKey = [self.memoryCacheKeys lastObject];        
-        NSData *data = [self.memoryCache objectForKey:lastKey];        
-        NSString *filePath = [[self cacheDirectoryName] stringByAppendingPathComponent:lastKey];
+    dispatch_sync(dispatch_queue_create("saveCacheQueue", NULL), ^{
+
+        [self.memoryCache setObject:data forKey:cacheDataKey];
         
-        if(![[NSFileManager defaultManager] fileExistsAtPath:filePath])
-            [data writeToFile:filePath atomically:YES];
+        NSUInteger index = [self.memoryCacheKeys indexOfObject:cacheDataKey];
+        if(index != NSNotFound)
+            [self.memoryCacheKeys removeObjectAtIndex:index];    
         
-        [self.memoryCacheKeys removeLastObject];
-        [self.memoryCache removeObjectForKey:lastKey];        
-    }
+        [self.memoryCacheKeys insertObject:cacheDataKey atIndex:0]; // remove it and insert it at start
+        
+        if([self.memoryCacheKeys count] >= [self cacheMemoryCost])
+        {
+            NSString *lastKey = [self.memoryCacheKeys lastObject];        
+            NSData *data = [self.memoryCache objectForKey:lastKey];        
+            NSString *filePath = [[self cacheDirectoryName] stringByAppendingPathComponent:lastKey];
+            
+            if(![[NSFileManager defaultManager] fileExistsAtPath:filePath])
+                [data writeToFile:filePath atomically:YES];
+            
+            [self.memoryCacheKeys removeLastObject];
+            [self.memoryCache removeObjectForKey:lastKey];        
+        }
+    });
 }
 
 /*
