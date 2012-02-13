@@ -458,8 +458,7 @@ static NSOperationQueue *_sharedNetworkQueue;
 
 -(void) saveCacheData:(NSData*) data forKey:(NSString*) cacheDataKey
 {    
-    dispatch_sync(dispatch_queue_create("saveCacheQueue", NULL), ^{
-
+    @synchronized(self) {
         [self.memoryCache setObject:data forKey:cacheDataKey];
         
         NSUInteger index = [self.memoryCacheKeys indexOfObject:cacheDataKey];
@@ -480,7 +479,7 @@ static NSOperationQueue *_sharedNetworkQueue;
             [self.memoryCacheKeys removeLastObject];
             [self.memoryCache removeObjectForKey:lastKey];        
         }
-    });
+    }
 }
 
 /*
