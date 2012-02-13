@@ -672,6 +672,7 @@
                                      boundary, [key urlEncodedString], [obj urlEncodedString]];
         
         [body appendData:[thisFieldString dataUsingEncoding:[self stringEncoding]]];
+        [body appendData:[@"\r\n" dataUsingEncoding:[self stringEncoding]]];
     }];        
     
     [self.filesToBePosted enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
@@ -686,6 +687,7 @@
         
         [body appendData:[thisFieldString dataUsingEncoding:[self stringEncoding]]];         
         [body appendData: [NSData dataWithContentsOfFile:[thisFile objectForKey:@"filepath"]]];
+        [body appendData:[@"\r\n" dataUsingEncoding:[self stringEncoding]]];
     }];
     
     [self.dataToBePosted enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
@@ -700,12 +702,13 @@
         
         [body appendData:[thisFieldString dataUsingEncoding:[self stringEncoding]]];         
         [body appendData:[thisDataObject objectForKey:@"data"]];
+        [body appendData:[@"\r\n" dataUsingEncoding:[self stringEncoding]]];
     }];
     
     if (postLength >= 1)
         [self.request setValue:[NSString stringWithFormat:@"%lu", postLength] forHTTPHeaderField:@"content-length"];
     
-    [body appendData: [[NSString stringWithFormat:@"\r\n--%@--\r\n", boundary] dataUsingEncoding:self.stringEncoding]];
+    [body appendData: [[NSString stringWithFormat:@"--%@--\r\n", boundary] dataUsingEncoding:self.stringEncoding]];
     
     NSString *charset = (__bridge NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(self.stringEncoding));
     
