@@ -276,6 +276,31 @@ typedef enum {
 @property (nonatomic, assign) NSURLCredentialPersistence credentialPersistence;
 
 /*!
+ *  @abstract notification that has to be shown when an error occurs and the app is in background
+ *  @property localNotification
+ *  
+ *  @discussion
+ *  The default value nil. No notification is shown when an error occurs.
+ *  To show a notification when the app is in background and the network operation running in background fails,
+ *  set this parameter to a UILocalNotification object
+ */
+@property (nonatomic, strong) UILocalNotification *localNotification;
+
+/*!
+ *  @abstract Shows a local notification when an error occurs
+ *  @property shouldShowLocalNotificationOnError
+ *  
+ *  @discussion
+ *  The default value NO. No notification is shown when an error occurs.
+ *  When set to YES, MKNetworkKit shows the NSError localizedDescription text as a notification when the app is in background and the network operation ended in error.
+ *  To customize the local notification text, use the property localNotification
+ 
+ *  @seealso
+ *  localNotification
+ */
+@property (nonatomic, assign) BOOL shouldShowLocalNotificationOnError;
+
+/*!
  *  @abstract Add additional header parameters
  *  
  *  @discussion

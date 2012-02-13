@@ -74,6 +74,8 @@
 -(BOOL) isCacheable;
 
 -(NSString*) encodedPostDataString;
+- (void) showLocalNotification;
+- (void) endBackgroundTask;
 
 @end
 
@@ -115,6 +117,8 @@
 @synthesize cachedResponse = _cachedResponse;
 @synthesize cacheHandlingBlock = _cacheHandlingBlock;
 @synthesize credentialPersistence = _credentialPersistence;
+@synthesize localNotification = localNotification_;
+@synthesize shouldShowLocalNotificationOnError = shouldShowLocalNotificationOnError_;
 
 @synthesize startPosition = _startPosition;
 
@@ -289,14 +293,6 @@
         case MKNetworkOperationStateFinished:
             [self didChangeValueForKey:@"isExecuting"];
             [self didChangeValueForKey:@"isFinished"];
-#if TARGET_OS_IPHONE                
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (self.backgroundTaskId != UIBackgroundTaskInvalid) {
-                    [[UIApplication sharedApplication] endBackgroundTask:self.backgroundTaskId];
-                    self.backgroundTaskId = UIBackgroundTaskInvalid;
-                }
-            });
-#endif        
             break;
     }
     
@@ -455,7 +451,7 @@
 }
 
 -(void) setUploadStream:(NSInputStream*) inputStream {
-
+    
 #warning Method not tested yet.
     self.request.HTTPBodyStream = inputStream;
 }
@@ -529,9 +525,9 @@
                     break;
                 case MKNKPostDataEncodingTypeJSON: {
                     if([NSJSONSerialization class]) {
-                    [self.request setValue:
-                     [NSString stringWithFormat:@"application/json; charset=%@", charset]
-                        forHTTPHeaderField:@"Content-Type"];
+                        [self.request setValue:
+                         [NSString stringWithFormat:@"application/json; charset=%@", charset]
+                            forHTTPHeaderField:@"Content-Type"];
                     } else {
                         [self.request setValue:
                          [NSString stringWithFormat:@"application/x-www-form-urlencoded; charset=%@", charset]
@@ -544,16 +540,16 @@
                      [NSString stringWithFormat:@"application/x-plist; charset=%@", charset]
                         forHTTPHeaderField:@"Content-Type"];
                 }
-                                        
+                    
                 default:
                     break;
             }
         }
-
+        
         self.state = MKNetworkOperationStateReady;
     }
     
-	return self;
+    return self;
 }
 
 -(void) addHeaders:(NSDictionary*) headersDictionary {
@@ -737,6 +733,18 @@
     }
 }
 
+-(void) endBackgroundTask {
+    
+#if TARGET_OS_IPHONE                
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (self.backgroundTaskId != UIBackgroundTaskInvalid) {
+            [[UIApplication sharedApplication] endBackgroundTask:self.backgroundTaskId];
+            self.backgroundTaskId = UIBackgroundTaskInvalid;
+        }
+    });
+#endif        
+}
+
 - (void) start
 {
     if(![NSThread isMainThread]){
@@ -775,6 +783,7 @@
     }
     else {
         self.state = MKNetworkOperationStateFinished;
+        [self endBackgroundTask];
     }
 }
 
@@ -793,12 +802,12 @@
 
 - (BOOL)isFinished 
 {
-	return (self.state == MKNetworkOperationStateFinished);
+    return (self.state == MKNetworkOperationStateFinished);
 }
 
 - (BOOL)isExecuting {
     
-	return (self.state == MKNetworkOperationStateExecuting);
+    return (self.state == MKNetworkOperationStateExecuting);
 }
 
 -(void) cancel {
@@ -827,13 +836,14 @@
     self.mutableData = nil;
     self.downloadedDataSize = 0;
     self.isCancelled = YES;
-        
+    
     self.cacheHandlingBlock = nil;
     
     if(self.state == MKNetworkOperationStateExecuting)
         self.state = MKNetworkOperationStateFinished; // This notifies the queue and removes the operation.
-        // if the operation is not removed, the spinner continues to spin, not a good UX
+    // if the operation is not removed, the spinner continues to spin, not a good UX
     
+    [self endBackgroundTask];
     [super cancel];
 }
 
@@ -842,20 +852,21 @@
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
     
+    self.state = MKNetworkOperationStateFinished;
     self.error = error;
     self.mutableData = nil;
     self.downloadedDataSize = 0;
     for(NSOutputStream *stream in self.downloadStreams)
         [stream close];
-    self.state = MKNetworkOperationStateFinished;
     
     [self operationFailedWithError:error];
+    [self endBackgroundTask];
 }
 
 - (void)connection:(NSURLConnection *)connection willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
     
     if ([challenge previousFailureCount] == 0) {
-    
+        
         if (((challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodDefault) ||
              (challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodHTTPBasic) ||
              (challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodHTTPDigest) ||
@@ -874,7 +885,7 @@
             
             NSData *certData = [[NSData alloc] initWithContentsOfFile:self.clientCertificate];
             
-    #warning method not implemented. Don't use client certicate authentication for now.
+#warning method not implemented. Don't use client certicate authentication for now.
             SecIdentityRef myIdentity;  // ???
             
             SecCertificateRef myCert = SecCertificateCreateWithData(NULL, (__bridge CFDataRef)certData);
@@ -888,7 +899,7 @@
             [challenge.sender useCredential:credential forAuthenticationChallenge:challenge];
         }
         else if (challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust) {
-    #warning method not tested. proceed at your own risk
+#warning method not tested. proceed at your own risk
             SecTrustRef serverTrust = [[challenge protectionSpace] serverTrust];
             SecTrustResultType result;
             SecTrustEvaluate(serverTrust, &result);
@@ -940,7 +951,7 @@
     
     NSUInteger size = [self.response expectedContentLength] < 0 ? 0 : [self.response expectedContentLength];
     self.response = (NSHTTPURLResponse*) response;
-
+    
     // dont' save data if the operation was created to download directly to a stream.
     if([self.downloadStreams count] == 0)
         self.mutableData = [NSMutableData dataWithCapacity:size];
@@ -1015,7 +1026,7 @@
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
-
+    
     if ([self.mutableData length] == 0 || [self.downloadStreams count] > 0) {
         // This is the first batch of data
         // Check for a range header and make changes as neccesary
@@ -1027,7 +1038,7 @@
             DLog(@"Resuming at %d bytes", self.startPosition);
         }
     }
-
+    
     if([self.downloadStreams count] == 0)
         [self.mutableData appendData:data];
     
@@ -1072,7 +1083,7 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
         NSMutableURLRequest *r = [self.request mutableCopy];
         [r setURL: [inRequest URL]];
         DLog(@"Redirected to %@", [[inRequest URL] absoluteString]);
-
+        
         return r;
     } else {
         return inRequest;
@@ -1080,7 +1091,7 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
 }
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
     
-    self.state = MKNetworkOperationStateFinished;
+    self.state = MKNetworkOperationStateFinished;    
     
     for(NSOutputStream *stream in self.downloadStreams)
         [stream close];
@@ -1109,12 +1120,13 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
         
     } else if (self.response.statusCode >= 400 && self.response.statusCode < 600) {                        
         
-        NSError *error = [NSError errorWithDomain:NSURLErrorDomain
-                                             code:self.response.statusCode
-                                         userInfo:self.response.allHeaderFields];
+        self.error = [NSError errorWithDomain:NSURLErrorDomain
+                                         code:self.response.statusCode
+                                     userInfo:self.response.allHeaderFields];
         
-        [self operationFailedWithError:error];
-    }
+        [self operationFailedWithError:self.error];
+    }  
+    [self endBackgroundTask];
 }
 
 #pragma mark -
@@ -1185,11 +1197,32 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
         responseBlock(self);
 }
 
+-(void) showLocalNotification {
+    
+    if(self.localNotification) {
+        
+        [[UIApplication sharedApplication] scheduleLocalNotification:self.localNotification];
+    } else if(self.shouldShowLocalNotificationOnError) {
+        
+        UILocalNotification *localNotification = [[UILocalNotification alloc] init];
+        localNotification.fireDate = [NSDate date];
+        localNotification.timeZone = [NSTimeZone defaultTimeZone];	
+        
+        localNotification.alertBody = [self.error localizedDescription];
+        localNotification.alertAction = NSLocalizedString(@"Dismiss", @"");	
+        
+        [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
+    }
+}
+
 -(void) operationFailedWithError:(NSError*) error {
     
     DLog(@"%@", self);
     for(MKNKErrorBlock errorBlock in self.errorBlocks)
-        errorBlock(error);       
+        errorBlock(error);  
+    
+    if(self.backgroundTaskId != UIBackgroundTaskInvalid)
+        [self showLocalNotification];
 }
 
 @end
