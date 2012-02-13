@@ -856,7 +856,6 @@
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
     
     self.state = MKNetworkOperationStateFinished;
-    self.error = error;
     self.mutableData = nil;
     self.downloadedDataSize = 0;
     for(NSOutputStream *stream in self.downloadStreams)
@@ -1123,11 +1122,9 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
         
     } else if (self.response.statusCode >= 400 && self.response.statusCode < 600) {                        
         
-        self.error = [NSError errorWithDomain:NSURLErrorDomain
-                                         code:self.response.statusCode
-                                     userInfo:self.response.allHeaderFields];
-        
-        [self operationFailedWithError:self.error];
+        [self operationFailedWithError:[NSError errorWithDomain:NSURLErrorDomain
+                                                           code:self.response.statusCode
+                                                       userInfo:self.response.allHeaderFields]];
     }  
     [self endBackgroundTask];
 }
@@ -1204,28 +1201,31 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
     
     if(self.localNotification) {
         
-        [[UIApplication sharedApplication] scheduleLocalNotification:self.localNotification];
+        [[UIApplication sharedApplication] presentLocalNotificationNow:self.localNotification];
     } else if(self.shouldShowLocalNotificationOnError) {
         
         UILocalNotification *localNotification = [[UILocalNotification alloc] init];
-        localNotification.fireDate = [NSDate date];
-        localNotification.timeZone = [NSTimeZone defaultTimeZone];	
         
         localNotification.alertBody = [self.error localizedDescription];
         localNotification.alertAction = NSLocalizedString(@"Dismiss", @"");	
         
-        [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
+        [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
     }
 }
 
 -(void) operationFailedWithError:(NSError*) error {
     
-    DLog(@"%@", self);
+    self.error = error;
+    DLog(@"%@, [%@]", self, [self.error localizedDescription]);
     for(MKNKErrorBlock errorBlock in self.errorBlocks)
         errorBlock(error);  
     
-    if(self.backgroundTaskId != UIBackgroundTaskInvalid)
+#if TARGET_OS_IPHONE
+    DLog(@"State: %d", [[UIApplication sharedApplication] applicationState]);
+    if([[UIApplication sharedApplication] applicationState] == UIApplicationStateBackground)
         [self showLocalNotification];
+#endif
+    
 }
 
 @end
