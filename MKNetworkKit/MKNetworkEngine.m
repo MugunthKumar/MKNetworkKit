@@ -373,20 +373,23 @@ static NSOperationQueue *_sharedNetworkQueue;
             }
         }
         
-        NSUInteger index = [_sharedNetworkQueue.operations indexOfObject:operation];
-        if(index == NSNotFound) {
-            
-            if(expiryTimeInSeconds <= 0)
-                [_sharedNetworkQueue addOperation:operation];
-            else if(forceReload)
-                [_sharedNetworkQueue addOperation:operation];
-            // else don't do anything
-        }
-        else {
-            // This operation is already being processed
-            MKNetworkOperation *queuedOperation = (MKNetworkOperation*) [_sharedNetworkQueue.operations objectAtIndex:index];
-            [queuedOperation updateHandlersFromOperation:operation];
-        }
+        dispatch_async(originalQueue, ^{
+            NSUInteger index = [_sharedNetworkQueue.operations indexOfObject:operation];
+            if(index == NSNotFound) {
+                
+                if(expiryTimeInSeconds <= 0)
+                    [_sharedNetworkQueue addOperation:operation];
+                else if(forceReload)
+                    [_sharedNetworkQueue addOperation:operation];
+                // else don't do anything
+            }
+            else {
+                // This operation is already being processed
+                MKNetworkOperation *queuedOperation = (MKNetworkOperation*) [_sharedNetworkQueue.operations objectAtIndex:index];
+                [queuedOperation updateHandlersFromOperation:operation];
+            }
+        });
+
         
         if([self.reachability currentReachabilityStatus] == NotReachable)
             [self freezeOperations];
