@@ -388,11 +388,10 @@ static NSOperationQueue *_sharedNetworkQueue;
                 MKNetworkOperation *queuedOperation = (MKNetworkOperation*) [_sharedNetworkQueue.operations objectAtIndex:index];
                 [queuedOperation updateHandlersFromOperation:operation];
             }
-        });
 
-        
-        if([self.reachability currentReachabilityStatus] == NotReachable)
-            [self freezeOperations];
+            if([self.reachability currentReachabilityStatus] == NotReachable)
+                [self freezeOperations];
+        });
     });
 }
 
