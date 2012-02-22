@@ -777,7 +777,6 @@
             [self.request setHTTPBody:[self bodyData]];
         }
         
-        DLog(@"%@", self);
         self.connection = [[NSURLConnection alloc] initWithRequest:self.request 
                                                           delegate:self 
                                                   startImmediately:YES]; 
@@ -1188,10 +1187,6 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
 #pragma mark Overridable methods
 
 -(void) operationSucceeded {
-    
-    // don't log for cached responses
-    if(![self isCachedResponse])
-        DLog(@"%@", self);
     
     for(MKNKResponseBlock responseBlock in self.responseBlocks)
         responseBlock(self);
