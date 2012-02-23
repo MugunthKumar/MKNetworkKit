@@ -92,7 +92,6 @@ static NSOperationQueue *_sharedNetworkQueue;
                                                          name:kReachabilityChangedNotification 
                                                        object:nil];
             
-            DLog(@"Engine initialized with host: %@", hostName);
             self.hostName = hostName;            
             self.reachability = [Reachability reachabilityWithHostname:self.hostName];
             [self.reachability startNotifier];            
@@ -139,8 +138,6 @@ static NSOperationQueue *_sharedNetworkQueue;
                          change:(NSDictionary *)change context:(void *)context
 {
     if (object == _sharedNetworkQueue && [keyPath isEqualToString:@"operationCount"]) {
-        
-        DLog(@"*** Running: %d ***", (int) [_sharedNetworkQueue.operations count]);
         
         [[NSNotificationCenter defaultCenter] postNotificationName:kMKNetworkEngineOperationCountChanged 
                                                             object:[NSNumber numberWithInteger:[_sharedNetworkQueue operationCount]]];
