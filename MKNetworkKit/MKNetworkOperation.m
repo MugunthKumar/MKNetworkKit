@@ -230,18 +230,18 @@
 
 -(NSString*) uniqueIdentifier {
     
-    NSString *str = [self curlCommandLineString];
+  NSMutableString *str = [NSMutableString stringWithFormat:@"%@ %@", self.request.HTTPMethod, self.url];
     
     if(self.username || self.password) {
         
-        str = [str stringByAppendingFormat:@" [%@:%@]",
+        [str appendFormat:@" [%@:%@]",
                self.username ? self.username : @"",
                self.password ? self.password : @""];
     }
     
     if(self.freezable) {
         
-        str = [str stringByAppendingString:self.uniqueId];
+        [str appendString:self.uniqueId];
     }
     return [str md5];
 }
