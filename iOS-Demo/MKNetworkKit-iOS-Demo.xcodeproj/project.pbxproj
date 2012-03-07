@@ -180,7 +180,7 @@
 		AB74B0B41467CC120088BF09 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0420;
+				LastUpgradeCheck = 0430;
 				ORGANIZATIONNAME = Steinlogic;
 			};
 			buildConfigurationList = AB74B0B71467CC120088BF09 /* Build configuration list for PBXProject "MKNetworkKit-iOS-Demo" */;

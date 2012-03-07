@@ -105,7 +105,7 @@
         return;
     }
     NSString *uploadPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingFormat:@"/SampleImage.jpg"];
-    self.uploadOperation = [ApplicationDelegate.twitPicUploader uploadImageFromFile:uploadPath 
+    self.uploadOperation = [ApplicationDelegate.sampleAuth uploadImageFromFile:uploadPath 
                                                                        onCompletion:^(NSString *twitPicURL) {
                                                                            
                                                                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Uploaded to"                              

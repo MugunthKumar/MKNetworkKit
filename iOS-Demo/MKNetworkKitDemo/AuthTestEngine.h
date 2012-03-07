@@ -13,4 +13,8 @@
 -(void)digestAuthTestWithUser:(NSString*)username password:(NSString*)password;
 -(void) clientCertTest;
 -(int) cacheMemoryCost;
+
+-(MKNetworkOperation*) uploadImageFromFile:(NSString*) file 
+                              onCompletion:(TwitPicBlock) completionBlock
+                                   onError:(MKNKErrorBlock) errorBlock;
 @end
