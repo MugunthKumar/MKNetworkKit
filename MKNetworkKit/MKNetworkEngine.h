@@ -269,4 +269,13 @@
  *  useCache
  */
 -(void) emptyCache;
+
+/*!
+ *  @abstract Checks current reachable status
+ *  
+ *  @discussion
+ *	This method is a handy helper that you can use to check for network reachability.
+ */
+-(BOOL) isReachable;
+
 @end
