@@ -669,7 +669,7 @@
         
         NSString *thisFieldString = [NSString stringWithFormat:
                                      @"--%@\r\nContent-Disposition: form-data; name=\"%@\"\r\n\r\n%@\r\n",
-                                     boundary, [key urlEncodedString], [obj urlEncodedString]];
+                                     boundary, key, obj];
         
         [body appendData:[thisFieldString dataUsingEncoding:[self stringEncoding]]];
         [body appendData:[@"\r\n" dataUsingEncoding:[self stringEncoding]]];
