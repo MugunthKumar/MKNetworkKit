@@ -1197,7 +1197,8 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
 }
 
 -(void) showLocalNotification {
-  
+#if TARGET_OS_IPHONE
+
   if(self.localNotification) {
     
     [[UIApplication sharedApplication] presentLocalNotificationNow:self.localNotification];
@@ -1210,6 +1211,7 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
     
     [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
   }
+#endif
 }
 
 -(void) operationFailedWithError:(NSError*) error {
