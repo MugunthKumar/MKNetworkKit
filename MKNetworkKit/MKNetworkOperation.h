@@ -274,6 +274,7 @@ typedef enum {
  *  The default value is set to NSURLCredentialPersistenceForSession, change it to NSURLCredentialPersistenceNone to avoid caching issues (isse #35)
  */
 @property (nonatomic, assign) NSURLCredentialPersistence credentialPersistence;
+#if TARGET_OS_IPHONE
 
 /*!
  *  @abstract notification that has to be shown when an error occurs and the app is in background
@@ -285,7 +286,6 @@ typedef enum {
  *  set this parameter to a UILocalNotification object
  */
 @property (nonatomic, strong) UILocalNotification *localNotification;
-
 /*!
  *  @abstract Shows a local notification when an error occurs
  *  @property shouldShowLocalNotificationOnError
@@ -299,6 +299,7 @@ typedef enum {
  *  localNotification
  */
 @property (nonatomic, assign) BOOL shouldShowLocalNotificationOnError;
+#endif
 
 /*!
  *  @abstract Add additional header parameters

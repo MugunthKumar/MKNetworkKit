@@ -117,13 +117,13 @@
 @synthesize cachedResponse = _cachedResponse;
 @synthesize cacheHandlingBlock = _cacheHandlingBlock;
 @synthesize credentialPersistence = _credentialPersistence;
-@synthesize localNotification = localNotification_;
-@synthesize shouldShowLocalNotificationOnError = shouldShowLocalNotificationOnError_;
 
 @synthesize startPosition = _startPosition;
 
 #if TARGET_OS_IPHONE    
 @synthesize backgroundTaskId = _backgroundTaskId;
+@synthesize localNotification = localNotification_;
+@synthesize shouldShowLocalNotificationOnError = shouldShowLocalNotificationOnError_;
 #endif
 
 @synthesize cacheHeaders = _cacheHeaders;
