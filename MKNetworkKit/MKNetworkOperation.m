@@ -255,8 +255,9 @@
   
   if(![self isCacheable]) return;
   if(!([self.response statusCode] >= 200 && [self.response statusCode] < 300)) return;
-  
-  self.cacheHandlingBlock(self);
+
+  if(![self isCancelled])   
+    self.cacheHandlingBlock(self);
 }
 
 -(MKNetworkOperationState) state {
@@ -820,6 +821,11 @@
   
   if([self isFinished]) 
     return;
+
+  @synchronized(self) {
+  self.isCancelled = YES;
+
+  [self.connection cancel];
   
   [self.responseBlocks removeAllObjects];
   self.responseBlocks = nil;
@@ -833,15 +839,15 @@
   [self.downloadProgressChangedHandlers removeAllObjects];
   self.downloadProgressChangedHandlers = nil;
   
+  for(NSOutputStream *stream in self.downloadStreams)
+    [stream close];
+  
   [self.downloadStreams removeAllObjects];
   self.downloadStreams = nil;
-  
-  [self.connection cancel];
   
   self.authHandler = nil;    
   self.mutableData = nil;
   self.downloadedDataSize = 0;
-  self.isCancelled = YES;
   
   self.cacheHandlingBlock = nil;
   
@@ -850,6 +856,7 @@
   // if the operation is not removed, the spinner continues to spin, not a good UX
   
   [self endBackgroundTask];
+  }
   [super cancel];
 }
 
@@ -1096,12 +1103,15 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
 }
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
   
+  if([self isCancelled]) 
+    return;
+  
   self.state = MKNetworkOperationStateFinished;    
   
   for(NSOutputStream *stream in self.downloadStreams)
     [stream close];
   
-  if (self.response.statusCode >= 200 && self.response.statusCode < 300) {
+  if (self.response.statusCode >= 200 && self.response.statusCode < 300 && ![self isCancelled]) {
     
     self.cachedResponse = nil; // remove cached data
     [self notifyCache];        
@@ -1123,13 +1133,14 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
       DLog(@"%@ returned status %d", self.url, (int) self.response.statusCode);
     }
     
-  } else if (self.response.statusCode >= 400 && self.response.statusCode < 600) {                        
+  } else if (self.response.statusCode >= 400 && self.response.statusCode < 600 && ![self isCancelled]) {                        
     
     [self operationFailedWithError:[NSError errorWithDomain:NSURLErrorDomain
                                                        code:self.response.statusCode
                                                    userInfo:self.response.allHeaderFields]];
   }  
   [self endBackgroundTask];
+  
 }
 
 #pragma mark -
