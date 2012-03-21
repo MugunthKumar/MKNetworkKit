@@ -445,6 +445,13 @@ static NSOperationQueue *_sharedNetworkQueue;
   for(NSString *cacheKey in [self.memoryCache allKeys])
   {
     NSString *filePath = [[self cacheDirectoryName] stringByAppendingPathComponent:cacheKey];
+    if([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
+      
+      NSError *error = nil;
+      [[NSFileManager defaultManager] removeItemAtPath:filePath error:&error]; 
+      ELog(error);
+    }
+
     [[self.memoryCache objectForKey:cacheKey] writeToFile:filePath atomically:YES];        
   }
   
