@@ -29,7 +29,6 @@
 
 +(UIAlertView*) showWithError:(NSError*) networkError {
 
-    DLog(@"%@", [networkError userInfo]);
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[networkError localizedDescription]
                                                     message:[networkError localizedRecoverySuggestion]
                                                    delegate:nil
