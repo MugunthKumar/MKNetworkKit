@@ -191,11 +191,10 @@ static NSOperationQueue *_sharedNetworkQueue;
     // freeze only freeable operations.
     if(![operation freezable]) continue;
     
+    if(!self.hostName) return;
+    
     // freeze only operations that belong to this server
-    if(self.hostName) {
-      
-      if([[operation url] rangeOfString:self.hostName].location == NSNotFound) continue;
-    }
+    if([[operation url] rangeOfString:self.hostName].location == NSNotFound) continue;
     
     NSString *archivePath = [[[self cacheDirectoryName] stringByAppendingPathComponent:[operation uniqueIdentifier]] 
                              stringByAppendingPathExtension:kFreezableOperationExtension];
