@@ -38,15 +38,18 @@
 #import <AppKit/AppKit.h>
 #endif
 
+#define DO_NOTHING()		do { } while(0); 
+
 #ifdef DEBUG
-#   define DLog(fmt, ...) NSLog((@"%s [Line %d] " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__);
-#   define ELog(err) {if(err) DLog(@"%@", err)}
+#   define DLog(fmt, ...) do{NSLog((@"%s [Line %d] " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__);}while (0);
+#   define ELog(err) do{if(err) DLog(@"%@", err)} while (0);
 #else
-#   define DLog(...)
+#   define DLog(...) DO_NOTHING()
+#   define ELog(err) DO_NOTHING()
 #endif
 
 // ALog always displays output regardless of the DEBUG setting
-#define ALog(fmt, ...) NSLog((@"%s [Line %d] " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__);
+#define ALog(fmt, ...) do{NSLog((@"%s [Line %d] " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__);}while(0);
 
 #import "Categories/NSString+MKNetworkKitAdditions.h"
 #import "Categories/NSDictionary+RequestEncoding.h"
