@@ -24,7 +24,7 @@
 //  THE SOFTWARE.
 
 #import "MKNetworkOperation.h"
-
+#import "Reachability.h"
 /*!
  @header MKNetworkEngine.h
  @abstract   Represents a subclassable Network Engine for your app
