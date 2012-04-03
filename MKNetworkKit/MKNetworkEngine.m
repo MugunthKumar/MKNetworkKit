@@ -329,6 +329,8 @@ static NSOperationQueue *_sharedNetworkQueue;
 }
 
 -(void) enqueueOperation:(MKNetworkOperation*) operation forceReload:(BOOL) forceReload {
+  
+  NSParameterAssert(operation != nil);
   // Grab on to the current queue (We need it later)
   dispatch_queue_t originalQueue = dispatch_get_current_queue();
   // Jump off the main thread, mainly for disk cache reading purposes
