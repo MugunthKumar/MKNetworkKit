@@ -23,8 +23,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-#import "NSDictionary+RequestEncoding.h"
-#import "NSString+MKNetworkKitAdditions.h"
+#import "MKNetworkKit.h"
 
 @implementation NSDictionary (RequestEncoding)
 

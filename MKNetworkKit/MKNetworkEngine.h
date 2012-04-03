@@ -23,8 +23,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-#import "MKNetworkOperation.h"
-
+#import "MKNetworkKit.h"
 /*!
  @header MKNetworkEngine.h
  @abstract   Represents a subclassable Network Engine for your app

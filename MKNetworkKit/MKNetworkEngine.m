@@ -23,9 +23,16 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-#import "MKNetworkEngine.h"
-#import "Reachability.h"
+#import "MKNetworkKit.h"
 #define kFreezableOperationExtension @"mknetworkkitfrozenoperation"
+
+#ifdef __OBJC_GC__
+#error MKNetworkKit does not support Objective-C Garbage Collection
+#endif
+
+#if ! __has_feature(objc_arc)
+#error MKNetworkKit is ARC only. Either turn on ARC for the project or use -fobjc-arc flag
+#endif
 
 @interface MKNetworkEngine (/*Private Methods*/)
 
