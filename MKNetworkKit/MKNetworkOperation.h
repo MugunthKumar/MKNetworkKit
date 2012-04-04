@@ -257,12 +257,10 @@ typedef enum {
 
 /*!
  *  @abstract Handler that you implement to monitor reachability changes
- *  @property reachabilityChangedHandler
+ *  @property operationStateChangedHandler
  *  
  *  @discussion
- *	The framework calls this handler whenever the reachability of the host changes.
- *  The default implementation freezes the queued operations and stops network activity
- *  You normally don't have to implement this unless you need to show a HUD notifying the user of connectivity loss
+ *	The framework calls this handler whenever the operation state changes
  */
 @property (copy, nonatomic) void (^operationStateChangedHandler)(MKNetworkOperationState newState);
 
