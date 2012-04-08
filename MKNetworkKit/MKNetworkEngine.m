@@ -198,11 +198,10 @@ static NSOperationQueue *_sharedNetworkQueue;
     // freeze only freeable operations.
     if(![operation freezable]) continue;
     
+    if(!self.hostName) return;
+    
     // freeze only operations that belong to this server
-    if(self.hostName) {
-      
-      if([[operation url] rangeOfString:self.hostName].location == NSNotFound) continue;
-    }
+    if([[operation url] rangeOfString:self.hostName].location == NSNotFound) continue;
     
     NSString *archivePath = [[[self cacheDirectoryName] stringByAppendingPathComponent:[operation uniqueIdentifier]] 
                              stringByAppendingPathExtension:kFreezableOperationExtension];
@@ -337,6 +336,8 @@ static NSOperationQueue *_sharedNetworkQueue;
 }
 
 -(void) enqueueOperation:(MKNetworkOperation*) operation forceReload:(BOOL) forceReload {
+  
+  NSParameterAssert(operation != nil);
   // Grab on to the current queue (We need it later)
   dispatch_queue_t originalQueue = dispatch_get_current_queue();
   // Jump off the main thread, mainly for disk cache reading purposes
