@@ -85,7 +85,6 @@
 @end
 
 @implementation MKNetworkOperation
-@synthesize postDataEncoding = _postDataEncoding;
 @synthesize postDataEncodingHandler = _postDataEncodingHandler;
 
 @synthesize stringEncoding = _stringEncoding;
@@ -143,6 +142,72 @@
 -(BOOL) isCacheable {
   
   return [self.request.HTTPMethod isEqualToString:@"GET"];
+}
+
+
+//=========================================================== 
+// + (BOOL)automaticallyNotifiesObserversForKey:
+//
+//=========================================================== 
++ (BOOL)automaticallyNotifiesObserversForKey: (NSString *)theKey 
+{
+  BOOL automatic;
+  
+  if ([theKey isEqualToString:@"postDataEncoding"]) {
+    automatic = NO;
+  } else {
+    automatic = [super automaticallyNotifiesObserversForKey:theKey];
+  }
+  
+  return automatic;
+}
+
+//=========================================================== 
+//  postDataEncoding 
+//=========================================================== 
+- (MKNKPostDataEncodingType)postDataEncoding
+{
+  return _postDataEncoding;
+}
+- (void)setPostDataEncoding:(MKNKPostDataEncodingType)aPostDataEncoding
+{
+  if (_postDataEncoding != aPostDataEncoding) {
+    [self willChangeValueForKey:@"postDataEncoding"];
+    _postDataEncoding = aPostDataEncoding;
+    
+    NSString *charset = (__bridge NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(self.stringEncoding));
+    
+    switch (self.postDataEncoding) {
+        
+      case MKNKPostDataEncodingTypeURL: {
+        [self.request setValue:
+         [NSString stringWithFormat:@"application/x-www-form-urlencoded; charset=%@", charset]
+            forHTTPHeaderField:@"Content-Type"];
+      }
+        break;
+      case MKNKPostDataEncodingTypeJSON: {
+        if([NSJSONSerialization class]) {
+          [self.request setValue:
+           [NSString stringWithFormat:@"application/json; charset=%@", charset]
+              forHTTPHeaderField:@"Content-Type"];
+        } else {
+          [self.request setValue:
+           [NSString stringWithFormat:@"application/x-www-form-urlencoded; charset=%@", charset]
+              forHTTPHeaderField:@"Content-Type"];
+        }
+      }
+        break;
+      case MKNKPostDataEncodingTypePlist: {
+        [self.request setValue:
+         [NSString stringWithFormat:@"application/x-plist; charset=%@", charset]
+            forHTTPHeaderField:@"Content-Type"];
+      }
+        
+      default:
+        break;
+    }
+    [self didChangeValueForKey:@"postDataEncoding"];
+  }
 }
 
 -(NSString*) encodedPostDataString {
@@ -260,7 +325,7 @@
   
   if(![self isCacheable]) return;
   if(!([self.response statusCode] >= 200 && [self.response statusCode] < 300)) return;
-
+  
   if(![self isCancelled])   
     self.cacheHandlingBlock(self);
 }
@@ -414,14 +479,11 @@
   
   NSString *lastModified = [headers objectForKey:@"Last-Modified"];
   NSString *eTag = [headers objectForKey:@"ETag"];
-  /* Not really necessary to set the method as "HEAD" We do need the complete data if it was modified */
   if(lastModified) {
-    //[self.request setHTTPMethod:@"HEAD"];
     [self.request setValue:lastModified forHTTPHeaderField:@"IF-MODIFIED-SINCE"];
   }
   
   if(eTag) {
-    //[self.request setHTTPMethod:@"HEAD"];
     [self.request setValue:eTag forHTTPHeaderField:@"IF-NONE-MATCH"];
   }    
 }
@@ -513,8 +575,6 @@
     
     [self.request setHTTPMethod:method];
     
-    NSString *charset = (__bridge NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(self.stringEncoding));
-    
     [self.request setValue:[NSString stringWithFormat:@"%@, en-us", 
                             [[NSLocale preferredLanguages] componentsJoinedByString:@", "]
                             ] forHTTPHeaderField:@"Accept-Language"];
@@ -522,35 +582,7 @@
     if (([method isEqualToString:@"POST"] ||
          [method isEqualToString:@"PUT"]) && (params && [params count] > 0)) {
       
-      switch (self.postDataEncoding) {
-          
-        case MKNKPostDataEncodingTypeURL: {
-          [self.request setValue:
-           [NSString stringWithFormat:@"application/x-www-form-urlencoded; charset=%@", charset]
-              forHTTPHeaderField:@"Content-Type"];
-        }
-          break;
-        case MKNKPostDataEncodingTypeJSON: {
-          if([NSJSONSerialization class]) {
-            [self.request setValue:
-             [NSString stringWithFormat:@"application/json; charset=%@", charset]
-                forHTTPHeaderField:@"Content-Type"];
-          } else {
-            [self.request setValue:
-             [NSString stringWithFormat:@"application/x-www-form-urlencoded; charset=%@", charset]
-                forHTTPHeaderField:@"Content-Type"];
-          }
-        }
-          break;
-        case MKNKPostDataEncodingTypePlist: {
-          [self.request setValue:
-           [NSString stringWithFormat:@"application/x-plist; charset=%@", charset]
-              forHTTPHeaderField:@"Content-Type"];
-        }
-          
-        default:
-          break;
-      }
+      self.postDataEncoding = MKNKPostDataEncodingTypeURL;
     }
     
     self.state = MKNetworkOperationStateReady;
@@ -600,10 +632,15 @@
   if ([self.request.HTTPMethod isEqualToString:@"POST"] || [self.request.HTTPMethod isEqualToString:@"PUT"]) {
     
     NSString *option = [self.filesToBePosted count] == 0 ? @"-d" : @"-F";
-    [self.fieldsToBePosted enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-      
-      [displayString appendFormat:@" %@ \"%@=%@\"", option, key, obj];    
-    }];
+    if(self.postDataEncoding == MKNKPostDataEncodingTypeURL) {
+      [self.fieldsToBePosted enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+        
+        [displayString appendFormat:@" %@ \"%@=%@\"", option, key, obj];    
+      }];
+    } else {
+      [displayString appendFormat:@" -d %@", [self encodedPostDataString]];
+    }
+    
     
     [self.filesToBePosted enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
       
@@ -826,41 +863,41 @@
   
   if([self isFinished]) 
     return;
-
+  
   @synchronized(self) {
-  self.isCancelled = YES;
-
-  [self.connection cancel];
-  
-  [self.responseBlocks removeAllObjects];
-  self.responseBlocks = nil;
-  
-  [self.errorBlocks removeAllObjects];
-  self.errorBlocks = nil;
-  
-  [self.uploadProgressChangedHandlers removeAllObjects];
-  self.uploadProgressChangedHandlers = nil;
-  
-  [self.downloadProgressChangedHandlers removeAllObjects];
-  self.downloadProgressChangedHandlers = nil;
-  
-  for(NSOutputStream *stream in self.downloadStreams)
-    [stream close];
-  
-  [self.downloadStreams removeAllObjects];
-  self.downloadStreams = nil;
-  
-  self.authHandler = nil;    
-  self.mutableData = nil;
-  self.downloadedDataSize = 0;
-  
-  self.cacheHandlingBlock = nil;
-  
-  if(self.state == MKNetworkOperationStateExecuting)
-    self.state = MKNetworkOperationStateFinished; // This notifies the queue and removes the operation.
-  // if the operation is not removed, the spinner continues to spin, not a good UX
-  
-  [self endBackgroundTask];
+    self.isCancelled = YES;
+    
+    [self.connection cancel];
+    
+    [self.responseBlocks removeAllObjects];
+    self.responseBlocks = nil;
+    
+    [self.errorBlocks removeAllObjects];
+    self.errorBlocks = nil;
+    
+    [self.uploadProgressChangedHandlers removeAllObjects];
+    self.uploadProgressChangedHandlers = nil;
+    
+    [self.downloadProgressChangedHandlers removeAllObjects];
+    self.downloadProgressChangedHandlers = nil;
+    
+    for(NSOutputStream *stream in self.downloadStreams)
+      [stream close];
+    
+    [self.downloadStreams removeAllObjects];
+    self.downloadStreams = nil;
+    
+    self.authHandler = nil;    
+    self.mutableData = nil;
+    self.downloadedDataSize = 0;
+    
+    self.cacheHandlingBlock = nil;
+    
+    if(self.state == MKNetworkOperationStateExecuting)
+      self.state = MKNetworkOperationStateFinished; // This notifies the queue and removes the operation.
+    // if the operation is not removed, the spinner continues to spin, not a good UX
+    
+    [self endBackgroundTask];
   }
   [super cancel];
 }
@@ -1214,7 +1251,7 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
 
 -(void) showLocalNotification {
 #if TARGET_OS_IPHONE
-
+  
   if(self.localNotification) {
     
     [[UIApplication sharedApplication] presentLocalNotificationNow:self.localNotification];

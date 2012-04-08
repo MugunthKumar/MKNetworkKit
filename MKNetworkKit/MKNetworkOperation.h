@@ -26,9 +26,9 @@
 @class MKNetworkOperation;
 
 typedef enum {
-    MKNetworkOperationStateReady = 1,
-    MKNetworkOperationStateExecuting = 2,
-    MKNetworkOperationStateFinished = 3
+  MKNetworkOperationStateReady = 1,
+  MKNetworkOperationStateExecuting = 2,
+  MKNetworkOperationStateFinished = 3
 } MKNetworkOperationState;
 
 typedef void (^MKNKProgressBlock)(double progress);
@@ -45,10 +45,10 @@ typedef void (^MKNKAuthBlock)(NSURLAuthenticationChallenge* challenge);
 typedef NSString* (^MKNKEncodingBlock) (NSDictionary* postDataDict);
 
 typedef enum {
-    
-    MKNKPostDataEncodingTypeURL = 0, // default
-    MKNKPostDataEncodingTypeJSON,
-    MKNKPostDataEncodingTypePlist,
+  
+  MKNKPostDataEncodingTypeURL = 0, // default
+  MKNKPostDataEncodingTypeJSON,
+  MKNKPostDataEncodingTypePlist,
 } MKNKPostDataEncodingType;
 /*!
  @header MKNetworkOperation.h
@@ -67,10 +67,11 @@ typedef enum {
  *  Freezable operations are serialized when network connectivity is lost and performed when connection is restored
  */
 @interface MKNetworkOperation : NSOperation {
-    
-    @private
-    int _state;
-    BOOL _freezable;
+  
+@private
+  int _state;
+  BOOL _freezable;
+  MKNKPostDataEncodingType _postDataEncoding;
 }
 
 /*!
