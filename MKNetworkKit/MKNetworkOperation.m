@@ -76,7 +76,6 @@
              httpMethod:(NSString *)method;
 
 -(NSData*) bodyData;
--(BOOL) isCacheable;
 
 -(NSString*) encodedPostDataString;
 - (void) showLocalNotification;

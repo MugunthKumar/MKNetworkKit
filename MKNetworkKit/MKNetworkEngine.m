@@ -354,7 +354,9 @@ static NSOperationQueue *_sharedNetworkQueue;
     }];
     
     __block double expiryTimeInSeconds = 0.0f;    
-    
+
+    if([operation isCacheable]) {
+
     if(!forceReload) {
       NSData *cachedData = [self cachedDataForOperation:operation];
       if(cachedData) {
@@ -382,6 +384,7 @@ static NSOperationQueue *_sharedNetworkQueue;
     }
     
     dispatch_async(originalQueue, ^{
+      
       NSUInteger index = [_sharedNetworkQueue.operations indexOfObject:operation];
       if(index == NSNotFound) {
         
@@ -397,10 +400,18 @@ static NSOperationQueue *_sharedNetworkQueue;
         [queuedOperation updateHandlersFromOperation:operation];
       }
       
-      if([self.reachability currentReachabilityStatus] == NotReachable)
-        [self freezeOperations];
+      
     });
+    } else {
+      
+      [_sharedNetworkQueue addOperation:operation];
+    }
+
+    if([self.reachability currentReachabilityStatus] == NotReachable)
+      [self freezeOperations];
   });
+  
+  
 }
 
 - (MKNetworkOperation*)imageAtURL:(NSURL *)url onCompletion:(MKNKImageBlock) imageFetchedBlock
@@ -462,7 +473,7 @@ static NSOperationQueue *_sharedNetworkQueue;
       [[NSFileManager defaultManager] removeItemAtPath:filePath error:&error]; 
       ELog(error);
     }
-
+    
     [[self.memoryCache objectForKey:cacheKey] writeToFile:filePath atomically:YES];        
   }
   

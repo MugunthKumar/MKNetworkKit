@@ -514,6 +514,7 @@ typedef enum {
 
 // internal methods called by MKNetworkEngine only.
 // Don't touch
+-(BOOL) isCacheable;
 -(void) setCachedData:(NSData*) cachedData;
 -(void) setCacheHandler:(MKNKResponseBlock) cacheHandler;
 -(void) updateHandlersFromOperation:(MKNetworkOperation*) operation;
