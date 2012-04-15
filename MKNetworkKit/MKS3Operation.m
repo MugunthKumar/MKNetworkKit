@@ -34,11 +34,18 @@
   NSMutableString *stringToSign = [NSMutableString string];
   [stringToSign appendFormat:@"%@\n", self.readonlyRequest.HTTPMethod];
   
-  NSString *bodyMD5Hash = [[[NSString alloc] initWithData:[self bodyData] encoding:NSUTF8StringEncoding] md5];
-  NSString *contentTypeMD5Hash = [[self.readonlyRequest valueForHTTPHeaderField:@"Content-Type"] md5];
-  NSString *dateString = [[NSDate date] rfc1123String];
+  NSString *bodyString = [[NSString alloc] initWithData:[self bodyData] encoding:NSUTF8StringEncoding];
+  NSString *bodyMD5Hash = nil;
+  if([bodyString length] == 0) bodyMD5Hash = @""; else bodyMD5Hash = [bodyString md5];
   
-  [stringToSign appendFormat:@"%@\n%@\n%@\n%@\n", bodyMD5Hash, contentTypeMD5Hash, dateString];
+  [stringToSign appendFormat:@"%@\n", bodyMD5Hash];
+  
+  NSString *contentTypeMD5Hash = [[self.readonlyRequest valueForHTTPHeaderField:@"Content-Type"] md5];
+  if(!contentTypeMD5Hash) contentTypeMD5Hash = @"";
+  [stringToSign appendFormat:@"%@\n", contentTypeMD5Hash];
+  
+  NSString *dateString = [[NSDate date] rfc1123String];  
+  [stringToSign appendFormat:@"%@\n", dateString];
     
   NSString *pathToResource = [self.readonlyRequest.URL path];
   [stringToSign appendString:pathToResource];
