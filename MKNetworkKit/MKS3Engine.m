@@ -34,16 +34,19 @@
 
 -(void) prepareHeaders:(MKNetworkOperation *)operation {
 
-  
+  MKS3Operation *op = (MKS3Operation*) operation;
+  [op signWithAccessId:self.accessId secretKey:self.secretKey];
+  [super prepareHeaders:operation];
 }
 
 -(void) enumerateBucketsOnSucceeded:(ArrayBlock) succeededBlock 
                             onError:(ErrorBlock) errorBlock {
   
-  MKNetworkOperation *op = [self operationWithPath:@""];
+  MKS3Operation *op = (MKS3Operation*) [self operationWithPath:@""];  
   
   [op onCompletion:^(MKNetworkOperation *completedOperation) {
   
+    DLog(@"%@", [completedOperation responseString]);
     
   } onError:^(NSError *error) {
     

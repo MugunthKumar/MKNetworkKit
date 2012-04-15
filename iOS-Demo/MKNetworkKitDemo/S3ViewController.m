@@ -48,15 +48,16 @@
   return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
--(IBAction)loginButtonTapped:(id)sender {
+-(IBAction)enumBucketsButtonTapped:(id)sender {
   
   self.s3Engine = [[MKS3Engine alloc] initWithAccessId:self.accessIdTextField.text 
                                              secretKey:self.secretTextField.text];
   
-}
-
--(IBAction)enumBucketsButtonTapped:(id)sender {
-  
+  [self.s3Engine enumerateBucketsOnSucceeded:^(NSMutableArray *listOfModelBaseObjects) {
+    
+  } onError:^(NSError *engineError) {
+    DLog(@"%@", engineError);
+  }];
 }
 
 @end

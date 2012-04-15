@@ -39,8 +39,8 @@
   NSString *dateString = [[NSDate date] rfc1123String];
   
   [stringToSign appendFormat:@"%@\n%@\n%@\n%@\n", bodyMD5Hash, contentTypeMD5Hash, dateString];
-  
-  NSString *pathToResource = @"/";
+    
+  NSString *pathToResource = [self.readonlyRequest.URL path];
   [stringToSign appendString:pathToResource];
   
   NSString *signature = [[[stringToSign stringByEncryptingWithPassword:password] 
