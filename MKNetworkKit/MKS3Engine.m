@@ -26,14 +26,30 @@
     
     self.accessId = accessId;
     self.secretKey = secretKey;
+    [self registerOperationSubclass:[MKS3Operation class]];
   }
   
   return self;
 }
 
+-(void) prepareHeaders:(MKNetworkOperation *)operation {
+
+  
+}
+
 -(void) enumerateBucketsOnSucceeded:(ArrayBlock) succeededBlock 
                             onError:(ErrorBlock) errorBlock {
   
+  MKNetworkOperation *op = [self operationWithPath:@""];
+  
+  [op onCompletion:^(MKNetworkOperation *completedOperation) {
+  
+    
+  } onError:^(NSError *error) {
+    
+  }];
+  
+  [self enqueueOperation:op];
 }
 
 -(void) enumerateItemsInBucket:(NSString*) bucketId 

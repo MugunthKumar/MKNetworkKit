@@ -24,7 +24,9 @@
 //  THE SOFTWARE.
 
 #import "NSString+MKNetworkKitAdditions.h"
+
 #import <CommonCrypto/CommonDigest.h>
+#import <CommonCrypto/CommonHMAC.h>
 
 @implementation NSString (MKNetworkKitAdditions)
 
@@ -78,4 +80,18 @@
     return (!decodedString) ? @"" : [decodedString stringByReplacingOccurrencesOfString:@"+" withString:@" "];
 }
 
+-(NSString*) stringByEncryptingWithPassword:(NSString*) password {
+  
+  const char *cKey  = [password cStringUsingEncoding:NSASCIIStringEncoding];
+  const char *cData = [self cStringUsingEncoding:NSASCIIStringEncoding];
+  
+  unsigned char cHMAC[CC_SHA256_DIGEST_LENGTH];
+  
+  CCHmac(kCCHmacAlgSHA256, cKey, strlen(cKey), cData, strlen(cData), cHMAC);
+  
+  NSData *HMAC = [[NSData alloc] initWithBytes:cHMAC
+                                        length:sizeof(cHMAC)];
+  
+  return [HMAC base64EncodedString];
+}
 @end

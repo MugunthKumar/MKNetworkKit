@@ -469,6 +469,19 @@ typedef enum {
 -(NSString*) curlCommandLineString;
 
 /*!
+ *  @abstract Helper method to get the body data that will be appended to the operation
+ *  
+ *  @discussion
+ *	This method builds the body data that would be appended to the operation.
+ *  Calling this method doesn't append body data to the request yet.
+ *  You can use this method to compute hashes of the body to sign requests (if your server requires that)
+ * 
+ *  @seealso
+ *  MKS3Engine
+ */
+-(NSData*) bodyData;
+
+/*!
  *  @abstract Helper method to retrieve the contents as a NSString encoded using a specific string encoding
  *  
  *  @discussion

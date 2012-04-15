@@ -29,4 +29,5 @@
 + (NSString*) uniqueString;
 - (NSString*) urlEncodedString;
 - (NSString*) urlDecodedString;
+-(NSString*) stringByEncryptingWithPassword:(NSString*) password;
 @end

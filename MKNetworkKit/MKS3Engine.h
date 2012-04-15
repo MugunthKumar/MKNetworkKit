@@ -9,7 +9,6 @@
 #import "MKNetworkEngine.h"
 
 typedef void (^ArrayBlock)(NSMutableArray* listOfModelBaseObjects);
-typedef void (^DictionaryBlock)(NSMutableDictionary* dictionaryOfModelBaseObjects);
 typedef void (^ErrorBlock)(NSError* engineError);
 typedef void (^StatusBlock)(int statusCode);
 

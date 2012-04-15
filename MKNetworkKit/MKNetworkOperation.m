@@ -75,8 +75,6 @@
                  params:(NSMutableDictionary *)body
              httpMethod:(NSString *)method;
 
--(NSData*) bodyData;
-
 -(NSString*) encodedPostDataString;
 - (void) showLocalNotification;
 - (void) endBackgroundTask;
