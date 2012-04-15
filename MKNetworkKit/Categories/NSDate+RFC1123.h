@@ -22,4 +22,5 @@
  */
 -(NSString*)rfc1123String;
 
+-(NSString*)amazonDateFormatString;
 @end

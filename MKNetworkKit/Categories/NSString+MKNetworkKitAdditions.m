@@ -80,18 +80,18 @@
     return (!decodedString) ? @"" : [decodedString stringByReplacingOccurrencesOfString:@"+" withString:@" "];
 }
 
--(NSString*) stringByEncryptingWithPassword:(NSString*) password {
+-(NSData*) dataByEncryptingWithPassword:(NSString*) password {
   
-  const char *cKey  = [password cStringUsingEncoding:NSASCIIStringEncoding];
-  const char *cData = [self cStringUsingEncoding:NSASCIIStringEncoding];
+  NSData *keyData  = [password dataUsingEncoding:NSUTF8StringEncoding];
+  NSData *plainData = [self dataUsingEncoding:NSUTF8StringEncoding];
   
-  unsigned char cHMAC[CC_SHA256_DIGEST_LENGTH];
+  unsigned char digest[CC_SHA1_DIGEST_LENGTH] = {0};
   
-  CCHmac(kCCHmacAlgSHA256, cKey, strlen(cKey), cData, strlen(cData), cHMAC);
+	CCHmacContext hmacContext;
+	CCHmacInit(&hmacContext, kCCHmacAlgSHA1, keyData.bytes, keyData.length);
+	CCHmacUpdate(&hmacContext, plainData.bytes, plainData.length);
+	CCHmacFinal(&hmacContext, digest);
   
-  NSData *HMAC = [[NSData alloc] initWithBytes:cHMAC
-                                        length:sizeof(cHMAC)];
-  
-  return [HMAC base64EncodedString];
+  return [[NSData alloc] initWithBytes:digest length:CC_SHA1_DIGEST_LENGTH];
 }
 @end

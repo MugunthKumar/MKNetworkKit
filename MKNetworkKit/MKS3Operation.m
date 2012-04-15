@@ -43,18 +43,22 @@
   NSString *contentTypeMD5Hash = [[self.readonlyRequest valueForHTTPHeaderField:@"Content-Type"] md5];
   if(!contentTypeMD5Hash) contentTypeMD5Hash = @"";
   [stringToSign appendFormat:@"%@\n", contentTypeMD5Hash];
-  
-  NSString *dateString = [[NSDate date] rfc1123String];  
-  [stringToSign appendFormat:@"%@\n", dateString];
+
+  NSString *canonicalizedAmazonHeaders = @"";
+  [stringToSign appendFormat:@"%@\n", canonicalizedAmazonHeaders];
+
+  NSString *dateString = [[NSDate date] amazonDateFormatString];  
+  [stringToSign appendFormat:@"x-amz-date:%@\n", dateString];
     
   NSString *pathToResource = [self.readonlyRequest.URL path];
   [stringToSign appendString:pathToResource];
   
-  NSString *signature = [[[stringToSign stringByEncryptingWithPassword:password] 
-                          dataUsingEncoding:NSUTF8StringEncoding] base64EncodedString];
+  DLog(@"String to sign: \n--\n%@\n--\n", stringToSign);
+  NSString *signature = [[stringToSign dataByEncryptingWithPassword:password] base64EncodedString];
   
   NSString *awsAuthHeaderValue = [NSString stringWithFormat:@"AWS %@:%@", accessId, signature];
-  [self addHeaders:[NSDictionary dictionaryWithObject:awsAuthHeaderValue 
-                                               forKey:@"Authorization"]];
+  [self addHeaders:[NSDictionary dictionaryWithObjectsAndKeys:
+                    awsAuthHeaderValue, @"Authorization",
+                    dateString, @"x-amz-date", nil]];
 }
 @end

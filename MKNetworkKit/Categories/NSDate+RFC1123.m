@@ -76,4 +76,19 @@
     return [df stringFromDate:self];
 }
 
+
+-(NSString*)amazonDateFormatString
+{
+  static NSDateFormatter *df = nil;
+  if(!df)
+  {
+    static dispatch_once_t oncePredicate;
+    dispatch_once(&oncePredicate, ^{
+      df = [[NSDateFormatter alloc] init];
+      df.dateFormat = @"EEE',' dd MMM yyyy HH':'mm':'ss Z";
+    });
+  }
+  return [df stringFromDate:self];
+}
+
 @end
