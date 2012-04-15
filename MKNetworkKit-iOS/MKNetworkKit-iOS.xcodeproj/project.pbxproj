@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AB05CC2B153A7944008F2B6A /* MKS3Engine.h in Headers */ = {isa = PBXBuildFile; fileRef = AB05CC29153A7944008F2B6A /* MKS3Engine.h */; };
+		AB05CC2C153A7944008F2B6A /* MKS3Engine.m in Sources */ = {isa = PBXBuildFile; fileRef = AB05CC2A153A7944008F2B6A /* MKS3Engine.m */; };
 		AB3A308A148F099C00D06246 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB3A3089148F099C00D06246 /* Security.framework */; };
 		AB3A3098148F0A3B00D06246 /* NSDate+RFC1123.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3A3096148F0A3B00D06246 /* NSDate+RFC1123.h */; };
 		AB3A3099148F0A3B00D06246 /* NSDate+RFC1123.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3A3097148F0A3B00D06246 /* NSDate+RFC1123.m */; };
@@ -31,6 +33,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		AB05CC29153A7944008F2B6A /* MKS3Engine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MKS3Engine.h; path = ../../MKNetworkKit/MKS3Engine.h; sourceTree = "<group>"; };
+		AB05CC2A153A7944008F2B6A /* MKS3Engine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MKS3Engine.m; path = ../../MKNetworkKit/MKS3Engine.m; sourceTree = "<group>"; };
 		AB3A3089148F099C00D06246 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		AB3A3096148F0A3B00D06246 /* NSDate+RFC1123.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+RFC1123.h"; sourceTree = "<group>"; };
 		AB3A3097148F0A3B00D06246 /* NSDate+RFC1123.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+RFC1123.m"; sourceTree = "<group>"; };
@@ -105,6 +109,8 @@
 				ABB5C2A9148B3B360056D3E9 /* Categories */,
 				ABB5C2B0148B3B360056D3E9 /* MKNetworkEngine.h */,
 				ABB5C2B1148B3B360056D3E9 /* MKNetworkEngine.m */,
+				AB05CC29153A7944008F2B6A /* MKS3Engine.h */,
+				AB05CC2A153A7944008F2B6A /* MKS3Engine.m */,
 				ABB5C2B2148B3B360056D3E9 /* MKNetworkKit.h */,
 				ABB5C2B3148B3B360056D3E9 /* MKNetworkOperation.h */,
 				ABB5C2B4148B3B360056D3E9 /* MKNetworkOperation.m */,
@@ -174,6 +180,7 @@
 				ABB5C2C4148B3B360056D3E9 /* Reachability.h in Headers */,
 				AB3A3098148F0A3B00D06246 /* NSDate+RFC1123.h in Headers */,
 				ABDC97461498A6DE0034CEBE /* NSData+Base64.h in Headers */,
+				AB05CC2B153A7944008F2B6A /* MKS3Engine.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -236,6 +243,7 @@
 				ABB5C2C5148B3B360056D3E9 /* Reachability.m in Sources */,
 				AB3A3099148F0A3B00D06246 /* NSDate+RFC1123.m in Sources */,
 				ABDC97471498A6DE0034CEBE /* NSData+Base64.m in Sources */,
+				AB05CC2C153A7944008F2B6A /* MKS3Engine.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
