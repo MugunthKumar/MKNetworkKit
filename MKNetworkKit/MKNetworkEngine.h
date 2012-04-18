@@ -42,6 +42,17 @@
 @interface MKNetworkEngine : NSObject
 
 /*!
+ *  @abstract Initializes your network engine with a hostname
+ *  
+ *  @discussion
+ *	Creates an engine for a given host name
+ *  The hostname parameter is optional
+ *  The hostname, if not null, initializes a Reachability notifier.
+ *  Network reachability notifications are automatically taken care of by MKNetworkEngine
+ *  
+ */
+- (id) initWithHostName:(NSString*) hostName;
+/*!
  *  @abstract Initializes your network engine with a hostname and custom header fields
  *  
  *  @discussion
@@ -54,6 +65,19 @@
  */
 - (id) initWithHostName:(NSString*) hostName customHeaderFields:(NSDictionary*) headers;
 
+/*!
+ *  @abstract Initializes your network engine with a hostname
+ *  
+ *  @discussion
+ *	Creates an engine for a given host name
+ *  The hostname parameter is optional
+ *  The apiPath paramter is optional
+ *  The apiPath is prefixed to every call to operationWithPath: You can use this method if your server's API location is not at the root (/)
+ *  The hostname, if not null, initializes a Reachability notifier.
+ *  Network reachability notifications are automatically taken care of by MKNetworkEngine
+ *  
+ */
+- (id) initWithHostName:(NSString*) hostName apiPath:(NSString*) apiPath customHeaderFields:(NSDictionary*) headers;
 /*!
  *  @abstract Creates a simple GET Operation with a request URL
  *  
@@ -206,6 +230,26 @@
  *  You normally initialize an engine with its hostname using the initWithHostName:customHeaders: method
  */
 @property (readonly, strong, nonatomic) NSString *readonlyHostName;
+
+/*!
+ *  @abstract Port Number that should be used by URL creating factory methods
+ *  @property portNumber
+ *  
+ *  @discussion
+ *	Set a port number for your engine if your remote URL mandates it.
+ *  This property is optional and you DON'T have to specify the default HTTP port 80
+ */
+@property (assign, nonatomic) int portNumber;
+
+/*!
+ *  @abstract Sets an api path if it is different from root URL
+ *  @property apiPath
+ *  
+ *  @discussion
+ *	You can use this method to set a custom path to the API location if your server's API path is different from root (/) 
+ *  This property is optional
+ */
+@property (strong, nonatomic) NSString* apiPath;
 
 /*!
  *  @abstract Handler that you implement to monitor reachability changes
