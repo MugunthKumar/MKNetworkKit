@@ -311,6 +311,25 @@ typedef enum {
 -(void) addHeaders:(NSDictionary*) headersDictionary;
 
 /*!
+ *  @abstract Sets the authorization header after prefixing it with a given auth type
+ *  
+ *  @discussion
+ *	If you need to set the HTTP Authorization header, you can use this convinience method.
+ *  This method internally calls addHeaders:
+ *  The authType parameter is a string that you can prefix to your auth token to tell your server what kind of authentication scheme you want to use. HTTP Basic Authentication uses the string "Basic" for authType
+ *  To use HTTP Basic Authentication, consider using the method setUsername:password:basicAuth: instead.
+ *
+ *  Example
+ *  [op setToken:@"abracadabra" forAuthType:@"Token"] will set the header value to 
+ *  "Authorization: Token abracadabra"
+ 
+ *  @seealso
+ *  setUsername:password:basicAuth:
+ *  addHeaders:
+ */
+-(void) setAuthorizationHeaderValue:(NSString*) token forAuthType:(NSString*) authType;
+
+/*!
  *  @abstract Attaches a file to the request
  *  
  *  @discussion

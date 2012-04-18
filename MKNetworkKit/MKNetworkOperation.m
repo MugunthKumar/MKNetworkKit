@@ -498,7 +498,7 @@
   [self setUsername:username password:password];
   NSString *base64EncodedString = [[[NSString stringWithFormat:@"%@:%@", self.username, self.password] dataUsingEncoding:NSUTF8StringEncoding] base64EncodedString];
   
-  [self addHeaders:[NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"Basic %@", base64EncodedString] forKey:@"Authorization"]];
+  [self setAuthorizationHeaderValue:base64EncodedString forAuthType:@"Basic"];
 }
 
 -(void) onCompletion:(MKNKResponseBlock) response onError:(MKNKErrorBlock) error {
@@ -597,6 +597,11 @@
   }];
 }
 
+-(void) setAuthorizationHeaderValue:(NSString*) token forAuthType:(NSString*) authType {
+  
+  [self.request setValue:[NSString stringWithFormat:@"%@ %@", authType, token] 
+      forHTTPHeaderField:@"Authorization"];
+}
 /*
  Printing a MKNetworkOperation object is printed in curl syntax
  */
