@@ -369,7 +369,7 @@ typedef enum {
  *  The method has a side effect. It changes the HTTPMethod to "POST" regardless of what it was before.
  *  It also changes the post format to multipart/form-data
  */
--(void) addData:(NSData*) data forKey:(NSString*) key mimeType:(NSString*) mimeType;
+-(void) addData:(NSData*) data forKey:(NSString*) key mimeType:(NSString*) mimeType fileName:(NSString*) fileName;
 
 /*!
  *  @abstract Block Handler for completion and error

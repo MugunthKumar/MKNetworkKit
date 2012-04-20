@@ -667,17 +667,18 @@
 
 -(void) addData:(NSData*) data forKey:(NSString*) key {
   
-  [self addData:data forKey:key mimeType:@"application/octet-stream"];
+  [self addData:data forKey:key mimeType:@"application/octet-stream" fileName:@"file"];
 }
 
--(void) addData:(NSData*) data forKey:(NSString*) key mimeType:(NSString*) mimeType {
+-(void) addData:(NSData*) data forKey:(NSString*) key mimeType:(NSString*) mimeType fileName:(NSString*) fileName {
   
   [self.request setHTTPMethod:@"POST"];
   
   NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
                         data, @"data",
                         key, @"name",
-                        mimeType, @"mimetype",     
+                        mimeType, @"mimetype",
+                        fileName, @"filename",     
                         nil];
   
   [self.dataToBePosted addObject:dict];    
@@ -715,7 +716,7 @@
   [self.fieldsToBePosted enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
     
     NSString *thisFieldString = [NSString stringWithFormat:
-                                 @"--%@\r\nContent-Disposition: form-data; name=\"%@\"\r\n\r\n%@\r\n",
+                                     @"--%@\r\nContent-Disposition: form-data; name=\"%@\"\r\n\r\n%@",
                                  boundary, key, obj];
     
     [body appendData:[thisFieldString dataUsingEncoding:[self stringEncoding]]];
@@ -744,7 +745,7 @@
                                  @"--%@\r\nContent-Disposition: form-data; name=\"%@\"; filename=\"%@\"\r\nContent-Type: %@\r\nContent-Transfer-Encoding: binary\r\n\r\n",
                                  boundary, 
                                  [thisDataObject objectForKey:@"name"], 
-                                 [thisDataObject objectForKey:@"name"], 
+                                 [thisDataObject objectForKey:@"filename"], 
                                  [thisDataObject objectForKey:@"mimetype"]];
     
     [body appendData:[thisFieldString dataUsingEncoding:[self stringEncoding]]];         
