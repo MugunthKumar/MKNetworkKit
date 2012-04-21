@@ -642,7 +642,7 @@
         [displayString appendFormat:@" %@ \"%@=%@\"", option, key, obj];    
       }];
     } else {
-      [displayString appendFormat:@" -d %@", [self encodedPostDataString]];
+      [displayString appendFormat:@" -d \"%@\"", [self encodedPostDataString]];
     }
     
     
