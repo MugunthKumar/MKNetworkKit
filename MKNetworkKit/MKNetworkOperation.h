@@ -49,6 +49,7 @@ typedef enum {
   MKNKPostDataEncodingTypeURL = 0, // default
   MKNKPostDataEncodingTypeJSON,
   MKNKPostDataEncodingTypePlist,
+  MKNKPostDataEncodingTypeCustom
 } MKNKPostDataEncodingType;
 /*!
  @header MKNetworkOperation.h

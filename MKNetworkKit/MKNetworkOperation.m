@@ -226,7 +226,7 @@
 -(void) setCustomPostDataEncodingHandler:(MKNKEncodingBlock) postDataEncodingHandler forType:(NSString*) contentType {
   
   NSString *charset = (__bridge NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(self.stringEncoding));
-  
+  self.postDataEncoding = MKNKPostDataEncodingTypeCustom;
   self.postDataEncodingHandler = postDataEncodingHandler;
   [self.request setValue:
    [NSString stringWithFormat:@"%@; charset=%@", contentType, charset]
