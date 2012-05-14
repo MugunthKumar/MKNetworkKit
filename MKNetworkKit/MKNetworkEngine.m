@@ -437,8 +437,8 @@ static NSOperationQueue *_sharedNetworkQueue;
 
     if([self.reachability currentReachabilityStatus] == NotReachable)
       [self freezeOperations];
+    dispatch_release(originalQueue);
   });
-  dispatch_release(originalQueue);
 }
 
 - (MKNetworkOperation*)imageAtURL:(NSURL *)url onCompletion:(MKNKImageBlock) imageFetchedBlock
