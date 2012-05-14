@@ -367,6 +367,7 @@ static NSOperationQueue *_sharedNetworkQueue;
   NSParameterAssert(operation != nil);
   // Grab on to the current queue (We need it later)
   dispatch_queue_t originalQueue = dispatch_get_current_queue();
+  dispatch_retain(originalQueue);
   // Jump off the main thread, mainly for disk cache reading purposes
   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
     [operation setCacheHandler:^(MKNetworkOperation* completedCacheableOperation) {
@@ -437,8 +438,7 @@ static NSOperationQueue *_sharedNetworkQueue;
     if([self.reachability currentReachabilityStatus] == NotReachable)
       [self freezeOperations];
   });
-  
-  
+  dispatch_release(originalQueue);
 }
 
 - (MKNetworkOperation*)imageAtURL:(NSURL *)url onCompletion:(MKNKImageBlock) imageFetchedBlock
