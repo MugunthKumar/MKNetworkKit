@@ -16,7 +16,7 @@
     if(value_ == nil)
         return nil;    
     
-    __strong static NSDateFormatter *rfc1123 = nil;
+    static NSDateFormatter *rfc1123 = nil;
     if (!rfc1123) {
         static dispatch_once_t oncePredicate;
         dispatch_once(&oncePredicate, ^{

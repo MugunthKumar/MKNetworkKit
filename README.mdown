@@ -1,6 +1,6 @@
-This is version 0.85 of MKNetworkKit. Read the <a href="http://mk.sg/8w"> blog post</a> for more. The master branch is a live working branch. Expect bugs!(?). 
+This is version 0.85 of MKNetworkKit. Read the [blog post](http://mk.sg/8w) for more. The master branch is a live working branch. Expect bugs!(?). Nah, most bugs are squashed already. Special thanks to all of you contributors.
 
-If you are too chicken, you can always pickup the latest stable code at the tag <a href="https://github.com/MugunthKumar/MKNetworkKit/zipball/v0.83"> v0.83 </a>
+If you are too chicken, you can always pickup the latest stable code at the tag [v0.83](https://github.com/MugunthKumar/MKNetworkKit/zipball/v0.83)
 
 The latest stable code is still not fully testing on Mac, though iOS is complete. Caching responses and invalidation of cache is not implemented the right way for the Mac target. MKNetworkKit is ready for production use on iOS apps.
 
@@ -29,6 +29,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 ---
+###Attribution free licensing
+In case you need attribution free licensing for MKNetworkKit, you can buy one from [my license store](http://blog.mugunthkumar.com/license-store/).
+
 ###Why MKNetworkKit?
 
 MKNetworkKit is inspired by the other two popular network frameworks ASIHTTPRequest and AFNetworking.
@@ -48,7 +51,7 @@ MKNetworkKit's goal was to make it as feature rich as ASIHTTPRequest yet simple 
 
 ---
 ###How to use
-Read the <a href="http://mk.sg/8w"> blog post</a> for more.
+Read the [blog post](http://mk.sg/8w) for more.
 
 ---
 ### Documentation
@@ -81,7 +84,6 @@ Gentle Bytes appledoc@gentlebytes.com
 ###TODO
 
 * Fix and test Client certificate/Server trust auth
-* Scheduling in current runloop
 * Test streaming
 * Test multiple file attachments in a single request
 
@@ -96,5 +98,6 @@ I'll be working on this soon. But you can start forking it and getting it right
 * Frozen operations don't report progress/completion handlers back to the calling code. (Before 1.0)
 
 ---
-###A note on licensing
-Attribution free licensing available upon request. Contact me at <a href="mailto:mknetworkkit@mk.sg"> mknetworkkit@mk.sg </a>
+
+###Contract work
+I run a single man consulting and training company, Steinlogic and I'm available for contracting. If you want to make your web services layer of your iOS app super fast and give an unique experience to your users, we can help. Feel free to contact me through our [web page](http://blog.mugunthkumar.com/hire-me/). We also offer consulting services where I make the web services layer and other developers from developing countries help you with polishing the UI.
