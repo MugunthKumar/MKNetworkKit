@@ -100,4 +100,4 @@ I'll be working on this soon. But you can start forking it and getting it right
 ---
 
 ###Contract work
-I run a single man consulting and training company, Steinlogic and I'm available for contracting. If you want to make your web services layer of your iOS app super fast and give an unique experience to your users, we can help. Feel free to contact me through our [web page](http://blog.mugunthkumar.com/hire-me/). We also offer consulting services where I make the web services layer and other developers from developing countries help you with polishing the UI.
+I run a single man consulting and training company, Steinlogic and I'm available for contracting. If you want to make the web services layer of your iOS app super fast and responsive and give an unique experience to your users, we can help. Feel free to contact me through our [web page](http://blog.mugunthkumar.com/hire-me/). We also offer consulting services where we make the web services layer and other lower cost developers from developing countries help you with polishing the UI. Email us and we will take it up from there.
