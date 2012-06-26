@@ -945,7 +945,7 @@
       NSData *certData = [[NSData alloc] initWithContentsOfFile:self.clientCertificate];
       
 #warning method not implemented. Don't use client certicate authentication for now.
-      SecIdentityRef myIdentity;  // ???
+      SecIdentityRef myIdentity = nil;  // ???
       
       SecCertificateRef myCert = SecCertificateCreateWithData(NULL, (__bridge CFDataRef)certData);
       SecCertificateRef certArray[1] = { myCert };
