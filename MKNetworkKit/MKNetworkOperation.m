@@ -1232,14 +1232,14 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
 
 -(id) responseJSON {
   
-  if([NSJSONSerialization class]) {
+  if(NSClassFromString(@"NSJSONSerialization")) {
     if([self responseData] == nil) return nil;
     NSError *error = nil;
     id returnValue = [NSJSONSerialization JSONObjectWithData:[self responseData] options:0 error:&error];    
     if(error) DLog(@"JSON Parsing Error: %@", error);
     return returnValue;
   } else {
-    DLog("No valid JSON Serializers found");
+    DLog("You are running on iOS 4. Subclass MKNO and override responseJSON to support custom JSON parsing");
     return [self responseString];
   }
 }
