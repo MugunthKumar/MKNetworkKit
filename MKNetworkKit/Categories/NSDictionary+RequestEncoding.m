@@ -47,22 +47,27 @@
 
 
 -(NSString*) jsonEncodedKeyValueString {
-    
-    if([NSJSONSerialization class]) {
+
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < 50000
+      if(NSClassFromString(@"NSJSONSerialization")) {
         NSError *error = nil;
-        NSData *data = [NSJSONSerialization dataWithJSONObject:self 
-                                                       options:0 // non-pretty printing 
+        NSData *data = [NSJSONSerialization dataWithJSONObject:self
+                                                       options:0 // non-pretty printing
                                                          error:&error];
         if(error)
             DLog(@"JSON Parsing Error: %@", error);
-        
+
         return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     } else {
-        
-        DLog(@"JSON encoder missing, falling back to URL encoding");
-        return [self urlEncodedKeyValueString];
+      DLog(@"JSON encoder missing, falling back to URL encoding");
+      return [self urlEncodedKeyValueString];
     }
+#else
+    DLog(@"JSON encoder missing, falling back to URL encoding");
+    return [self urlEncodedKeyValueString];
+#endif
 }
+
 
 -(NSString*) plistEncodedKeyValueString {
     
