@@ -183,15 +183,23 @@
       }
         break;
       case MKNKPostDataEncodingTypeJSON: {
-        if([NSJSONSerialization class]) {
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < 50000
+        if(NSClassFromString(@"NSJSONSerialization")) {
+        [self.request setValue:
+         [NSString stringWithFormat:@"application/json; charset=%@", charset]
+            forHTTPHeaderField:@"Content-Type"];
+        }
+        else {
           [self.request setValue:
-           [NSString stringWithFormat:@"application/json; charset=%@", charset]
-              forHTTPHeaderField:@"Content-Type"];
-        } else {
-          [self.request setValue:
+             [NSString stringWithFormat:@"application/x-www-form-urlencoded; charset=%@", charset]
+                forHTTPHeaderField:@"Content-Type"];
+
+        }
+#else
+        [self.request setValue:
            [NSString stringWithFormat:@"application/x-www-form-urlencoded; charset=%@", charset]
               forHTTPHeaderField:@"Content-Type"];
-        }
+#endif
       }
         break;
       case MKNKPostDataEncodingTypePlist: {
@@ -1230,18 +1238,18 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
 
 -(id) responseJSON {
   
-  if(NSClassFromString(@"NSJSONSerialization")) {
-    if([self responseData] == nil) return nil;
-    NSError *error = nil;
-    id returnValue = [NSJSONSerialization JSONObjectWithData:[self responseData] options:0 error:&error];    
-    if(error) DLog(@"JSON Parsing Error: %@", error);
-    return returnValue;
-  } else {
-    DLog("You are running on iOS 4. Subclass MKNO and override responseJSON to support custom JSON parsing");
-    return [self responseString];
-  }
+    if(NSClassFromString(@"NSJSONSerialization")) {
+      if([self responseData] == nil) return nil;
+      NSError *error = nil;
+      id returnValue = [NSClassFromString(@"NSJSONSerialization") JSONObjectWithData:[self responseData] options:0 error:&error];
+      if(error) DLog(@"JSON Parsing Error: %@", error);
+      return returnValue;
+    }
+    else {
+      DLog("You are running on iOS 4. Subclass MKNO and override responseJSON to support custom JSON parsing");
+      return [self responseString];
+    }
 }
-
 
 #pragma mark -
 #pragma mark Overridable methods
