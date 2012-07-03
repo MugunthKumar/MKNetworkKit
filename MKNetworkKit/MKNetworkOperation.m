@@ -183,7 +183,6 @@
       }
         break;
       case MKNKPostDataEncodingTypeJSON: {
-#if __IPHONE_OS_VERSION_MAX_ALLOWED < 50000
         if(NSClassFromString(@"NSJSONSerialization")) {
         [self.request setValue:
          [NSString stringWithFormat:@"application/json; charset=%@", charset]
@@ -195,11 +194,6 @@
                 forHTTPHeaderField:@"Content-Type"];
 
         }
-#else
-        [self.request setValue:
-           [NSString stringWithFormat:@"application/x-www-form-urlencoded; charset=%@", charset]
-              forHTTPHeaderField:@"Content-Type"];
-#endif
       }
         break;
       case MKNKPostDataEncodingTypePlist: {
@@ -1092,7 +1086,7 @@
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
   
-  if ([self.mutableData length] == 0 || [self.downloadStreams count] > 0) {
+  if (self.downloadedDataSize == 0) {
     // This is the first batch of data
     // Check for a range header and make changes as neccesary
     NSString *rangeString = [[self request] valueForHTTPHeaderField:@"Range"];
