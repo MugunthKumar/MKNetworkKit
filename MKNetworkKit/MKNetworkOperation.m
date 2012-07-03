@@ -1094,7 +1094,7 @@
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
   
-  if ([self.mutableData length] == 0 || [self.downloadStreams count] > 0) {
+  if (self.downloadedDataSize == 0) {
     // This is the first batch of data
     // Check for a range header and make changes as neccesary
     NSString *rangeString = [[self request] valueForHTTPHeaderField:@"Range"];
