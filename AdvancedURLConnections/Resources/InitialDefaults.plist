@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>GetURLText</key>
+	<string>http://www.cacert.org/images/cacert4.png</string>
+	<key>CredentialsURLText</key>
+	<string>http://www.cacert.org/certs/root.der</string>
+	<key>ServerValidation</key>
+	<integer>0</integer>
+	<key>CredentialPersistence</key>
+	<integer>0</integer>
+</dict>
+</plist>

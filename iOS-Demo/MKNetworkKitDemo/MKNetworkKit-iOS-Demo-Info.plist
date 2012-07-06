@@ -9,7 +9,10 @@
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIconFiles</key>
-	<array/>
+	<array>
+		<string>Icon.png</string>
+		<string>Icon@2x.png</string>
+	</array>
 	<key>CFBundleIdentifier</key>
 	<string>com.steinlogic.mknetworkkitdemo</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -28,6 +31,8 @@
 	<true/>
 	<key>UIMainStoryboardFile</key>
 	<string>MainStoryboard</string>
+	<key>UIPrerenderedIcon</key>
+	<true/>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>

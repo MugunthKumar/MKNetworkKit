@@ -22,6 +22,11 @@
 		AB74B1111467E5790088BF09 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB74B1101467E5790088BF09 /* CFNetwork.framework */; };
 		AB74B1131467E5850088BF09 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB74B1121467E5850088BF09 /* SystemConfiguration.framework */; };
 		AB80BBB6148B672100B6DC2A /* AuthTestEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = AB80BBB5148B672100B6DC2A /* AuthTestEngine.m */; };
+		ABA496E215A6956100B57B91 /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = ABA496DD15A6956100B57B91 /* Icon-72.png */; };
+		ABA496E315A6956100B57B91 /* Icon-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = ABA496DE15A6956100B57B91 /* Icon-72@2x.png */; };
+		ABA496E415A6956100B57B91 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = ABA496DF15A6956100B57B91 /* Icon.png */; };
+		ABA496E515A6956100B57B91 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = ABA496E015A6956100B57B91 /* Icon@2x.png */; };
+		ABA496E615A6956100B57B91 /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = ABA496E115A6956100B57B91 /* iTunesArtwork */; };
 		ABB5C2C8148B3E230056D3E9 /* SampleImage.jpg in Resources */ = {isa = PBXBuildFile; fileRef = ABB5C2C7148B3E230056D3E9 /* SampleImage.jpg */; };
 		ABB5C2CA148B3F370056D3E9 /* libMKNetworkKit-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ABB5C2C9148B3F370056D3E9 /* libMKNetworkKit-iOS.a */; };
 		ABC25179146802B900264474 /* YahooEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = ABC25178146802B900264474 /* YahooEngine.m */; };
@@ -57,6 +62,11 @@
 		AB74B1121467E5850088BF09 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		AB80BBB4148B672100B6DC2A /* AuthTestEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AuthTestEngine.h; sourceTree = "<group>"; };
 		AB80BBB5148B672100B6DC2A /* AuthTestEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AuthTestEngine.m; sourceTree = "<group>"; };
+		ABA496DD15A6956100B57B91 /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72.png"; sourceTree = "<group>"; };
+		ABA496DE15A6956100B57B91 /* Icon-72@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72@2x.png"; sourceTree = "<group>"; };
+		ABA496DF15A6956100B57B91 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
+		ABA496E015A6956100B57B91 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
+		ABA496E115A6956100B57B91 /* iTunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; path = iTunesArtwork; sourceTree = "<group>"; };
 		ABB5C2C7148B3E230056D3E9 /* SampleImage.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = SampleImage.jpg; path = ../SampleImage.jpg; sourceTree = "<group>"; };
 		ABB5C2C9148B3F370056D3E9 /* libMKNetworkKit-iOS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libMKNetworkKit-iOS.a"; path = "../MKNetworkKit-iOS/build/Release-iphoneos/libMKNetworkKit-iOS.a"; sourceTree = "<group>"; };
 		ABC25177146802B900264474 /* YahooEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YahooEngine.h; sourceTree = "<group>"; };
@@ -126,6 +136,11 @@
 		ABF149B91467F312008B20C9 /* MKNetworkKit-iOS-Demo */ = {
 			isa = PBXGroup;
 			children = (
+				ABA496DD15A6956100B57B91 /* Icon-72.png */,
+				ABA496DE15A6956100B57B91 /* Icon-72@2x.png */,
+				ABA496DF15A6956100B57B91 /* Icon.png */,
+				ABA496E015A6956100B57B91 /* Icon@2x.png */,
+				ABA496E115A6956100B57B91 /* iTunesArtwork */,
 				ABF149BA1467F312008B20C9 /* AppDelegate.h */,
 				ABF149BB1467F312008B20C9 /* AppDelegate.m */,
 				ABF149BC1467F312008B20C9 /* InfoPlist.strings */,
@@ -214,6 +229,11 @@
 				ABF149CA1467F312008B20C9 /* MainStoryboard.storyboard in Resources */,
 				ABB5C2C8148B3E230056D3E9 /* SampleImage.jpg in Resources */,
 				AB0AEA13149B2B46007327D6 /* client.p12 in Resources */,
+				ABA496E215A6956100B57B91 /* Icon-72.png in Resources */,
+				ABA496E315A6956100B57B91 /* Icon-72@2x.png in Resources */,
+				ABA496E415A6956100B57B91 /* Icon.png in Resources */,
+				ABA496E515A6956100B57B91 /* Icon@2x.png in Resources */,
+				ABA496E615A6956100B57B91 /* iTunesArtwork in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
