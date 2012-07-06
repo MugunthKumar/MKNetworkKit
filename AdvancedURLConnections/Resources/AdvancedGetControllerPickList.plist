@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<string>http://www.cacert.org/images/cacert4.png</string>
+	<string>https://www.cacert.org/images/cacert4.png</string>
+	<string>http://victim2.local./Test.png</string>
+	<string>https://victim2.local./Test.png</string>
+	<string>http://victim2.local./protected/Test.png</string>
+	<string>https://victim2.local./protected/Test.png</string>
+	<string>https://victim2.local./cert-protected/Test.png</string>
+	<string>http://unpbook.com/small.gif</string>
+</array>
+</plist>

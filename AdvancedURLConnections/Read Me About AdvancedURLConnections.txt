@@ -1,0 +1,287 @@
+Read Me About AdvancedURLConnections
+====================================
+1.2
+
+AdvancedURLConnections demonstrates various advanced networking techniques with NSURLConnection.  Specifically, it demonstrates how to respond to authentication challenges, how to modify the default server trust evaluation (for example, to support a server with a self-signed certificate), and how to provide client identities.
+
+AdvancedURLConnections requires features that were introduced in iOS 3.0
+
+Packing List
+------------
+The sample contains the following items:
+
+o Read Me About AdvancedURLConnections.txt -- This file.
+o AdvancedURLConnections.xcodeproj -- An Xcode project for the sample.
+o Resources -- The project nib, images, and so on.
+o Ancillary Code -- A directory full of code that's not directly relevant to the main function of this sample.
+o AdvancedGetController.[h,m,xib] -- A view controller that manages the Get tab.  This is a relatively dull application of NSURLConnection.  What's interesting here is how it passes the authentication challenges off to the challenge handlers.
+o ChallengeHandler.[h,m] -- An abstract base class for handling NSURLConnection authentication challenges.
+o ChallengeHandlers -- A directory containing a number of concrete subclasses of ChallengeHandler for handling specific types of authentication challenges.
+o UI Building Blocks -- A directory containing general purpose user interface elements used by other parts of the program, most notably the various challenge handlers.
+o CredentialsController.[h,m,xib] -- A view controller that manages the Credentials tab.  This lets you manage credentials so as to test various features implemented by the AdvancedGetController.
+o DebugController.[h,m,xib] -- A view controller that manages the Debug tab.
+o Credentials.[h,m] -- A singleton model object that vends credentials such as certificates and identities.
+o DebugOptions.[h,m] -- A singleton model object that vends our debugging preferences.
+
+Using the Sample
+----------------
+Testing all of the functionality within AdvancedURLConnections requires some complex server setup (see "Server Configuration", below).  However, you can test some basic functionality without setting up a server at all.
+
+1. Run the program on a device or simulator.
+
+2. Switch to the Get tab.
+
+3. Tap in the URL field and pick the first item on the pick list ("http://www.cacert.org/images/cacert4.png").  The program will download and display an image.
+
+4. Tap in the URL field and pick the second item on the pick list ("https://www.cacert.org/images/cacert4.png").  The download will fail because CAcert's root certificate is not trusted by default.
+
+5. Switch to the Credentials tab.
+
+6. Tap in the URL field and pick the first item on the pick list ("http://www.cacert.org/certs/root.der").  The program will download the CAcert's root certificate and offer to import it.  Tap Import to do so.
+
+7. Switch to the Debug tab.
+
+8. Tap on "Trust Imported Certificates" in the "TLS Server Validation" section of the table.
+
+9. Now switch back to the Get tab.
+
+10. Tap the Get button.
+
+This time the download succeeds because the program now trusts CAcert's root certificate.
+
+IMPORTANT: The above will work on both the simulator and a real device.  However, some features of this sample only work on a real device.  See the "Caveats" section, below, for details.
+
+Building the Sample
+-------------------
+The sample was built using Xcode 3.2.5 on Mac OS X 10.6.5 with iOS SDK 4.0.  You should be able to just open the project and choose Build from the Build menu.  The resulting program should be compatible with all devices running iOS 3.2 and later.  The bulk of my testing was done with an iPad running iOS 3.2.1 and an iPhone 3GS running iOS 4.2.1.
+
+How It Works
+------------
+To get started with this sample you should have a basic understanding of how the NSURLConnection API works.  If you're not already familiar with downloading data via NSURLConnection, you should look at the SimpleURLConnections sample code.
+
+<http://developer.apple.com/library/ios/#samplecode/SimpleURLConnections/>
+
+The differences between the AdvancedGetController and the equivalent code in SimpleURLConnections is quite small.  The critical change is that AdvancedGetController implements the authentication challenge delegate methods (-connection:canAuthenticateAgainstProtectionSpace: and -connection:didReceiveAuthenticationChallenge:) using the ChallengeHandler class and its various concrete subclasses.
+
+The ChallengeHandler class maintains a registry of subclasses that are capable of handling challenges.  The registry is keyed off the authentication method (NSString) associated with the protection space (NSURLProtectionSpace) associated with the challenge (NSURLAuthenticationChallenge).  AdvancedGetController uses this in two ways:
+
+o -[AdvancedGetController connection:canAuthenticateAgainstProtectionSpace:] calls +[ChallengeHandler supportsProtectionSpace:] to determine whether there's a handler for a specific challenge.
+
+o -[AdvancedGetController connection:didReceiveAuthenticationChallenge:] calls +[ChallengeHandler handlerForChallenge:parentViewController:] to instantiate a challenge handler for the challenge.
+
+It then holds on to the challenge handler while the challenge is running.  When the challenge handler is done, it calls its -challengeHandlerDidFinish: delegate method.  AdvancedGetController implements that method and, in response, resolves the challenge (it calls -[ChallengeHandler resolveChallenge], which applies the credentials to the challenge) and then forgets about the current challenge and waits for the next one (or for the connection to start running normally).
+
+Each concrete subclass of ChallengeHandler is responsible for handling one specific type of challenge.  The current handlers include:
+
+o AuthenticationChallengeHandler -- This handles HTTP authentication challenges (authentication methods NSURLAuthenticationMethodDefault, NSURLAuthenticationMethodHTTPBasic, NSURLAuthenticationMethodHTTPDigest and NSURLAuthenticationMethodNTLM) from both origin servers and proxies.
+
+o ClientIdentityChallengeHandler -- This handles HTTPS client identity challenges (authentication method NSURLAuthenticationMethodClientCertificate), which occur when the server requires that the client supply an identity.
+
+o ServerTrustChallengeHandler -- This handles HTTPS server trust challenges (authentication method NSURLAuthenticationMethodServerTrust) which allows the client to override the default HTTPS TLS server trust evaluation (for example, to allow a specific self-signed certificate).
+
+The first two challenge handlers have an associated view controller in the "UI Building Blocks" directory.  These do the actual work of running the UI presented in response to the challenge.  The challenge handler itself is basically glue code that attaches these view controllers to the AdvancedGetController.  AdvancedGetController can't use these view controllers directly because not all challenge handling UI is done by way of a view controller; for example, the ServerTrustChallengeHandler does all of its work using UIAlertViews.
+
+Server Configuration
+--------------------
+Testing AdvancedURLConnections is tricky because it requires you to have access to a server that presents all of the authentication challenges handled by the program.  I did the bulk of my testing with the personal Web Sharing built in to Mac OS X 10.6.x.  Web Sharing is based on Apache HTTP Server, a full-featured web server that you can tweak for testing purposes.  The following is a summary of the tweaks that I did.
+
+WARNING: These suggestions are for testing purposes only and may result in security vulnerabilities.  Do not apply them to a production web server, or to a web server that's accessible to untrusted clients.
+
+A. enable password authentication -- To password protect a directory, I created a "protected" directory within "/Library/WebServer/Documents" and added the following to "/etc/apache2/httpd.conf":
+
+<Directory "/Library/WebServer/Documents/protected">
+    AuthName     "Protected"
+    AuthType     Basic
+    AuthUserFile /etc/apache2/Test.passwd
+    Require      user test
+</Directory>
+
+This authenticates users using the accounts listed in "/etc/apache2/Test.passwd".  I created this file using the <x-man-page://1/htpasswd> utility.
+
+B. enable proxy support -- I enabled proxy support by adding the following to "/etc/apache2/httpd.conf":
+
+ProxyRequests On
+<Proxy *>
+    AuthName     "Proxy"
+    AuthType     Basic
+    AuthUserFile /etc/apache2/Test.passwd
+    Require      user test
+</Proxy>
+
+This enables an authenticated proxy (using the accounts from the file created in step A, above) on the standard web server port.  You can disable authentication by removing the various lines within the "Proxy" directive.
+
+C. enable HTTPS -- To enable HTTPS support I did the following:
+
+1. In "/etc/apache2/httpd.conf", I uncommented the include of "/etc/apache2/extra/httpd-ssl.conf".
+
+2. In both "/etc/apache2/httpd.conf" and "/etc/apache2/extra/httpd-ssl.conf", I set the ServerName to the .local name of my server.
+
+3. I put the server's PEM-encoded certificate in "/etc/apache2/server.crt".
+
+4. I put the server's PEM-encoded private key in "/etc/apache2/server.key".
+
+5. In "/etc/apache2/extra/httpd-ssl.conf", I uncommented the SSLCertificateChainFile directive.
+
+6. I put the certificate of the CA that issued the server's identity, again PEM-encoded, in "/etc/apache2/server-ca.crt".
+
+Note: See "Security Credential Notes" for more information about how to generate security credentials and convert them to PEM format.
+
+D. enable client-side identity checking -- To enable client-side identity checking I first created a "cert-protected" directory within "/Library/WebServer/Documents" and then added the following to "/etc/apache2/httpd.conf":
+
+<Directory "/Library/WebServer/Documents/cert-protected">
+    SSLVerifyClient require
+</Directory>
+
+I then uncommented the SSLCACertificateFile directive in "/etc/apache2/extra/httpd-ssl.conf" and added the certificate of the CA that issued the client-side identities in "/etc/apache2/ssl.crt/ca-bundle.crt" (you'll probably need to create the "ssl.crt" directory first).  As usual, this should be PEM encoded.
+
+IMPORTANT: For more information about configuring Apache HTTP Server, see the documentation on the Apache web site <http://httpd.apache.org/>.  It's best to read the documentation that matches the version of the server you're using.  The following command prints the server version.
+
+$ httpd -v
+Server version: Apache/2.2.13 (Unix)
+Server built:   Oct 16 2009 02:12:22
+
+IMPORTANT: After making any changes you must restart the HTTP server.  You can do this from System Preferences by turning the service off and then on again, or from the command line as shown below.
+
+$ sudo apachectl restart
+
+Security Credential Notes
+-------------------------
+To test HTTPS code thoroughly, you need to set up an HTTPS server, and that requires a bunch of TLS identities.  If you already have your TLS identities created (issued by your corporate IT department, for example), you should use those.  If not, you must create some test identities, and you can do this using the Certificate Assistant function built in to the Keychain Access utility.
+
+While this document isn't an appropriate place to discuss Certificate Assistant in depth, here's a quick summary of the features you need to use:
+
+IMPORTANT: These steps will deposit a big pile of credentials into your default keychain.  This can get very confusing, as your test credentials get mixed up with your day-to-day keychain items.  To avoid this confusion I usually create another user account, fast user switch to that account, and do all of this work in that account.
+
+1. Start by creating a certificate authority (CA) for testing purposes.  In Keychain Access, choose Keychain Access > Certificate Assistant > Create a Certificate Authority.
+
+Note: In the ensuing window you don't have to worry too much about the value you set in the User Certificate popup.  This sets the default settings for user certificates issued by your new CA, but you can override these defaults when you actually issue the certificate.  Still, if you plan to issue TLS client certificates, choose "SSL Client" from the popup and, similarly, to issue TLS server certificates, choose "SSL Server".
+
+Note: You can use two CAs, one for client certificates and one for server certificates, or do everything from the same CA.  The former is more common in the real world, while the latter is easier when testing.
+
+2. There are two ways to issue a certificate from your CA:
+
+A. Create a certificate signing request (CSR) and then issue a certificate based on that CSR.  This is the approach you'd use for a real CA.
+
+B. Create a certificate directly from the CA.  This is the easiest approach for simple tests like this.
+
+We're going to demonstrate approach B.  To get started, choose Keychain Access > Certificate Assistant > Create a Certificate.  In the Identity Type popup, choose Leaf.  If you're creating a TLS client identity, you must choose SSL Client from the Certificate Type popup and you can use any value for the Name field.  If you're creating a TLS server identity, you must choose SSL Server from the Certificate Type popup and enter the DNS name of the server into the Name field.  In either case, when you click Continue, you'll be presented with a choice of CAs to sign the certificate with.  You should choose the CA you created in step 1.
+
+When you create a certificate you can check the "Let me override defaults" checkbox to override the default choices made by Certificate Assistant.  There are a couple of situations where you might want to do this:
+
+o The default validity period for a certificate is 365 days.  When creating your CA you might want to increase this.  Otherwise you'll have to create a new CA each year, because once the CA's certificate expires none of the certificates issued by that CA are valid.
+
+o When creating a TLS server identity, you should probably include a "Subject Alternate Name" extension that lists the server's DNS address (dNSName) and IP address (iPAddress).  If you do override the defaults in this case, don't forget to ensure that the Common Name is still set to the DNS name of the server.
+
+Finally, there's one gotcha associated with using Certificate Assistant to issue certificates directly (option B, discussed above).  In Mac OS X 10.6.x, there's a bug in Certificate Assistant <rdar://problem/7094761> that causes it to fail (with an unhelpful error message) when you issue your second certificate.  There are a number of ways to work around this bug:
+
+o Use Mac OS X 10.5.x, which does not have this bug.
+
+o Don't issue certificates directly, but instead use certificate signing requests (option A).
+
+o Manually increment the serial number by editing the certificate authority configuration file.  To do this:
+
+  i. Find the certificate authority configuration file in ~/Library/Application Support/Certificate Authority/NAME/NAME.certAuthorityConfig, where NAME is the name of your CA.
+
+ ii. Open it with a text editor.
+
+iii. Find the LastSerialNumberUsed element.
+
+ iv. Increment it.
+
+The end result of this entire process is a set of private keys, public keys, and certificates in your keychain.  The public keys are irrelevant (each one has been incorporated into a certificate), so you can just ignore them.  You will need to export the other credentials.  Keychain Access lets you export certificates in either PEM (.pem) or CER (.cer, also known as DER .der) format.  So, for example, if you need a PEM-encoded certificate for Apache HTTP Server, you can export it directly from Keychain Access.
+
+Keychain Access will not, however, let you export private keys (or identities) in PEM format.  Instead, you must export them in PKCS#12 (.p12) format.  To get a PEM version of your private key (for example, to install in Apache), you'll have to do the following:
+
+1. Export the private key in PKCS#12 format.
+
+2. Use the <x-man-page://1ssl/pkcs12> subcommand of <x-man-page://1ssl/openssl> to convert the .p12 file to a .pem file.
+
+$ openssl pkcs12 -in ServerKey.p12 -out ServerKey.pem -nodes
+Enter Import Password: ****
+MAC verified OK
+
+WARNING: This exports the private key without encryption, which means that anyone with access to that file can use that private key.  This setup is required by the Apache HTTP Server (it's not reasonable for the server to prompt you for a password when it starts), but it is somewhat dangerous.
+
+Caveats
+-------
+In many cases AdvancedURLConnections has to present a UI that's very similar to the UI displayed by Safari (for example, the UI that prompts you for a user and password to download from a secure web site).  This UI is not brought up by the system; it's actually part of this sample code.  To call that out, I've put all of the text in upper case.  Yeah, it's ugly, but at least that way there's no confusion about what's being done by the sample versus what's being done by the system.
+
+The Refresh Credentials button in the Debug tab shouldn't be necessary; the list of identities and certificates should be automatically refreshed whenever the application changes its keychain.  However, it was a great help during debugging so I've left it in.
+
+In the Debug tab you can set the persistence value used for credentials.  The Session and Permanent persistence values work fine for password credentials, but not for client identity credentials.  I believe that this is a bug in the URL Loading System and I've filed it as <rdar://problem/7492576>.
+
+By default Mac OS X creates PKCS#12 files with the certificates encrypted with RC2-40.  Due to a limitation of the underlying Mac OS X CommonCrypto library <rdar://problem/7037049>, you cannot import such PKCS#12 data on the simulator (SecPKCS12Import fails with an error).  You can work around this by using the <x-man-page://1ssl/pkcs12> subcommand of <x-man-page://1ssl/openssl> to create a PKCS#12 file that uses triple DES for certificate encryption.  Here's an example of how this is done:
+
+$ # Convert to PEM.
+$ openssl pkcs12 -in ClientIdentity.p12 -out tmp.pem
+Enter Import Password: ****
+MAC verified OK
+Enter PEM pass phrase: ****
+Verifying - Enter PEM pass phrase: ****
+$ # Convert back to PKCS12, but with 3DES-encrypted cert. 
+$ # (rather than RC2-40).
+$ openssl pkcs12 -export -in tmp.pem -descert -out ClientIdentity-compat.p12
+Enter pass phrase for tmp.pem: ****
+Enter Export Password: ****
+Verifying - Enter Export Password: ****
+
+You can't currently import credentials globally into the simulator.  On a real iOS device you can point Safari at a root certificate and, after appropriate user confirmation, it will be added to the list of trust root certificates for the entire system.  This is not currently possible on the simulator.  If you're feeling adventurous you can add a trusted root certificate by hacking on the simulator's trust store (~/Library/Application Support/iPhone Simulator/User/Library/Keychains/TrustStore.sqlite3), cribbing the format from the global trust store that's included in the SDK (for example, /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator3.1.2.sdk/System/Library/Frameworks/Security.framework/TrustStore.sqlite3).  This is not for the faint of heart!  A better solution, and the solution we recommend for application developers in general, is to import the trusted root certificate into your own application's keychain and then apply it to server trust evaluations as shown by this sample code (specifically, the behaviour associated with kDebugOptionsServerValidationTrustImportedCertificates).
+
+WARNING: The trust store paths described above are for debugging purposes only.  You should not access these files from code that you plan to ship to users.
+
+Testing client identities against a server running Mac OS X has become more difficult in later releases of Mac OS X 10.6.x.  See the following DevForums thread for details.
+
+<https://devforums.apple.com/thread/65290?tstart=0>
+
+It seems that it's not currently possible to respond to both a NSURLAuthenticationMethodServerTrust challenge and a NSURLAuthenticationMethodClientCertificate challenge.  That is, if an HTTPS server has a non-trusted server identity and requires that you provide a client identity, things don't work as expected (you get the NSURLAuthenticationMethodServerTrust challenge but the connection fails before you get the NSURLAuthenticationMethodClientCertificate challenge).  We're still investigating this issue <rdar://problem/7492560>.  In the meantime, the workaround is to install the server's root certificate globally (but beware of the simulator problems described earlier).
+
+At the bottom of the TLS stack on both iOS and Mac OS X is a component known as Secure Transport.  Secure Transport maintains a per-process TLS session cache.  When you connect via TLS, the cache stores information about the TLS negotiation so that subsequent connections can connect more quickly.  The on-the-wire mechanism is described at the link below.
+
+<http://en.wikipedia.org/wiki/Transport_Layer_Security#Resumed_TLS_handshake>
+
+This presents some interesting gotchas, especially while you're debugging.  For example, consider the following sequence:
+
+1. You use the Debug tab to set the TLS Server Validation to Disabled.
+
+2. You connect to a site with a self-signed identity.  The connection succeeds because you've disabled TLS server trust validation.  This adds an entry to the Secure Transport TLS session cache.
+
+3. You use the Debug tab to set the TLS Server Validation to Default.
+
+4. You immediately connect to the same site as you did in step 2.  This should fail, because of the change in server trust validation policy, but it succeeds because you never receive an NSURLAuthenticationMethodServerTrust challenge.  Under the covers, Secure Transport has resumed the TLS session, which means that the challenge never bubbles up to your level.
+
+5. On the other hand, if you delay for 11 minutes between steps 3 and 4, things work as expected (well, fail as expected :-).  This is because Secure Transport's TLS session cache has a timeout of 10 minutes.
+
+In the real world this isn't a huge problem, but it can be very confusing during debugging.  There's no programmatic way to clear the Secure Transport TLS session cache but, as the cache is per-process, you can avoid this problem during debugging by simply quitting and relaunching your application.  Remember that, starting with iOS 4, pressing the Home button does not necessarily quit your application.  Instead, you should use quit the application from the recent applications list.
+
+Simplifying Assumptions
+-----------------------
+To keep this code as simple as possible, I've made a number of simplifying assumptions:
+
+o There are a number of places where I choose simplicity over performance.  For example, in the AdvancedGetController, I write the received data directly to the file rather than buffering up data to maximize disk throughput.  Furthermore, I make no attempt to overlap network and file I/O.  If you have a performance sensitive application you should measure your performance and optimize appropriately.
+
+o Another example of the preference for simplicity over performance is the Credentials class; it's code to fetch and sort the list of identities and certificates does not scale well.
+
+o I made no attempt to scale incoming images to fit the device's screen; this is a networking sample, not a graphics sample!
+
+o The code makes no attempt to support localisation.  Specifically, numerous strings presented to the user are hard-coded rather than accessed via the various NSLocalizedString macros.  If you decide to use part of this sample in your own project, you will have to take care of this yourself.
+
+o The progress display in the CredentialsController class is kinda bogus (I dim the screen by showing a masking view and put my status label and activity indicator on top of that).  You could do better!
+
+Credits and Version History
+---------------------------
+If you find any problems with this sample, please file a bug against it.
+
+<http://developer.apple.com/bugreporter/>
+
+1.2 (Jan 2011) is a small update to add NTLM authentication support and to fix various minor issues.
+
+1.1 (Jul 2010) updated the sample for iOS 4.0.
+
+1.0 (Feb 2010) was the first shipping version.
+
+Share and Enjoy.
+
+Apple Developer Technical Support
+Core OS/Hardware
+
+15 Jan 2011
