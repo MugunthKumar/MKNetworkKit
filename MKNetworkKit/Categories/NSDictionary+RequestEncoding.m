@@ -3,7 +3,7 @@
 //  MKNetworkKitDemo
 //
 //  Created by Mugunth Kumar (@mugunthkumar) on 11/11/11.
-//  Copyright (C) 2011-2020 by Steinlogic
+//  Copyright (C) 2011-2020 by Steinlogic Consulting and Training Pte Ltd
 
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
