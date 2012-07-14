@@ -90,6 +90,11 @@ static NSOperationQueue *_sharedNetworkQueue;
   }            
 }
 
+- (id) init {
+  
+  return [self initWithHostName:nil];
+}
+
 - (id) initWithHostName:(NSString*) hostName {
   
   return [self initWithHostName:hostName apiPath:nil customHeaderFields:nil];
