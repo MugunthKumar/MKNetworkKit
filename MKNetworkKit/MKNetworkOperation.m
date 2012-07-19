@@ -823,7 +823,7 @@
   
   if(!self.isCancelled) {
     
-    if ([self.request.HTTPMethod isEqualToString:@"POST"] || [self.request.HTTPMethod isEqualToString:@"PUT"]) {            
+    if (([self.request.HTTPMethod isEqualToString:@"POST"] || [self.request.HTTPMethod isEqualToString:@"PUT"]) && !self.request.HTTPBodyStream) {
       
       [self.request setHTTPBody:[self bodyData]];
     }
