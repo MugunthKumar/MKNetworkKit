@@ -379,7 +379,7 @@ static NSOperationQueue *_sharedNetworkQueue;
   NSParameterAssert(operation != nil);
   // Grab on to the current queue (We need it later)
   dispatch_queue_t originalQueue = dispatch_get_current_queue();
-#ifdef DO_GCD_RETAIN_RELEASE
+#if DO_GCD_RETAIN_RELEASE
   dispatch_retain(originalQueue);
 #endif
   // Jump off the main thread, mainly for disk cache reading purposes
@@ -451,7 +451,7 @@ static NSOperationQueue *_sharedNetworkQueue;
 
     if([self.reachability currentReachabilityStatus] == NotReachable)
       [self freezeOperations];
-#ifdef DO_GCD_RETAIN_RELEASE
+#if DO_GCD_RETAIN_RELEASE
     dispatch_release(originalQueue);
 #endif
   });
