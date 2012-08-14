@@ -301,7 +301,6 @@
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="enumBucketsButtonTapped:" destination="gsO-f0-TmB" eventType="touchUpInside" id="vf9-HB-Y7A"/>
                                     <action selector="enumItemsInBucket:" destination="gsO-f0-TmB" eventType="touchUpInside" id="o4W-sT-8Yf"/>
                                 </connections>
                             </button>

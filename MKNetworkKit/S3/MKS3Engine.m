@@ -85,18 +85,18 @@
   
   [op onCompletion:^(MKNetworkOperation *completedOperation) {
     
-    NSArray *listOfBucketsInXml = [[[[[[DDXMLDocument alloc] initWithXMLString:[completedOperation responseString]
+    NSArray *listOfItemsInXml = [[[[[[DDXMLDocument alloc] initWithXMLString:[completedOperation responseString]
                                                                        options:0 error:nil]
-                                      rootElement] elementsForName:@"Buckets"] objectAtIndex:0] children];
+                                      rootElement] elementsForName:@"Contents"] objectAtIndex:0] children];
     
-    NSMutableArray *listOfBuckets = [NSMutableArray arrayWithCapacity:[listOfBucketsInXml count]];
-    [listOfBucketsInXml enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+    NSMutableArray *listOfItems = [NSMutableArray arrayWithCapacity:[listOfItemsInXml count]];
+    [listOfItemsInXml enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
       
-      S3Bucket *thisBucket = [[S3Bucket alloc] initWithDDXMLElement:obj];
-      [listOfBuckets addObject:thisBucket];
+      S3Item *thisBucket = [[S3Item alloc] initWithDDXMLElement:obj];
+      [listOfItems addObject:thisBucket];
     }];
     
-    succeededBlock(listOfBuckets);
+    succeededBlock(listOfItems);
   } onError:errorBlock];
   
   [self enqueueOperation:op];

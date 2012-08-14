@@ -65,7 +65,8 @@
 
 -(IBAction)enumItemsInBucket:(id)sender {
   
-  [self.s3Engine enumerateItemsInBucket:@"" path:nil onSucceeded:^(NSMutableArray *listOfModelBaseObjects) {
+  [self.s3Engine enumerateItemsInBucket:@"s3.mk.sg"
+                                   path:nil onSucceeded:^(NSMutableArray *listOfModelBaseObjects) {
     
     DLog(@"%@", listOfModelBaseObjects);
   } onError:^(NSError *engineError) {
