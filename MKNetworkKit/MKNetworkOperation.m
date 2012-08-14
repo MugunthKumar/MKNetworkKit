@@ -374,6 +374,8 @@
 - (void)encodeWithCoder:(NSCoder *)encoder 
 {
   [encoder encodeInteger:self.stringEncoding forKey:@"stringEncoding"];
+  [encoder encodeInteger:_postDataEncoding forKey:@"postDataEncoding"];
+
   [encoder encodeObject:self.uniqueId forKey:@"uniqueId"];
   [encoder encodeObject:self.request forKey:@"request"];
   [encoder encodeObject:self.response forKey:@"response"];
@@ -399,6 +401,7 @@
   self = [super init];
   if (self) {
     [self setStringEncoding:[decoder decodeIntegerForKey:@"stringEncoding"]];
+    _postDataEncoding = [decoder decodeIntegerForKey:@"postDataEncoding"];
     self.request = [decoder decodeObjectForKey:@"request"];
     self.uniqueId = [decoder decodeObjectForKey:@"uniqueId"];
     
@@ -424,6 +427,7 @@
 {
   MKNetworkOperation *theCopy = [[[self class] allocWithZone:zone] init];  // use designated initializer
   
+  theCopy.postDataEncoding = _postDataEncoding;
   [theCopy setStringEncoding:self.stringEncoding];
   [theCopy setUniqueId:[self.uniqueId copy]];
   
@@ -671,8 +675,10 @@
 }
 
 -(void) addData:(NSData*) data forKey:(NSString*) key mimeType:(NSString*) mimeType fileName:(NSString*) fileName {
-  
-  [self.request setHTTPMethod:@"POST"];
+
+  if ([self.request.HTTPMethod isEqualToString:@"GET"]) {
+      [self.request setHTTPMethod:@"POST"];
+  }
   
   NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
                         data, @"data",
@@ -691,7 +697,9 @@
 
 -(void) addFile:(NSString*) filePath forKey:(NSString*) key mimeType:(NSString*) mimeType {
   
-  [self.request setHTTPMethod:@"POST"];
+  if ([self.request.HTTPMethod isEqualToString:@"GET"]) {
+      [self.request setHTTPMethod:@"POST"];
+  }
   
   NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
                         filePath, @"filepath",
@@ -817,7 +825,7 @@
   
   if(!self.isCancelled) {
     
-    if ([self.request.HTTPMethod isEqualToString:@"POST"] || [self.request.HTTPMethod isEqualToString:@"PUT"]) {            
+    if (([self.request.HTTPMethod isEqualToString:@"POST"] || [self.request.HTTPMethod isEqualToString:@"PUT"]) && !self.request.HTTPBodyStream) {
       
       [self.request setHTTPBody:[self bodyData]];
     }

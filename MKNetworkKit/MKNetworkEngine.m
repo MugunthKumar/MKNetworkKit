@@ -90,6 +90,11 @@ static NSOperationQueue *_sharedNetworkQueue;
   }            
 }
 
+- (id) init {
+  
+  return [self initWithHostName:nil];
+}
+
 - (id) initWithHostName:(NSString*) hostName {
   
   return [self initWithHostName:hostName apiPath:nil customHeaderFields:nil];
@@ -374,7 +379,9 @@ static NSOperationQueue *_sharedNetworkQueue;
   NSParameterAssert(operation != nil);
   // Grab on to the current queue (We need it later)
   dispatch_queue_t originalQueue = dispatch_get_current_queue();
+#if DO_GCD_RETAIN_RELEASE
   dispatch_retain(originalQueue);
+#endif
   // Jump off the main thread, mainly for disk cache reading purposes
   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
     [operation setCacheHandler:^(MKNetworkOperation* completedCacheableOperation) {
@@ -444,7 +451,9 @@ static NSOperationQueue *_sharedNetworkQueue;
 
     if([self.reachability currentReachabilityStatus] == NotReachable)
       [self freezeOperations];
+#if DO_GCD_RETAIN_RELEASE
     dispatch_release(originalQueue);
+#endif
   });
 }
 
