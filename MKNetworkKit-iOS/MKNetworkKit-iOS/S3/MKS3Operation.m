@@ -53,7 +53,6 @@
   NSString *pathToResource = [self.readonlyRequest.URL path];
   [stringToSign appendString:pathToResource];
   
-  DLog(@"String to sign: \n--\n%@\n--\n", stringToSign);
   NSString *signature = [[stringToSign dataByEncryptingWithPassword:password] base64EncodedString];
   
   NSString *awsAuthHeaderValue = [NSString stringWithFormat:@"AWS %@:%@", accessId, signature];

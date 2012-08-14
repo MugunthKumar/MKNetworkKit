@@ -9,6 +9,9 @@
 #import "MKS3Engine.h"
 #import "MKS3Operation.h"
 
+#import "S3Bucket.h"
+#import "S3Item.h"
+
 // Private Methods
 // this should be added before implementation
 @interface MKS3Engine (/*Private Methods*/)
@@ -44,18 +47,29 @@
 -(MKS3Operation*) enumerateBucketsOnSucceeded:(ArrayBlock) succeededBlock
                                       onError:(ErrorBlock) errorBlock {
   
-  return [self enumerateItemsAtPath:@"" onSucceeded:succeededBlock onError:errorBlock];
   MKS3Operation *op = (MKS3Operation*) [self operationWithPath:@""];
   
   [op onCompletion:^(MKNetworkOperation *completedOperation) {
     
-    DLog(@"%@", [completedOperation responseString]);
+    NSArray *listOfBucketsInXml = [[[[[[DDXMLDocument alloc] initWithXMLString:[completedOperation responseString]
+                                                                       options:0 error:nil]
+                                      rootElement] elementsForName:@"Buckets"] objectAtIndex:0] children];
+
+    NSMutableArray *listOfBuckets = [NSMutableArray arrayWithCapacity:[listOfBucketsInXml count]];
+    [listOfBucketsInXml enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+      
+      S3Bucket *thisBucket = [[S3Bucket alloc] initWithDDXMLElement:obj];
+      [listOfBuckets addObject:thisBucket];
+    }];
     
+    succeededBlock(listOfBuckets);
   } onError:^(NSError *error) {
     
   }];
   
   [self enqueueOperation:op];
+  
+  return op;
 }
 
 -(MKS3Operation*) enumerateItemsAtPath:(NSString*) path
@@ -66,7 +80,6 @@
   
   [op onCompletion:^(MKNetworkOperation *completedOperation) {
     
-    DLog(@"%@", [completedOperation responseString]);
     
   } onError:^(NSError *error) {
     
@@ -82,7 +95,7 @@
                  onSucceeded:(ArrayBlock) succeededBlock
                      onError:(ErrorBlock) errorBlock {
   
-  MKS3Operation *op = (MKS3Operation*) [self operationWithPath:path];
+  return nil;
 }
 
 @end

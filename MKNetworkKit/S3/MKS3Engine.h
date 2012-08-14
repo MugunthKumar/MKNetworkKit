@@ -6,7 +6,7 @@
 //  Copyright (c) 2012 Steinlogic. All rights reserved.
 //
 
-#import "MKNetworkEngine.h"
+#import "../MKNetworkEngine.h"
 
 @class MKS3Operation;
 

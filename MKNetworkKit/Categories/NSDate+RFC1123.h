@@ -23,4 +23,6 @@
 -(NSString*)rfc1123String;
 
 -(NSString*)amazonDateFormatString;
+
++(NSDate*)dateFromTZString:(NSString*) dateString;
 @end

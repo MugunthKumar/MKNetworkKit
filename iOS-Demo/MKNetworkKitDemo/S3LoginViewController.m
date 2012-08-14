@@ -8,6 +8,8 @@
 
 #import "S3LoginViewController.h"
 
+#import "../../MKNetworkKit/S3/MKS3Engine.h"
+
 @interface S3LoginViewController ()
 @property (nonatomic, assign) IBOutlet UITextField *accessIdTextField;
 @property (nonatomic, assign) IBOutlet UITextField *secretTextField;
@@ -55,6 +57,7 @@
   
   [self.s3Engine enumerateBucketsOnSucceeded:^(NSMutableArray *listOfModelBaseObjects) {
     
+    DLog(@"%@", listOfModelBaseObjects);
   } onError:^(NSError *engineError) {
     DLog(@"%@", engineError);
   }];

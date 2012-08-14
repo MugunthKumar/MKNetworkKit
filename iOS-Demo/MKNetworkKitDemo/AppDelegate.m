@@ -58,6 +58,7 @@
     [self.sampleAuth useCache];
     self.flickrEngine = [[FlickrEngine alloc] initWithHostName:@"api.flickr.com" customHeaderFields:nil];
     [self.flickrEngine useCache];
+  
     return YES;
 }
 							

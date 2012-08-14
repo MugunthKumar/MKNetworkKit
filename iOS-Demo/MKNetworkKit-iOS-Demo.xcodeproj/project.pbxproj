@@ -27,6 +27,7 @@
 		ABA496E415A6956100B57B91 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = ABA496DF15A6956100B57B91 /* Icon.png */; };
 		ABA496E515A6956100B57B91 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = ABA496E015A6956100B57B91 /* Icon@2x.png */; };
 		ABA496E615A6956100B57B91 /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = ABA496E115A6956100B57B91 /* iTunesArtwork */; };
+		ABA4A46915DA921C00268D87 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ABA4A46815DA921C00268D87 /* libxml2.dylib */; };
 		ABB5C2C8148B3E230056D3E9 /* SampleImage.jpg in Resources */ = {isa = PBXBuildFile; fileRef = ABB5C2C7148B3E230056D3E9 /* SampleImage.jpg */; };
 		ABB5C2CA148B3F370056D3E9 /* libMKNetworkKit-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ABB5C2C9148B3F370056D3E9 /* libMKNetworkKit-iOS.a */; };
 		ABC25179146802B900264474 /* YahooEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = ABC25178146802B900264474 /* YahooEngine.m */; };
@@ -67,6 +68,7 @@
 		ABA496DF15A6956100B57B91 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		ABA496E015A6956100B57B91 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
 		ABA496E115A6956100B57B91 /* iTunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; path = iTunesArtwork; sourceTree = "<group>"; };
+		ABA4A46815DA921C00268D87 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		ABB5C2C7148B3E230056D3E9 /* SampleImage.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = SampleImage.jpg; path = ../SampleImage.jpg; sourceTree = "<group>"; };
 		ABB5C2C9148B3F370056D3E9 /* libMKNetworkKit-iOS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libMKNetworkKit-iOS.a"; path = "../MKNetworkKit-iOS/build/Release-iphoneos/libMKNetworkKit-iOS.a"; sourceTree = "<group>"; };
 		ABC25177146802B900264474 /* YahooEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YahooEngine.h; sourceTree = "<group>"; };
@@ -87,6 +89,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ABA4A46915DA921C00268D87 /* libxml2.dylib in Frameworks */,
 				ABB5C2CA148B3F370056D3E9 /* libMKNetworkKit-iOS.a in Frameworks */,
 				AB74B1131467E5850088BF09 /* SystemConfiguration.framework in Frameworks */,
 				AB74B1111467E5790088BF09 /* CFNetwork.framework in Frameworks */,
@@ -103,6 +106,7 @@
 		AB74B0B21467CC120088BF09 = {
 			isa = PBXGroup;
 			children = (
+				ABA4A46815DA921C00268D87 /* libxml2.dylib */,
 				AB0AEA12149B2B45007327D6 /* client.p12 */,
 				ABB5C2C9148B3F370056D3E9 /* libMKNetworkKit-iOS.a */,
 				ABB5C2C7148B3E230056D3E9 /* SampleImage.jpg */,

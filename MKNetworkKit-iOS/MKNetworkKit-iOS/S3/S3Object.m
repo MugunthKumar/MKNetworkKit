@@ -142,4 +142,9 @@ static NSMutableArray *knownClasses;
   free(properties);
   return doc;
 }
+
+-(NSString*) description {
+  
+  return [[self xmlRepresentation] XMLString];
+}
 @end

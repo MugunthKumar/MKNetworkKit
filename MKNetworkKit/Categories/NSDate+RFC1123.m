@@ -91,4 +91,17 @@
   return [df stringFromDate:self];
 }
 
++(NSDate*)dateFromTZString:(NSString*) dateString
+{
+  static NSDateFormatter *df = nil;
+  if(!df)
+  {
+    static dispatch_once_t oncePredicate;
+    dispatch_once(&oncePredicate, ^{
+      df = [[NSDateFormatter alloc] init];
+      df.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.mmm'Z'";
+    });
+  }
+  return [df dateFromString:dateString];
+}
 @end
