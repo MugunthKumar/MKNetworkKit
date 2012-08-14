@@ -1,20 +1,20 @@
 //
-//  S3ViewController.m
+//  S3LoginViewController.m
 //  MKNetworkKit-iOS-Demo
 //
 //  Created by Mugunth Kumar on 15/4/12.
 //  Copyright (c) 2012 Steinlogic. All rights reserved.
 //
 
-#import "S3ViewController.h"
+#import "S3LoginViewController.h"
 
-@interface S3ViewController ()
+@interface S3LoginViewController ()
 @property (nonatomic, assign) IBOutlet UITextField *accessIdTextField;
 @property (nonatomic, assign) IBOutlet UITextField *secretTextField;
 @property (strong, nonatomic) MKS3Engine *s3Engine;
 @end
 
-@implementation S3ViewController
+@implementation S3LoginViewController
 @synthesize accessIdTextField = _accessIdTextField;
 @synthesize secretTextField = _secretTextField;
 @synthesize s3Engine = _s3Engine;
@@ -58,6 +58,14 @@
   } onError:^(NSError *engineError) {
     DLog(@"%@", engineError);
   }];
+  
+  [self.s3Engine enumerateItemsAtPath:@""
+                            onSucceeded:^(NSMutableArray *listOfModelBaseObjects) {
+                              
+                              DLog(@"%@", listOfModelBaseObjects);
+                            } onError:^(NSError *engineError) {
+                              DLog(@"%@", engineError);
+                            }];
 }
 
 @end

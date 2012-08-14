@@ -75,9 +75,6 @@
 #import "MKNetworkOperation.h"
 #import "MKNetworkEngine.h"
 
-#import "MKS3Engine.h"
-#import "MKS3Operation.h"
-
 #define kMKNetworkEngineOperationCountChanged @"kMKNetworkEngineOperationCountChanged"
 #define MKNETWORKCACHE_DEFAULT_COST 10
 #define MKNETWORKCACHE_DEFAULT_DIRECTORY @"MKNetworkKitCache"

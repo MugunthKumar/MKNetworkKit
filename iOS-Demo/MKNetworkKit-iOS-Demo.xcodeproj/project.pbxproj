@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		AB05CC3C153A84C9008F2B6A /* S3ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB05CC3A153A84C9008F2B6A /* S3ViewController.m */; };
+		AB05CC3C153A84C9008F2B6A /* S3LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB05CC3A153A84C9008F2B6A /* S3LoginViewController.m */; };
 		AB0AEA13149B2B46007327D6 /* client.p12 in Resources */ = {isa = PBXBuildFile; fileRef = AB0AEA12149B2B45007327D6 /* client.p12 */; };
 		AB148FD2147F4EF8001F4A86 /* ExampleUploader.m in Sources */ = {isa = PBXBuildFile; fileRef = AB148FD1147F4EF8001F4A86 /* ExampleUploader.m */; };
 		AB148FD6147F5167001F4A86 /* ExampleDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = AB148FD5147F5167001F4A86 /* ExampleDownloader.m */; };
@@ -38,8 +38,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		AB05CC39153A84C8008F2B6A /* S3ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = S3ViewController.h; sourceTree = "<group>"; };
-		AB05CC3A153A84C9008F2B6A /* S3ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = S3ViewController.m; sourceTree = "<group>"; };
+		AB05CC39153A84C8008F2B6A /* S3LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = S3LoginViewController.h; sourceTree = "<group>"; };
+		AB05CC3A153A84C9008F2B6A /* S3LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = S3LoginViewController.m; sourceTree = "<group>"; };
 		AB0AEA12149B2B45007327D6 /* client.p12 */ = {isa = PBXFileReference; lastKnownFileType = file; path = client.p12; sourceTree = "<group>"; };
 		AB148FD0147F4EF8001F4A86 /* ExampleUploader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExampleUploader.h; sourceTree = "<group>"; };
 		AB148FD1147F4EF8001F4A86 /* ExampleUploader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExampleUploader.m; sourceTree = "<group>"; };
@@ -166,8 +166,8 @@
 				AB6E44DD14CBA43F0089D19C /* FlickrCell.m */,
 				AB6E44DF14CBA62B0089D19C /* FlickrEngine.h */,
 				AB6E44E014CBA62B0089D19C /* FlickrEngine.m */,
-				AB05CC39153A84C8008F2B6A /* S3ViewController.h */,
-				AB05CC3A153A84C9008F2B6A /* S3ViewController.m */,
+				AB05CC39153A84C8008F2B6A /* S3LoginViewController.h */,
+				AB05CC3A153A84C9008F2B6A /* S3LoginViewController.m */,
 			);
 			name = "MKNetworkKit-iOS-Demo";
 			path = MKNetworkKitDemo;
@@ -200,7 +200,7 @@
 		AB74B0B41467CC120088BF09 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0430;
+				LastUpgradeCheck = 0450;
 				ORGANIZATIONNAME = Steinlogic;
 			};
 			buildConfigurationList = AB74B0B71467CC120088BF09 /* Build configuration list for PBXProject "MKNetworkKit-iOS-Demo" */;
@@ -271,7 +271,7 @@
 				AB6E44DB14CBA3CC0089D19C /* FlickrTableViewController.m in Sources */,
 				AB6E44DE14CBA43F0089D19C /* FlickrCell.m in Sources */,
 				AB6E44E114CBA62B0089D19C /* FlickrEngine.m in Sources */,
-				AB05CC3C153A84C9008F2B6A /* S3ViewController.m in Sources */,
+				AB05CC3C153A84C9008F2B6A /* S3LoginViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

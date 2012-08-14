@@ -1,5 +1,5 @@
 //
-//  S3ViewController.h
+//  S3LoginViewController.h
 //  MKNetworkKit-iOS-Demo
 //
 //  Created by Mugunth Kumar on 15/4/12.
@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface S3ViewController : UIViewController
+@interface S3LoginViewController : UIViewController
 
 @end
