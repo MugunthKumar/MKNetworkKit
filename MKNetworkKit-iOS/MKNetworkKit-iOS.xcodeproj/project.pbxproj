@@ -10,28 +10,6 @@
 		AB3A308A148F099C00D06246 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB3A3089148F099C00D06246 /* Security.framework */; };
 		AB3A3098148F0A3B00D06246 /* NSDate+RFC1123.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3A3096148F0A3B00D06246 /* NSDate+RFC1123.h */; };
 		AB3A3099148F0A3B00D06246 /* NSDate+RFC1123.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3A3097148F0A3B00D06246 /* NSDate+RFC1123.m */; };
-		ABA4A43515DA8E4800268D87 /* MKS3Engine.h in Headers */ = {isa = PBXBuildFile; fileRef = ABA4A43315DA8E4800268D87 /* MKS3Engine.h */; };
-		ABA4A43615DA8E4800268D87 /* MKS3Engine.m in Sources */ = {isa = PBXBuildFile; fileRef = ABA4A43415DA8E4800268D87 /* MKS3Engine.m */; };
-		ABA4A43A15DA8ECE00268D87 /* MKS3Operation.h in Headers */ = {isa = PBXBuildFile; fileRef = ABA4A43815DA8ECE00268D87 /* MKS3Operation.h */; };
-		ABA4A43B15DA8ECE00268D87 /* MKS3Operation.m in Sources */ = {isa = PBXBuildFile; fileRef = ABA4A43915DA8ECE00268D87 /* MKS3Operation.m */; };
-		ABA4A43E15DA8F6700268D87 /* S3Object.h in Headers */ = {isa = PBXBuildFile; fileRef = ABA4A43C15DA8F6700268D87 /* S3Object.h */; };
-		ABA4A43F15DA8F6700268D87 /* S3Object.m in Sources */ = {isa = PBXBuildFile; fileRef = ABA4A43D15DA8F6700268D87 /* S3Object.m */; };
-		ABA4A45015DA8FE400268D87 /* DDXMLElementAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = ABA4A44215DA8FE400268D87 /* DDXMLElementAdditions.h */; };
-		ABA4A45115DA8FE400268D87 /* DDXMLElementAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = ABA4A44315DA8FE400268D87 /* DDXMLElementAdditions.m */; };
-		ABA4A45215DA8FE400268D87 /* NSString+DDXML.h in Headers */ = {isa = PBXBuildFile; fileRef = ABA4A44515DA8FE400268D87 /* NSString+DDXML.h */; };
-		ABA4A45315DA8FE400268D87 /* NSString+DDXML.m in Sources */ = {isa = PBXBuildFile; fileRef = ABA4A44615DA8FE400268D87 /* NSString+DDXML.m */; };
-		ABA4A45415DA8FE400268D87 /* DDXML.h in Headers */ = {isa = PBXBuildFile; fileRef = ABA4A44715DA8FE400268D87 /* DDXML.h */; };
-		ABA4A45515DA8FE400268D87 /* DDXMLDocument.h in Headers */ = {isa = PBXBuildFile; fileRef = ABA4A44815DA8FE400268D87 /* DDXMLDocument.h */; };
-		ABA4A45615DA8FE400268D87 /* DDXMLDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = ABA4A44915DA8FE400268D87 /* DDXMLDocument.m */; };
-		ABA4A45715DA8FE400268D87 /* DDXMLElement.h in Headers */ = {isa = PBXBuildFile; fileRef = ABA4A44A15DA8FE400268D87 /* DDXMLElement.h */; };
-		ABA4A45815DA8FE400268D87 /* DDXMLElement.m in Sources */ = {isa = PBXBuildFile; fileRef = ABA4A44B15DA8FE400268D87 /* DDXMLElement.m */; };
-		ABA4A45915DA8FE400268D87 /* DDXMLNode.h in Headers */ = {isa = PBXBuildFile; fileRef = ABA4A44C15DA8FE400268D87 /* DDXMLNode.h */; };
-		ABA4A45A15DA8FE400268D87 /* DDXMLNode.m in Sources */ = {isa = PBXBuildFile; fileRef = ABA4A44D15DA8FE400268D87 /* DDXMLNode.m */; };
-		ABA4A45B15DA8FE400268D87 /* DDXMLPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = ABA4A44F15DA8FE400268D87 /* DDXMLPrivate.h */; };
-		ABA4A46215DA90F600268D87 /* S3Bucket.h in Headers */ = {isa = PBXBuildFile; fileRef = ABA4A46015DA90F600268D87 /* S3Bucket.h */; };
-		ABA4A46315DA90F600268D87 /* S3Bucket.m in Sources */ = {isa = PBXBuildFile; fileRef = ABA4A46115DA90F600268D87 /* S3Bucket.m */; };
-		ABA4A46615DA910600268D87 /* S3Item.h in Headers */ = {isa = PBXBuildFile; fileRef = ABA4A46415DA910500268D87 /* S3Item.h */; };
-		ABA4A46715DA910600268D87 /* S3Item.m in Sources */ = {isa = PBXBuildFile; fileRef = ABA4A46515DA910500268D87 /* S3Item.m */; };
 		ABB5C260148B3AE00056D3E9 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABB5C25F148B3AE00056D3E9 /* Foundation.framework */; };
 		ABB5C2B9148B3B360056D3E9 /* NSDictionary+RequestEncoding.h in Headers */ = {isa = PBXBuildFile; fileRef = ABB5C2AA148B3B360056D3E9 /* NSDictionary+RequestEncoding.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		ABB5C2BA148B3B360056D3E9 /* NSDictionary+RequestEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = ABB5C2AB148B3B360056D3E9 /* NSDictionary+RequestEncoding.m */; };
@@ -48,6 +26,28 @@
 		ABB5C2C5148B3B360056D3E9 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = ABB5C2B7148B3B360056D3E9 /* Reachability.m */; };
 		ABB5C2CD148B40910056D3E9 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABB5C2CB148B40910056D3E9 /* SystemConfiguration.framework */; };
 		ABB5C2CE148B40910056D3E9 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABB5C2CC148B40910056D3E9 /* CFNetwork.framework */; };
+		ABD85B8415DAA44D00F9DB08 /* DDXMLElementAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD85B6C15DAA44D00F9DB08 /* DDXMLElementAdditions.h */; };
+		ABD85B8515DAA44D00F9DB08 /* DDXMLElementAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD85B6D15DAA44D00F9DB08 /* DDXMLElementAdditions.m */; };
+		ABD85B8615DAA44D00F9DB08 /* NSString+DDXML.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD85B6F15DAA44D00F9DB08 /* NSString+DDXML.h */; };
+		ABD85B8715DAA44D00F9DB08 /* NSString+DDXML.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD85B7015DAA44D00F9DB08 /* NSString+DDXML.m */; };
+		ABD85B8815DAA44D00F9DB08 /* DDXML.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD85B7115DAA44D00F9DB08 /* DDXML.h */; };
+		ABD85B8915DAA44D00F9DB08 /* DDXMLDocument.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD85B7215DAA44D00F9DB08 /* DDXMLDocument.h */; };
+		ABD85B8A15DAA44D00F9DB08 /* DDXMLDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD85B7315DAA44D00F9DB08 /* DDXMLDocument.m */; };
+		ABD85B8B15DAA44D00F9DB08 /* DDXMLElement.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD85B7415DAA44D00F9DB08 /* DDXMLElement.h */; };
+		ABD85B8C15DAA44D00F9DB08 /* DDXMLElement.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD85B7515DAA44D00F9DB08 /* DDXMLElement.m */; };
+		ABD85B8D15DAA44D00F9DB08 /* DDXMLNode.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD85B7615DAA44D00F9DB08 /* DDXMLNode.h */; };
+		ABD85B8E15DAA44D00F9DB08 /* DDXMLNode.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD85B7715DAA44D00F9DB08 /* DDXMLNode.m */; };
+		ABD85B8F15DAA44D00F9DB08 /* DDXMLPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD85B7915DAA44D00F9DB08 /* DDXMLPrivate.h */; };
+		ABD85B9015DAA44D00F9DB08 /* MKS3Engine.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD85B7A15DAA44D00F9DB08 /* MKS3Engine.h */; };
+		ABD85B9115DAA44D00F9DB08 /* MKS3Engine.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD85B7B15DAA44D00F9DB08 /* MKS3Engine.m */; };
+		ABD85B9215DAA44D00F9DB08 /* MKS3Operation.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD85B7C15DAA44D00F9DB08 /* MKS3Operation.h */; };
+		ABD85B9315DAA44D00F9DB08 /* MKS3Operation.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD85B7D15DAA44D00F9DB08 /* MKS3Operation.m */; };
+		ABD85B9415DAA44D00F9DB08 /* S3Bucket.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD85B7E15DAA44D00F9DB08 /* S3Bucket.h */; };
+		ABD85B9515DAA44D00F9DB08 /* S3Bucket.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD85B7F15DAA44D00F9DB08 /* S3Bucket.m */; };
+		ABD85B9615DAA44D00F9DB08 /* S3Item.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD85B8015DAA44D00F9DB08 /* S3Item.h */; };
+		ABD85B9715DAA44D00F9DB08 /* S3Item.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD85B8115DAA44D00F9DB08 /* S3Item.m */; };
+		ABD85B9815DAA44D00F9DB08 /* S3Object.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD85B8215DAA44D00F9DB08 /* S3Object.h */; };
+		ABD85B9915DAA44D00F9DB08 /* S3Object.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD85B8315DAA44D00F9DB08 /* S3Object.m */; };
 		ABDC97461498A6DE0034CEBE /* NSData+Base64.h in Headers */ = {isa = PBXBuildFile; fileRef = ABDC97441498A6DE0034CEBE /* NSData+Base64.h */; };
 		ABDC97471498A6DE0034CEBE /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = ABDC97451498A6DE0034CEBE /* NSData+Base64.m */; };
 /* End PBXBuildFile section */
@@ -56,28 +56,6 @@
 		AB3A3089148F099C00D06246 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		AB3A3096148F0A3B00D06246 /* NSDate+RFC1123.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+RFC1123.h"; sourceTree = "<group>"; };
 		AB3A3097148F0A3B00D06246 /* NSDate+RFC1123.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+RFC1123.m"; sourceTree = "<group>"; };
-		ABA4A43315DA8E4800268D87 /* MKS3Engine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKS3Engine.h; sourceTree = "<group>"; };
-		ABA4A43415DA8E4800268D87 /* MKS3Engine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKS3Engine.m; sourceTree = "<group>"; };
-		ABA4A43815DA8ECE00268D87 /* MKS3Operation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKS3Operation.h; sourceTree = "<group>"; };
-		ABA4A43915DA8ECE00268D87 /* MKS3Operation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKS3Operation.m; sourceTree = "<group>"; };
-		ABA4A43C15DA8F6700268D87 /* S3Object.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = S3Object.h; sourceTree = "<group>"; };
-		ABA4A43D15DA8F6700268D87 /* S3Object.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = S3Object.m; sourceTree = "<group>"; };
-		ABA4A44215DA8FE400268D87 /* DDXMLElementAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDXMLElementAdditions.h; sourceTree = "<group>"; };
-		ABA4A44315DA8FE400268D87 /* DDXMLElementAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDXMLElementAdditions.m; sourceTree = "<group>"; };
-		ABA4A44515DA8FE400268D87 /* NSString+DDXML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+DDXML.h"; sourceTree = "<group>"; };
-		ABA4A44615DA8FE400268D87 /* NSString+DDXML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+DDXML.m"; sourceTree = "<group>"; };
-		ABA4A44715DA8FE400268D87 /* DDXML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDXML.h; sourceTree = "<group>"; };
-		ABA4A44815DA8FE400268D87 /* DDXMLDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDXMLDocument.h; sourceTree = "<group>"; };
-		ABA4A44915DA8FE400268D87 /* DDXMLDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDXMLDocument.m; sourceTree = "<group>"; };
-		ABA4A44A15DA8FE400268D87 /* DDXMLElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDXMLElement.h; sourceTree = "<group>"; };
-		ABA4A44B15DA8FE400268D87 /* DDXMLElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDXMLElement.m; sourceTree = "<group>"; };
-		ABA4A44C15DA8FE400268D87 /* DDXMLNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDXMLNode.h; sourceTree = "<group>"; };
-		ABA4A44D15DA8FE400268D87 /* DDXMLNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDXMLNode.m; sourceTree = "<group>"; };
-		ABA4A44F15DA8FE400268D87 /* DDXMLPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDXMLPrivate.h; sourceTree = "<group>"; };
-		ABA4A46015DA90F600268D87 /* S3Bucket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = S3Bucket.h; sourceTree = "<group>"; };
-		ABA4A46115DA90F600268D87 /* S3Bucket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = S3Bucket.m; sourceTree = "<group>"; };
-		ABA4A46415DA910500268D87 /* S3Item.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = S3Item.h; sourceTree = "<group>"; };
-		ABA4A46515DA910500268D87 /* S3Item.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = S3Item.m; sourceTree = "<group>"; };
 		ABB5C25C148B3AE00056D3E9 /* libMKNetworkKit-iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libMKNetworkKit-iOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ABB5C25F148B3AE00056D3E9 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		ABB5C263148B3AE00056D3E9 /* MKNetworkKit-iOS-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MKNetworkKit-iOS-Prefix.pch"; sourceTree = "<group>"; };
@@ -96,6 +74,28 @@
 		ABB5C2B7148B3B360056D3E9 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		ABB5C2CB148B40910056D3E9 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		ABB5C2CC148B40910056D3E9 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		ABD85B6C15DAA44D00F9DB08 /* DDXMLElementAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDXMLElementAdditions.h; sourceTree = "<group>"; };
+		ABD85B6D15DAA44D00F9DB08 /* DDXMLElementAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDXMLElementAdditions.m; sourceTree = "<group>"; };
+		ABD85B6F15DAA44D00F9DB08 /* NSString+DDXML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+DDXML.h"; sourceTree = "<group>"; };
+		ABD85B7015DAA44D00F9DB08 /* NSString+DDXML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+DDXML.m"; sourceTree = "<group>"; };
+		ABD85B7115DAA44D00F9DB08 /* DDXML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDXML.h; sourceTree = "<group>"; };
+		ABD85B7215DAA44D00F9DB08 /* DDXMLDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDXMLDocument.h; sourceTree = "<group>"; };
+		ABD85B7315DAA44D00F9DB08 /* DDXMLDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDXMLDocument.m; sourceTree = "<group>"; };
+		ABD85B7415DAA44D00F9DB08 /* DDXMLElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDXMLElement.h; sourceTree = "<group>"; };
+		ABD85B7515DAA44D00F9DB08 /* DDXMLElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDXMLElement.m; sourceTree = "<group>"; };
+		ABD85B7615DAA44D00F9DB08 /* DDXMLNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDXMLNode.h; sourceTree = "<group>"; };
+		ABD85B7715DAA44D00F9DB08 /* DDXMLNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDXMLNode.m; sourceTree = "<group>"; };
+		ABD85B7915DAA44D00F9DB08 /* DDXMLPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDXMLPrivate.h; sourceTree = "<group>"; };
+		ABD85B7A15DAA44D00F9DB08 /* MKS3Engine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKS3Engine.h; sourceTree = "<group>"; };
+		ABD85B7B15DAA44D00F9DB08 /* MKS3Engine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKS3Engine.m; sourceTree = "<group>"; };
+		ABD85B7C15DAA44D00F9DB08 /* MKS3Operation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKS3Operation.h; sourceTree = "<group>"; };
+		ABD85B7D15DAA44D00F9DB08 /* MKS3Operation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKS3Operation.m; sourceTree = "<group>"; };
+		ABD85B7E15DAA44D00F9DB08 /* S3Bucket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = S3Bucket.h; sourceTree = "<group>"; };
+		ABD85B7F15DAA44D00F9DB08 /* S3Bucket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = S3Bucket.m; sourceTree = "<group>"; };
+		ABD85B8015DAA44D00F9DB08 /* S3Item.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = S3Item.h; sourceTree = "<group>"; };
+		ABD85B8115DAA44D00F9DB08 /* S3Item.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = S3Item.m; sourceTree = "<group>"; };
+		ABD85B8215DAA44D00F9DB08 /* S3Object.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = S3Object.h; sourceTree = "<group>"; };
+		ABD85B8315DAA44D00F9DB08 /* S3Object.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = S3Object.m; sourceTree = "<group>"; };
 		ABDC97441498A6DE0034CEBE /* NSData+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Base64.h"; sourceTree = "<group>"; };
 		ABDC97451498A6DE0034CEBE /* NSData+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Base64.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -115,67 +115,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		ABA4A43215DA8E4800268D87 /* S3 */ = {
-			isa = PBXGroup;
-			children = (
-				ABA4A44015DA8FE400268D87 /* KissXML */,
-				ABA4A43315DA8E4800268D87 /* MKS3Engine.h */,
-				ABA4A43415DA8E4800268D87 /* MKS3Engine.m */,
-				ABA4A43815DA8ECE00268D87 /* MKS3Operation.h */,
-				ABA4A43915DA8ECE00268D87 /* MKS3Operation.m */,
-				ABA4A43C15DA8F6700268D87 /* S3Object.h */,
-				ABA4A43D15DA8F6700268D87 /* S3Object.m */,
-				ABA4A46015DA90F600268D87 /* S3Bucket.h */,
-				ABA4A46115DA90F600268D87 /* S3Bucket.m */,
-				ABA4A46415DA910500268D87 /* S3Item.h */,
-				ABA4A46515DA910500268D87 /* S3Item.m */,
-			);
-			path = S3;
-			sourceTree = "<group>";
-		};
-		ABA4A44015DA8FE400268D87 /* KissXML */ = {
-			isa = PBXGroup;
-			children = (
-				ABA4A44115DA8FE400268D87 /* Additions */,
-				ABA4A44415DA8FE400268D87 /* Categories */,
-				ABA4A44715DA8FE400268D87 /* DDXML.h */,
-				ABA4A44815DA8FE400268D87 /* DDXMLDocument.h */,
-				ABA4A44915DA8FE400268D87 /* DDXMLDocument.m */,
-				ABA4A44A15DA8FE400268D87 /* DDXMLElement.h */,
-				ABA4A44B15DA8FE400268D87 /* DDXMLElement.m */,
-				ABA4A44C15DA8FE400268D87 /* DDXMLNode.h */,
-				ABA4A44D15DA8FE400268D87 /* DDXMLNode.m */,
-				ABA4A44E15DA8FE400268D87 /* Private */,
-			);
-			path = KissXML;
-			sourceTree = "<group>";
-		};
-		ABA4A44115DA8FE400268D87 /* Additions */ = {
-			isa = PBXGroup;
-			children = (
-				ABA4A44215DA8FE400268D87 /* DDXMLElementAdditions.h */,
-				ABA4A44315DA8FE400268D87 /* DDXMLElementAdditions.m */,
-			);
-			path = Additions;
-			sourceTree = "<group>";
-		};
-		ABA4A44415DA8FE400268D87 /* Categories */ = {
-			isa = PBXGroup;
-			children = (
-				ABA4A44515DA8FE400268D87 /* NSString+DDXML.h */,
-				ABA4A44615DA8FE400268D87 /* NSString+DDXML.m */,
-			);
-			path = Categories;
-			sourceTree = "<group>";
-		};
-		ABA4A44E15DA8FE400268D87 /* Private */ = {
-			isa = PBXGroup;
-			children = (
-				ABA4A44F15DA8FE400268D87 /* DDXMLPrivate.h */,
-			);
-			path = Private;
-			sourceTree = "<group>";
-		};
 		ABB5C251148B3AE00056D3E9 = {
 			isa = PBXGroup;
 			children = (
@@ -207,7 +146,7 @@
 		ABB5C261148B3AE00056D3E9 /* MKNetworkKit-iOS */ = {
 			isa = PBXGroup;
 			children = (
-				ABA4A43215DA8E4800268D87 /* S3 */,
+				ABD85B6915DAA44D00F9DB08 /* S3 */,
 				ABB5C2A9148B3B360056D3E9 /* Categories */,
 				ABB5C2B0148B3B360056D3E9 /* MKNetworkEngine.h */,
 				ABB5C2B1148B3B360056D3E9 /* MKNetworkEngine.m */,
@@ -264,6 +203,68 @@
 			path = Reachability_h;
 			sourceTree = "<group>";
 		};
+		ABD85B6915DAA44D00F9DB08 /* S3 */ = {
+			isa = PBXGroup;
+			children = (
+				ABD85B6A15DAA44D00F9DB08 /* KissXML */,
+				ABD85B7A15DAA44D00F9DB08 /* MKS3Engine.h */,
+				ABD85B7B15DAA44D00F9DB08 /* MKS3Engine.m */,
+				ABD85B7C15DAA44D00F9DB08 /* MKS3Operation.h */,
+				ABD85B7D15DAA44D00F9DB08 /* MKS3Operation.m */,
+				ABD85B7E15DAA44D00F9DB08 /* S3Bucket.h */,
+				ABD85B7F15DAA44D00F9DB08 /* S3Bucket.m */,
+				ABD85B8015DAA44D00F9DB08 /* S3Item.h */,
+				ABD85B8115DAA44D00F9DB08 /* S3Item.m */,
+				ABD85B8215DAA44D00F9DB08 /* S3Object.h */,
+				ABD85B8315DAA44D00F9DB08 /* S3Object.m */,
+			);
+			name = S3;
+			path = ../../MKNetworkKit/S3;
+			sourceTree = "<group>";
+		};
+		ABD85B6A15DAA44D00F9DB08 /* KissXML */ = {
+			isa = PBXGroup;
+			children = (
+				ABD85B6B15DAA44D00F9DB08 /* Additions */,
+				ABD85B6E15DAA44D00F9DB08 /* Categories */,
+				ABD85B7115DAA44D00F9DB08 /* DDXML.h */,
+				ABD85B7215DAA44D00F9DB08 /* DDXMLDocument.h */,
+				ABD85B7315DAA44D00F9DB08 /* DDXMLDocument.m */,
+				ABD85B7415DAA44D00F9DB08 /* DDXMLElement.h */,
+				ABD85B7515DAA44D00F9DB08 /* DDXMLElement.m */,
+				ABD85B7615DAA44D00F9DB08 /* DDXMLNode.h */,
+				ABD85B7715DAA44D00F9DB08 /* DDXMLNode.m */,
+				ABD85B7815DAA44D00F9DB08 /* Private */,
+			);
+			path = KissXML;
+			sourceTree = "<group>";
+		};
+		ABD85B6B15DAA44D00F9DB08 /* Additions */ = {
+			isa = PBXGroup;
+			children = (
+				ABD85B6C15DAA44D00F9DB08 /* DDXMLElementAdditions.h */,
+				ABD85B6D15DAA44D00F9DB08 /* DDXMLElementAdditions.m */,
+			);
+			path = Additions;
+			sourceTree = "<group>";
+		};
+		ABD85B6E15DAA44D00F9DB08 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				ABD85B6F15DAA44D00F9DB08 /* NSString+DDXML.h */,
+				ABD85B7015DAA44D00F9DB08 /* NSString+DDXML.m */,
+			);
+			path = Categories;
+			sourceTree = "<group>";
+		};
+		ABD85B7815DAA44D00F9DB08 /* Private */ = {
+			isa = PBXGroup;
+			children = (
+				ABD85B7915DAA44D00F9DB08 /* DDXMLPrivate.h */,
+			);
+			path = Private;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -280,18 +281,18 @@
 				ABB5C2C4148B3B360056D3E9 /* Reachability.h in Headers */,
 				AB3A3098148F0A3B00D06246 /* NSDate+RFC1123.h in Headers */,
 				ABDC97461498A6DE0034CEBE /* NSData+Base64.h in Headers */,
-				ABA4A43515DA8E4800268D87 /* MKS3Engine.h in Headers */,
-				ABA4A43A15DA8ECE00268D87 /* MKS3Operation.h in Headers */,
-				ABA4A43E15DA8F6700268D87 /* S3Object.h in Headers */,
-				ABA4A45015DA8FE400268D87 /* DDXMLElementAdditions.h in Headers */,
-				ABA4A45215DA8FE400268D87 /* NSString+DDXML.h in Headers */,
-				ABA4A45415DA8FE400268D87 /* DDXML.h in Headers */,
-				ABA4A45515DA8FE400268D87 /* DDXMLDocument.h in Headers */,
-				ABA4A45715DA8FE400268D87 /* DDXMLElement.h in Headers */,
-				ABA4A45915DA8FE400268D87 /* DDXMLNode.h in Headers */,
-				ABA4A45B15DA8FE400268D87 /* DDXMLPrivate.h in Headers */,
-				ABA4A46215DA90F600268D87 /* S3Bucket.h in Headers */,
-				ABA4A46615DA910600268D87 /* S3Item.h in Headers */,
+				ABD85B8415DAA44D00F9DB08 /* DDXMLElementAdditions.h in Headers */,
+				ABD85B8615DAA44D00F9DB08 /* NSString+DDXML.h in Headers */,
+				ABD85B8815DAA44D00F9DB08 /* DDXML.h in Headers */,
+				ABD85B8915DAA44D00F9DB08 /* DDXMLDocument.h in Headers */,
+				ABD85B8B15DAA44D00F9DB08 /* DDXMLElement.h in Headers */,
+				ABD85B8D15DAA44D00F9DB08 /* DDXMLNode.h in Headers */,
+				ABD85B8F15DAA44D00F9DB08 /* DDXMLPrivate.h in Headers */,
+				ABD85B9015DAA44D00F9DB08 /* MKS3Engine.h in Headers */,
+				ABD85B9215DAA44D00F9DB08 /* MKS3Operation.h in Headers */,
+				ABD85B9415DAA44D00F9DB08 /* S3Bucket.h in Headers */,
+				ABD85B9615DAA44D00F9DB08 /* S3Item.h in Headers */,
+				ABD85B9815DAA44D00F9DB08 /* S3Object.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -354,16 +355,16 @@
 				ABB5C2C5148B3B360056D3E9 /* Reachability.m in Sources */,
 				AB3A3099148F0A3B00D06246 /* NSDate+RFC1123.m in Sources */,
 				ABDC97471498A6DE0034CEBE /* NSData+Base64.m in Sources */,
-				ABA4A43615DA8E4800268D87 /* MKS3Engine.m in Sources */,
-				ABA4A43B15DA8ECE00268D87 /* MKS3Operation.m in Sources */,
-				ABA4A43F15DA8F6700268D87 /* S3Object.m in Sources */,
-				ABA4A45115DA8FE400268D87 /* DDXMLElementAdditions.m in Sources */,
-				ABA4A45315DA8FE400268D87 /* NSString+DDXML.m in Sources */,
-				ABA4A45615DA8FE400268D87 /* DDXMLDocument.m in Sources */,
-				ABA4A45815DA8FE400268D87 /* DDXMLElement.m in Sources */,
-				ABA4A45A15DA8FE400268D87 /* DDXMLNode.m in Sources */,
-				ABA4A46315DA90F600268D87 /* S3Bucket.m in Sources */,
-				ABA4A46715DA910600268D87 /* S3Item.m in Sources */,
+				ABD85B8515DAA44D00F9DB08 /* DDXMLElementAdditions.m in Sources */,
+				ABD85B8715DAA44D00F9DB08 /* NSString+DDXML.m in Sources */,
+				ABD85B8A15DAA44D00F9DB08 /* DDXMLDocument.m in Sources */,
+				ABD85B8C15DAA44D00F9DB08 /* DDXMLElement.m in Sources */,
+				ABD85B8E15DAA44D00F9DB08 /* DDXMLNode.m in Sources */,
+				ABD85B9115DAA44D00F9DB08 /* MKS3Engine.m in Sources */,
+				ABD85B9315DAA44D00F9DB08 /* MKS3Operation.m in Sources */,
+				ABD85B9515DAA44D00F9DB08 /* S3Bucket.m in Sources */,
+				ABD85B9715DAA44D00F9DB08 /* S3Item.m in Sources */,
+				ABD85B9915DAA44D00F9DB08 /* S3Object.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

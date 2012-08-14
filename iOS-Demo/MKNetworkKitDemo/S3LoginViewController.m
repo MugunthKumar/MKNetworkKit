@@ -61,14 +61,16 @@
   } onError:^(NSError *engineError) {
     DLog(@"%@", engineError);
   }];
+}
+
+-(IBAction)enumItemsInBucket:(id)sender {
   
-  [self.s3Engine enumerateItemsAtPath:@""
-                            onSucceeded:^(NSMutableArray *listOfModelBaseObjects) {
-                              
-                              DLog(@"%@", listOfModelBaseObjects);
-                            } onError:^(NSError *engineError) {
-                              DLog(@"%@", engineError);
-                            }];
+  [self.s3Engine enumerateItemsInBucket:@"" path:nil onSucceeded:^(NSMutableArray *listOfModelBaseObjects) {
+    
+    DLog(@"%@", listOfModelBaseObjects);
+  } onError:^(NSError *engineError) {
+    DLog(@"%@", engineError);
+  }];
 }
 
 @end

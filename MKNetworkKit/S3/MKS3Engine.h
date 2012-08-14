@@ -22,9 +22,10 @@ typedef void (^StatusBlock)(int statusCode);
 -(MKS3Operation*) enumerateBucketsOnSucceeded:(ArrayBlock) succeededBlock
                                       onError:(ErrorBlock) errorBlock;
 
--(MKS3Operation*) enumerateItemsAtPath:(NSString*) path
-                           onSucceeded:(ArrayBlock) succeededBlock
-                               onError:(ErrorBlock) errorBlock;
+-(MKS3Operation*) enumerateItemsInBucket:(NSString*) bucketName
+                                    path:(NSString*) path
+                             onSucceeded:(ArrayBlock) succeededBlock
+                                 onError:(ErrorBlock) errorBlock;
 
 -(MKS3Operation*) uploadFile:(NSString*) filePath
                   toLocation:(NSString*) location
