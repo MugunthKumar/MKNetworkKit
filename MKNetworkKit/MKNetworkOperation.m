@@ -760,7 +760,7 @@
   }];
   
   if (postLength >= 1)
-    [self.request setValue:[NSString stringWithFormat:@"%lu", postLength] forHTTPHeaderField:@"content-length"];
+    [self.request setValue:[NSString stringWithFormat:@"%u", postLength] forHTTPHeaderField:@"content-length"];
   
   [body appendData: [[NSString stringWithFormat:@"--%@--\r\n", boundary] dataUsingEncoding:self.stringEncoding]];
   
