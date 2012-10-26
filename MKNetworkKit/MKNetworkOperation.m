@@ -170,44 +170,40 @@
 }
 - (void)setPostDataEncoding:(MKNKPostDataEncodingType)aPostDataEncoding
 {
-  if (_postDataEncoding != aPostDataEncoding) {
-    [self willChangeValueForKey:@"postDataEncoding"];
-    _postDataEncoding = aPostDataEncoding;
-    
-    NSString *charset = (__bridge NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(self.stringEncoding));
-    
-    switch (self.postDataEncoding) {
-        
-      case MKNKPostDataEncodingTypeURL: {
-        [self.request setValue:
-         [NSString stringWithFormat:@"application/x-www-form-urlencoded; charset=%@", charset]
-            forHTTPHeaderField:@"Content-Type"];
-      }
-        break;
-      case MKNKPostDataEncodingTypeJSON: {
-        if(NSClassFromString(@"NSJSONSerialization")) {
-        [self.request setValue:
-         [NSString stringWithFormat:@"application/json; charset=%@", charset]
-            forHTTPHeaderField:@"Content-Type"];
-        }
-        else {
-          [self.request setValue:
-             [NSString stringWithFormat:@"application/x-www-form-urlencoded; charset=%@", charset]
-                forHTTPHeaderField:@"Content-Type"];
-
-        }
-      }
-        break;
-      case MKNKPostDataEncodingTypePlist: {
-        [self.request setValue:
-         [NSString stringWithFormat:@"application/x-plist; charset=%@", charset]
-            forHTTPHeaderField:@"Content-Type"];
-      }
-        
-      default:
-        break;
+  _postDataEncoding = aPostDataEncoding;
+  
+  NSString *charset = (__bridge NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(self.stringEncoding));
+  
+  switch (self.postDataEncoding) {
+      
+    case MKNKPostDataEncodingTypeURL: {
+      [self.request setValue:
+       [NSString stringWithFormat:@"application/x-www-form-urlencoded; charset=%@", charset]
+          forHTTPHeaderField:@"Content-Type"];
     }
-    [self didChangeValueForKey:@"postDataEncoding"];
+      break;
+    case MKNKPostDataEncodingTypeJSON: {
+      if(NSClassFromString(@"NSJSONSerialization")) {
+      [self.request setValue:
+       [NSString stringWithFormat:@"application/json; charset=%@", charset]
+          forHTTPHeaderField:@"Content-Type"];
+      }
+      else {
+        [self.request setValue:
+           [NSString stringWithFormat:@"application/x-www-form-urlencoded; charset=%@", charset]
+              forHTTPHeaderField:@"Content-Type"];
+
+      }
+    }
+      break;
+    case MKNKPostDataEncodingTypePlist: {
+      [self.request setValue:
+       [NSString stringWithFormat:@"application/x-plist; charset=%@", charset]
+          forHTTPHeaderField:@"Content-Type"];
+    }
+      
+    default:
+      break;
   }
 }
 
