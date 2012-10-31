@@ -518,10 +518,15 @@ static NSOperationQueue *_sharedNetworkQueue;
 #pragma mark Cache related
 
 -(NSString*) cacheDirectoryName {
+
+  __block NSString *cacheDirectoryName = nil;
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = paths[0];
+    cacheDirectoryName = [documentsDirectory stringByAppendingPathComponent:MKNETWORKCACHE_DEFAULT_DIRECTORY];
+  });
   
-  NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-  NSString *documentsDirectory = paths[0];
-  NSString *cacheDirectoryName = [documentsDirectory stringByAppendingPathComponent:MKNETWORKCACHE_DEFAULT_DIRECTORY];
   return cacheDirectoryName;
 }
 
