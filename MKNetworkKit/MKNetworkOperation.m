@@ -1211,7 +1211,9 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
     CGContextDrawImage(context, rect, imageRef);
     if (sameSize) {
       CGContextRelease(context);
-      imageDecompressionHandler(image);
+      dispatch_async(dispatch_get_main_queue(), ^{
+        imageDecompressionHandler(image);
+      });
       return;
     }
     CGImageRef decompressedImageRef = CGBitmapContextCreateImage(context);
