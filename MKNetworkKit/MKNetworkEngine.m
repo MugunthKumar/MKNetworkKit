@@ -44,6 +44,7 @@
 @property (nonatomic, strong) NSMutableDictionary *memoryCache;
 @property (nonatomic, strong) NSMutableArray *memoryCacheKeys;
 @property (nonatomic, strong) NSMutableDictionary *cacheInvalidationParams;
+@property (assign, nonatomic) dispatch_queue_t backgroundCacheQueue;
 
 -(void) saveCache;
 -(void) saveCacheData:(NSData*) data forKey:(NSString*) cacheDataKey;
@@ -93,6 +94,7 @@ static NSOperationQueue *_sharedNetworkQueue;
   if((self = [super init])) {
     
     self.apiPath = apiPath;
+    self.backgroundCacheQueue = dispatch_queue_create("com.mknetworkkit.cachequeue", DISPATCH_QUEUE_SERIAL);
     
     if(hostName) {
       [[NSNotificationCenter defaultCenter] addObserver:self
@@ -552,7 +554,8 @@ static NSOperationQueue *_sharedNetworkQueue;
 
 -(void) saveCacheData:(NSData*) data forKey:(NSString*) cacheDataKey
 {
-  @synchronized(self) {
+  dispatch_async(self.backgroundCacheQueue, ^{
+    
     (self.memoryCache)[cacheDataKey] = data;
     
     NSUInteger index = [self.memoryCacheKeys indexOfObject:cacheDataKey];
@@ -578,7 +581,7 @@ static NSOperationQueue *_sharedNetworkQueue;
       [self.memoryCacheKeys removeLastObject];
       [self.memoryCache removeObjectForKey:lastKey];
     }
-  }
+  });
 }
 
 /*

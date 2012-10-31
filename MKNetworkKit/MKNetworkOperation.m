@@ -1050,7 +1050,7 @@
       NSString *bytesText = [rangeString substringWithRange:NSMakeRange(6, [rangeString length] - 7)];
       self.startPosition = [bytesText integerValue];
       self.downloadedDataSize = self.startPosition;
-      DLog(@"Resuming at %d bytes", self.startPosition);
+      DLog(@"Resuming at %lu bytes", (unsigned long) self.startPosition);
     }
   }
   
