@@ -30,6 +30,12 @@
 #error MKNetworkKit does not support Objective-C Garbage Collection
 #endif
 
+#if TARGET_OS_IPHONE
+#ifndef __IPHONE_5_0
+#error MKNetworkKit does not support iOS 4 and lower
+#endif
+#endif
+
 #if ! __has_feature(objc_arc)
 #error MKNetworkKit is ARC only. Either turn on ARC for the project or use -fobjc-arc flag
 #endif

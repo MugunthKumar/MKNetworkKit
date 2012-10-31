@@ -1,8 +1,6 @@
-This is version 0.85 of MKNetworkKit. Read the [blog post](http://mk.sg/8w) for more. The master branch is a live working branch. Expect bugs!(?). Nah, most bugs are squashed already. Special thanks to all of you contributors.
+This is version 0.85 of MKNetworkKit. Read the [blog post](http://mk.sg/8w) for more. The latest code is still not fully testing on Mac, though iOS is complete. Caching responses and invalidation of cache is not implemented the right way for the Mac target. 
 
-If you are too chicken, you can always pickup the latest stable code at the tag [v0.83](https://github.com/MugunthKumar/MKNetworkKit/zipball/v0.83)
-
-The latest stable code is still not fully testing on Mac, though iOS is complete. Caching responses and invalidation of cache is not implemented the right way for the Mac target. MKNetworkKit is ready for production use on iOS apps.
+MKNetworkKit is ready for production use on iOS apps.
 
 MKNetworkKit can also be compiled to a static library and included. I will be updating the documentation on how to do this soon.
 
@@ -89,9 +87,6 @@ Gentle Bytes appledoc@gentlebytes.com
 
 * Example code for Mac
 * Fix AppleDoc warnings
-
-
-I'll be working on this soon. But you can start forking it and getting it right
 
 ---
 ###Known Issues
