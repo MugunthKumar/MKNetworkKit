@@ -1219,8 +1219,9 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
     
     UIImage *decompressedImage = [[UIImage alloc] initWithCGImage:decompressedImageRef scale:image.scale orientation:image.imageOrientation];
     CGImageRelease(decompressedImageRef);
-    imageDecompressionHandler(decompressedImage);
-    
+    dispatch_async(dispatch_get_main_queue(), ^{
+      imageDecompressionHandler(decompressedImage);
+    });    
   });
 }
 

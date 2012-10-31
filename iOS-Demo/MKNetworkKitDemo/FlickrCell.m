@@ -59,32 +59,14 @@
      thisFlickrImage[@"id"], thisFlickrImage[@"secret"]];
     
     self.imageLoadingOperation = [ApplicationDelegate.flickrEngine imageAtURL:[NSURL URLWithString:self.loadingImageURLString]
-                                                                         //size:CGSizeMake(self.thumbnailImage.frame.size.width * 2, self.thumbnailImage.frame.size.height * 2) // uncomment this line to load images in background. It's slow though.
+                                                                         size:CGSizeMake(self.thumbnailImage.frame.size.width * 2, self.thumbnailImage.frame.size.height * 2)
                                     onCompletion:^(UIImage *fetchedImage, NSURL *url, BOOL isInCache) {
                                         
                                         if([self.loadingImageURLString isEqualToString:[url absoluteString]]) {
                                             
-                                            if (isInCache) {
-                                                self.thumbnailImage.image = fetchedImage;
-                                            } else {
-                                                UIImageView *loadedImageView = [[UIImageView alloc] initWithImage:fetchedImage];
-                                                loadedImageView.frame = self.thumbnailImage.frame;
-                                                loadedImageView.alpha = 0;
-                                                [self.contentView addSubview:loadedImageView];
-                                                
-                                                [UIView animateWithDuration:0.4
-                                                                 animations:^
-                                                 {
-                                                     loadedImageView.alpha = 1;
-                                                     self.thumbnailImage.alpha = 0;
-                                                 }
-                                                                 completion:^(BOOL finished)
-                                                 {
-                                                     self.thumbnailImage.image = fetchedImage;
-                                                     self.thumbnailImage.alpha = 1;
-                                                     [loadedImageView removeFromSuperview];
-                                                 }];
-                                            }
+                                          [UIView animateWithDuration:isInCache?0.0f:0.4f delay:0 options:UIViewAnimationOptionShowHideTransitionViews animations:^{
+                                            self.thumbnailImage.image = fetchedImage;
+                                          } completion:nil];
                                         }
                                     }];
 }
