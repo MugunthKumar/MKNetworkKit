@@ -10,7 +10,7 @@
 
 @interface FlickrCell : UITableViewCell 
 
-@property (nonatomic, assign) IBOutlet UIImageView *thumbnailImage;
+@property (nonatomic, strong) IBOutlet UIImageView *thumbnailImage;
 @property (nonatomic, assign) IBOutlet UILabel *titleLabel;
 @property (nonatomic, assign) IBOutlet UILabel *authorNameLabel;
 

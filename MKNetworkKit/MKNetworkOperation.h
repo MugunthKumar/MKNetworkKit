@@ -491,6 +491,7 @@ typedef enum {
  */
 #if TARGET_OS_IPHONE
 -(UIImage*) responseImage;
+-(void) decompressedResponseImageOfSize:(CGSize) size completionHandler:(void (^)(UIImage *decompressedImage)) imageDecompressionHandler;
 #elif TARGET_OS_MAC
 -(NSImage*) responseImage;
 -(NSXMLDocument*) responseXML;

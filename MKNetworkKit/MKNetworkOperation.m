@@ -84,54 +84,8 @@
 @end
 
 @implementation MKNetworkOperation
-@synthesize postDataEncodingHandler = _postDataEncodingHandler;
 
-@synthesize stringEncoding = _stringEncoding;
 @dynamic freezable;
-@synthesize uniqueId = _uniqueId; // freezable operations have a unique id
-
-@synthesize connection = _connection;
-
-@synthesize request = _request;
-@synthesize response = _response;
-
-@synthesize fieldsToBePosted = _fieldsToBePosted;
-@synthesize filesToBePosted = _filesToBePosted;
-@synthesize dataToBePosted = _dataToBePosted;
-
-@synthesize username = _username;
-@synthesize password = _password;
-@synthesize clientCertificate = _clientCertificate;
-@synthesize authHandler = _authHandler;
-@synthesize operationStateChangedHandler = _operationStateChangedHandler;
-
-@synthesize responseBlocks = _responseBlocks;
-@synthesize errorBlocks = _errorBlocks;
-
-@synthesize isCancelled = _isCancelled;
-@synthesize mutableData = _mutableData;
-@synthesize downloadedDataSize = _downloadedDataSize;
-
-@synthesize uploadProgressChangedHandlers = _uploadProgressChangedHandlers;
-@synthesize downloadProgressChangedHandlers = _downloadProgressChangedHandlers;
-
-@synthesize downloadStreams = _downloadStreams;
-
-@synthesize cachedResponse = _cachedResponse;
-@synthesize cacheHandlingBlock = _cacheHandlingBlock;
-@synthesize credentialPersistence = _credentialPersistence;
-
-@synthesize startPosition = _startPosition;
-
-#if TARGET_OS_IPHONE    
-@synthesize backgroundTaskId = _backgroundTaskId;
-@synthesize localNotification = localNotification_;
-@synthesize shouldShowLocalNotificationOnError = shouldShowLocalNotificationOnError_;
-#endif
-
-@synthesize cacheHeaders = _cacheHeaders;
-@synthesize error = _error;
-
 
 // A RESTful service should always return the same response for a given URL and it's parameters.
 // this means if these values are correct, you can cache the responses
@@ -1224,6 +1178,56 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
   
   return [UIImage imageWithData:[self responseData]];
 }
+
+-(void) decompressedResponseImageOfSize:(CGSize) size completionHandler:(void (^)(UIImage *decompressedImage)) imageDecompressionHandler {
+  
+  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+    
+    __block CGSize targetSize = size;
+    UIImage *image = [self responseImage];
+    CGImageRef imageRef = image.CGImage;
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    CGImageAlphaInfo alphaInfo = CGImageGetAlphaInfo(imageRef);
+    BOOL sameSize = NO;
+    if (CGSizeEqualToSize(targetSize, CGSizeMake(CGImageGetWidth(imageRef), CGImageGetHeight(imageRef)))) {
+      targetSize = CGSizeMake(1, 1);
+      sameSize = YES;
+    }
+    size_t imageWidth = (size_t)targetSize.width;
+    size_t imageHeight = (size_t)targetSize.height;
+    CGContextRef context = CGBitmapContextCreate(NULL,
+                                                 imageWidth,
+                                                 imageHeight,
+                                                 8,
+                                                 // Just always return width * 4 will be enough
+                                                 imageWidth * 4,
+                                                 // System only supports RGB, set explicitly
+                                                 colorSpace,
+                                                 // Makes system don't need to do extra conversion when displayed.
+                                                 alphaInfo | kCGBitmapByteOrder32Little);
+    CGColorSpaceRelease(colorSpace);
+    if (!context) {
+      return;
+    }
+    
+    
+    CGRect rect = (CGRect){CGPointZero, {imageWidth, imageHeight}};
+    CGContextDrawImage(context, rect, imageRef);
+    if (sameSize) {
+      CGContextRelease(context);
+      imageDecompressionHandler(image);
+      return;
+    }
+    CGImageRef decompressedImageRef = CGBitmapContextCreateImage(context);
+    CGContextRelease(context);
+    
+    UIImage *decompressedImage = [[UIImage alloc] initWithCGImage:decompressedImageRef scale:image.scale orientation:image.imageOrientation];
+    CGImageRelease(decompressedImageRef);
+    imageDecompressionHandler(decompressedImage);
+    
+  });
+}
+
 #elif TARGET_OS_MAC
 -(NSImage*) responseImage {
   

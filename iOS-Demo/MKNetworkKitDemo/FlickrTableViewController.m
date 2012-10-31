@@ -10,7 +10,6 @@
 #import "FlickrCell.h"
 
 @implementation FlickrTableViewController
-@synthesize flickrImages = flickrImages_;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {

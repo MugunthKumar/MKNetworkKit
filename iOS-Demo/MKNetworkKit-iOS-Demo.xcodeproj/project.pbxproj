@@ -21,6 +21,7 @@
 		AB74B1111467E5790088BF09 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB74B1101467E5790088BF09 /* CFNetwork.framework */; };
 		AB74B1131467E5850088BF09 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB74B1121467E5850088BF09 /* SystemConfiguration.framework */; };
 		AB80BBB6148B672100B6DC2A /* AuthTestEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = AB80BBB5148B672100B6DC2A /* AuthTestEngine.m */; };
+		AB94373616411E0A0002299C /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = AB94373516411E0A0002299C /* Default-568h@2x.png */; };
 		ABB5C2C8148B3E230056D3E9 /* SampleImage.jpg in Resources */ = {isa = PBXBuildFile; fileRef = ABB5C2C7148B3E230056D3E9 /* SampleImage.jpg */; };
 		ABB5C2CA148B3F370056D3E9 /* libMKNetworkKit-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ABB5C2C9148B3F370056D3E9 /* libMKNetworkKit-iOS.a */; };
 		ABC25179146802B900264474 /* YahooEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = ABC25178146802B900264474 /* YahooEngine.m */; };
@@ -54,6 +55,7 @@
 		AB74B1121467E5850088BF09 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		AB80BBB4148B672100B6DC2A /* AuthTestEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AuthTestEngine.h; sourceTree = "<group>"; };
 		AB80BBB5148B672100B6DC2A /* AuthTestEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AuthTestEngine.m; sourceTree = "<group>"; };
+		AB94373516411E0A0002299C /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		ABB5C2C7148B3E230056D3E9 /* SampleImage.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = SampleImage.jpg; path = ../SampleImage.jpg; sourceTree = "<group>"; };
 		ABB5C2C9148B3F370056D3E9 /* libMKNetworkKit-iOS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libMKNetworkKit-iOS.a"; path = "../MKNetworkKit-iOS/build/Release-iphoneos/libMKNetworkKit-iOS.a"; sourceTree = "<group>"; };
 		ABC25177146802B900264474 /* YahooEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YahooEngine.h; sourceTree = "<group>"; };
@@ -90,6 +92,7 @@
 		AB74B0B21467CC120088BF09 = {
 			isa = PBXGroup;
 			children = (
+				AB94373516411E0A0002299C /* Default-568h@2x.png */,
 				AB0AEA12149B2B45007327D6 /* client.p12 */,
 				ABB5C2C9148B3F370056D3E9 /* libMKNetworkKit-iOS.a */,
 				ABB5C2C7148B3E230056D3E9 /* SampleImage.jpg */,
@@ -209,6 +212,7 @@
 				ABF149CA1467F312008B20C9 /* MainStoryboard.storyboard in Resources */,
 				ABB5C2C8148B3E230056D3E9 /* SampleImage.jpg in Resources */,
 				AB0AEA13149B2B46007327D6 /* client.p12 in Resources */,
+				AB94373616411E0A0002299C /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

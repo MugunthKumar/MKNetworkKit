@@ -27,14 +27,6 @@
 
 @implementation AppDelegate
 
-@synthesize window = _window;
-@synthesize yahooEngine = _yahooEngine;
-@synthesize twitPicUploader = _twitPicUploader;
-@synthesize sampleDownloader = _sampleDownloader;
-@synthesize samplePoster = _samplePoster;
-@synthesize sampleAuth = _sampleAuth;
-@synthesize flickrEngine = flickrEngine_;
-
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.

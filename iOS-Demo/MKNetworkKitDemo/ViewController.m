@@ -28,15 +28,6 @@
 
 @implementation ViewController
 
-@synthesize uploadOperation = _uploadOperation;
-@synthesize downloadOperation = _downloadOperation;
-@synthesize currencyOperation = _currencyOperation;
-
-@synthesize downloadProgessBar = _downloadProgessBar;
-@synthesize uploadProgessBar = _uploadProgessBar;
-@synthesize userTextField = _userTextField;
-@synthesize passwordTextField = _passwordTextField;
-
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];

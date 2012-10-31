@@ -9,11 +9,6 @@
 #import "FlickrCell.h"
 
 @implementation FlickrCell
-@synthesize titleLabel = titleLabel_;
-@synthesize authorNameLabel = authorNameLabel_;
-@synthesize thumbnailImage = thumbnailImage_;
-@synthesize loadingImageURLString = loadingImageURLString_;
-@synthesize imageLoadingOperation = imageLoadingOperation_;
 
 //=========================================================== 
 // + (BOOL)automaticallyNotifiesObserversForKey:
@@ -63,7 +58,8 @@
      [thisFlickrImage objectForKey:@"farm"], [thisFlickrImage objectForKey:@"server"], 
      [thisFlickrImage objectForKey:@"id"], [thisFlickrImage objectForKey:@"secret"]];
     
-    self.imageLoadingOperation = [ApplicationDelegate.flickrEngine imageAtURL:[NSURL URLWithString:self.loadingImageURLString] 
+    self.imageLoadingOperation = [ApplicationDelegate.flickrEngine imageAtURL:[NSURL URLWithString:self.loadingImageURLString]
+                                                                         size:CGSizeMake(self.thumbnailImage.frame.size.width * 2, self.thumbnailImage.frame.size.height * 2)
                                     onCompletion:^(UIImage *fetchedImage, NSURL *url, BOOL isInCache) {
                                         
                                         if([self.loadingImageURLString isEqualToString:[url absoluteString]]) {
