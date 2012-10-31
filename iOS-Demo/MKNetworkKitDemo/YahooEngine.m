@@ -44,7 +44,7 @@
          // the completionBlock will be called twice. 
          // if you are interested only in new values, move that code within the else block
          
-         NSString *valueString = [[[completedOperation responseString] componentsSeparatedByString:@","] objectAtIndex:1];
+         NSString *valueString = [[completedOperation responseString] componentsSeparatedByString:@","][1];
          DLog(@"%@", valueString);
 
          if([completedOperation isCachedResponse]) {

@@ -34,7 +34,7 @@
     [op onCompletion:^(MKNetworkOperation *completedOperation) {
     
         NSDictionary *response = [completedOperation responseJSON];
-        imageURLBlock([[response objectForKey:@"photos"] objectForKey:@"photo"]);
+        imageURLBlock(response[@"photos"][@"photo"]);
         
     } onError:^(NSError *error) {
         
@@ -47,7 +47,7 @@
 -(NSString*) cacheDirectoryName {
     
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = [paths objectAtIndex:0];
+    NSString *documentsDirectory = paths[0];
     NSString *cacheDirectoryName = [documentsDirectory stringByAppendingPathComponent:@"FlickrImages"];
     return cacheDirectoryName;
 }

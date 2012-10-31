@@ -13,9 +13,8 @@
 -(MKNetworkOperation*) postDataToServer {
     
     MKNetworkOperation *op = [self operationWithPath:@"Versions/1.5/login.php" 
-                                              params:[NSDictionary dictionaryWithObjectsAndKeys:
-                                                      @"bobs@thga.me", @"email",
-                                                      @"12345678", @"password", nil]
+                                              params:@{@"email": @"bobs@thga.me",
+                                                      @"password": @"12345678"}
                                           httpMethod:@"POST"];    
     
     //[op setUsername:@"bobs@thga.me" password:@"12345678"];

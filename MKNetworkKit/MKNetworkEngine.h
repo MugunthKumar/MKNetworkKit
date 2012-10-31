@@ -101,7 +101,7 @@
  *  
  */
 -(MKNetworkOperation*) operationWithPath:(NSString*) path
-                         params:(NSMutableDictionary*) body;
+                         params:(NSDictionary*) body;
 
 /*!
  *  @abstract Creates a simple GET Operation with a request URL, parameters and HTTP Method
@@ -114,7 +114,7 @@
  *  The HTTP Method is implicitly assumed to be GET
  */
 -(MKNetworkOperation*) operationWithPath:(NSString*) path
-                         params:(NSMutableDictionary*) body
+                         params:(NSDictionary*) body
                    httpMethod:(NSString*)method;
 
 /*!
@@ -130,7 +130,7 @@
  *  The previously mentioned methods operationWithPath: and operationWithPath:params: call this internally
  */
 -(MKNetworkOperation*) operationWithPath:(NSString*) path
-                         params:(NSMutableDictionary*) body
+                         params:(NSDictionary*) body
                    httpMethod:(NSString*)method 
                           ssl:(BOOL) useSSL;
 
@@ -157,7 +157,7 @@
  *  The HTTP method is implicitly assumed to be GET.
  */
 -(MKNetworkOperation*) operationWithURLString:(NSString*) urlString
-                                       params:(NSMutableDictionary*) body;
+                                       params:(NSDictionary*) body;
 
 /*!
  *  @abstract Creates a simple Operation with a request URL, parameters and HTTP Method
@@ -174,7 +174,7 @@
  *  prepareHeaders:
  */
 -(MKNetworkOperation*) operationWithURLString:(NSString*) urlString
-                              params:(NSMutableDictionary*) body
+                              params:(NSDictionary*) body
                         httpMethod:(NSString*) method;
 
 /*!

@@ -32,10 +32,8 @@
                                    onError:(MKNKErrorBlock) errorBlock {
   
   MKNetworkOperation *op = [self operationWithPath:@"api/upload" 
-                                            params:[NSDictionary dictionaryWithObjectsAndKeys:
-                                                    kTwitterUserName, @"username",
-                                                    kTwitterPassword, @"password",
-                                                    nil]
+                                            params:@{@"username": kTwitterUserName,
+                                                    @"password": kTwitterPassword}
                                         httpMethod:@"POST"];
   
   [op addFile:file forKey:@"media"];

@@ -91,9 +91,7 @@
                                    onError:(MKNKErrorBlock) errorBlock {
   
   MKNetworkOperation *op = [self operationWithPath:@"mknetworkkit/upload.php" 
-                                            params:[NSDictionary dictionaryWithObjectsAndKeys:
-                                                    @"YES", @"Submit",
-                                                    nil]
+                                            params:@{@"Submit": @"YES"}
                                         httpMethod:@"POST"];
   
   [op addFile:file forKey:@"image"];

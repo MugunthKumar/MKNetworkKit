@@ -101,7 +101,7 @@
 {
 	FlickrCell *cell = (FlickrCell*)[tableView dequeueReusableCellWithIdentifier:@"FlickrCell"];
     
-    NSDictionary *thisFlickrImage = [self.flickrImages objectAtIndex:indexPath.row];
+    NSDictionary *thisFlickrImage = (self.flickrImages)[indexPath.row];
 
     // code from Stanford Tutorial
     [cell setFlickrData:thisFlickrImage];

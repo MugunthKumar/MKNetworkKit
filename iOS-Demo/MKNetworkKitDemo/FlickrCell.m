@@ -51,12 +51,12 @@
 
 -(void) setFlickrData:(NSDictionary*) thisFlickrImage {
     
-    self.titleLabel.text = [thisFlickrImage objectForKey:@"title"];
-	self.authorNameLabel.text = [thisFlickrImage objectForKey:@"owner"];
+    self.titleLabel.text = thisFlickrImage[@"title"];
+	self.authorNameLabel.text = thisFlickrImage[@"owner"];
     self.loadingImageURLString =
     [NSString stringWithFormat:@"http://farm%@.static.flickr.com/%@/%@_%@_s.jpg", 
-     [thisFlickrImage objectForKey:@"farm"], [thisFlickrImage objectForKey:@"server"], 
-     [thisFlickrImage objectForKey:@"id"], [thisFlickrImage objectForKey:@"secret"]];
+     thisFlickrImage[@"farm"], thisFlickrImage[@"server"], 
+     thisFlickrImage[@"id"], thisFlickrImage[@"secret"]];
     
     self.imageLoadingOperation = [ApplicationDelegate.flickrEngine imageAtURL:[NSURL URLWithString:self.loadingImageURLString]
                                                                          size:CGSizeMake(self.thumbnailImage.frame.size.width * 2, self.thumbnailImage.frame.size.height * 2)

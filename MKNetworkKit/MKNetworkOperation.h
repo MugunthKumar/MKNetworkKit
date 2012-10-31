@@ -543,6 +543,6 @@ typedef enum {
 -(NSString*) uniqueIdentifier;
 
 - (id)initWithURLString:(NSString *)aURLString
-                 params:(NSMutableDictionary *)params
+                 params:(NSDictionary *)params
              httpMethod:(NSString *)method;
 @end
