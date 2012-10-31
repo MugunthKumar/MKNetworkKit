@@ -353,7 +353,7 @@
   self = [super init];
   if (self) {
     [self setStringEncoding:[decoder decodeIntegerForKey:@"stringEncoding"]];
-    _postDataEncoding = [decoder decodeIntegerForKey:@"postDataEncoding"];
+    _postDataEncoding = (MKNKPostDataEncodingType) [decoder decodeIntegerForKey:@"postDataEncoding"];
     self.request = [decoder decodeObjectForKey:@"request"];
     self.uniqueId = [decoder decodeObjectForKey:@"uniqueId"];
     
@@ -710,7 +710,7 @@
   }];
   
   if (postLength >= 1)
-    [self.request setValue:[NSString stringWithFormat:@"%u", postLength] forHTTPHeaderField:@"content-length"];
+    [self.request setValue:[NSString stringWithFormat:@"%lu", (unsigned long) postLength] forHTTPHeaderField:@"Content-Length"];
   
   [body appendData: [[NSString stringWithFormat:@"--%@--\r\n", boundary] dataUsingEncoding:self.stringEncoding]];
   
@@ -720,7 +720,7 @@
     [self.request setValue:[NSString stringWithFormat:@"multipart/form-data; charset=%@; boundary=%@", charset, boundary] 
         forHTTPHeaderField:@"Content-Type"];
     
-    [self.request setValue:[NSString stringWithFormat:@"%d", [body length]] forHTTPHeaderField:@"Content-Length"];
+    [self.request setValue:[NSString stringWithFormat:@"%lu", (unsigned long) [body length]] forHTTPHeaderField:@"Content-Length"];
   }
   
   return body;
