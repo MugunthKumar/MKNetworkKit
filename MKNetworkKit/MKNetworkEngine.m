@@ -483,6 +483,11 @@ static NSOperationQueue *_sharedNetworkQueue;
      DLog(@"%@", error);
    }];
   
+  [op onNotModified:^{
+    
+    DLog(@"Not modified");
+  }];
+  
   [self enqueueOperation:op];
   
   return op;

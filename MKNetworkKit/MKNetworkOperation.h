@@ -31,6 +31,7 @@ typedef enum {
   MKNetworkOperationStateFinished = 3
 } MKNetworkOperationState;
 
+typedef void (^MKNKVoidBlock)(void);
 typedef void (^MKNKProgressBlock)(double progress);
 typedef void (^MKNKResponseBlock)(MKNetworkOperation* completedOperation);
 #if TARGET_OS_IPHONE
@@ -384,6 +385,15 @@ typedef enum {
  *  isCachedResponse
  */
 -(void) onCompletion:(MKNKResponseBlock) response onError:(MKNKErrorBlock) error;
+
+/*!
+ *  @abstract Block Handler for tracking 304 not modified state
+ *
+ *  @discussion
+ *	This method will be called if the server sends a 304 HTTP status for your request.
+ *
+ */
+-(void) onNotModified:(MKNKVoidBlock) notModifiedBlock;
 
 /*!
  *  @abstract Block Handler for tracking upload progress

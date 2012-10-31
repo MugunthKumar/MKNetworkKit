@@ -61,6 +61,8 @@
 @property (strong, nonatomic) NSMutableData *mutableData;
 @property (assign, nonatomic) NSUInteger downloadedDataSize;
 
+@property (nonatomic, strong) NSMutableArray *notModifiedHandlers;
+
 @property (nonatomic, strong) NSMutableArray *uploadProgressChangedHandlers;
 @property (nonatomic, strong) NSMutableArray *downloadProgressChangedHandlers;
 @property (nonatomic, copy) MKNKEncodingBlock postDataEncodingHandler;
@@ -396,6 +398,7 @@
   [theCopy setIsCancelled:self.isCancelled];
   [theCopy setMutableData:[self.mutableData copy]];
   [theCopy setDownloadedDataSize:self.downloadedDataSize];
+  [theCopy setNotModifiedHandlers:[self.notModifiedHandlers copy]];
   [theCopy setUploadProgressChangedHandlers:[self.uploadProgressChangedHandlers copy]];
   [theCopy setDownloadProgressChangedHandlers:[self.downloadProgressChangedHandlers copy]];
   [theCopy setDownloadStreams:[self.downloadStreams copy]];
@@ -417,6 +420,7 @@
   
   [self.responseBlocks addObjectsFromArray:operation.responseBlocks];
   [self.errorBlocks addObjectsFromArray:operation.errorBlocks];
+  [self.notModifiedHandlers addObjectsFromArray:operation.notModifiedHandlers];
   [self.uploadProgressChangedHandlers addObjectsFromArray:operation.uploadProgressChangedHandlers];
   [self.downloadProgressChangedHandlers addObjectsFromArray:operation.downloadProgressChangedHandlers];
   [self.downloadStreams addObjectsFromArray:operation.downloadStreams];
@@ -461,6 +465,11 @@
   [self.errorBlocks addObject:[error copy]];
 }
 
+-(void) onNotModified:(MKNKVoidBlock)notModifiedBlock {
+  
+  [self.notModifiedHandlers addObject:[notModifiedBlock copy]];
+}
+
 -(void) onUploadProgressChanged:(MKNKProgressBlock) uploadProgressBlock {
   
   [self.uploadProgressChangedHandlers addObject:[uploadProgressBlock copy]];
@@ -497,6 +506,7 @@
     self.dataToBePosted = [NSMutableArray array];
     self.fieldsToBePosted = [NSMutableDictionary dictionary];
     
+    self.notModifiedHandlers = [NSMutableArray array];
     self.uploadProgressChangedHandlers = [NSMutableArray array];
     self.downloadProgressChangedHandlers = [NSMutableArray array];
     self.downloadStreams = [NSMutableArray array];
@@ -834,6 +844,9 @@
     [self.errorBlocks removeAllObjects];
     self.errorBlocks = nil;
     
+    [self.notModifiedHandlers removeAllObjects];
+    self.notModifiedHandlers = nil;
+    
     [self.uploadProgressChangedHandlers removeAllObjects];
     self.uploadProgressChangedHandlers = nil;
     
@@ -1095,7 +1108,6 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
   if (inRedirectResponse) {
     NSMutableURLRequest *r = [self.request mutableCopy];
     [r setURL: [inRequest URL]];
-    DLog(@"Redirected to %@", [[inRequest URL] absoluteString]);
     
     return r;
   } else {
@@ -1125,7 +1137,11 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
       DLog(@"%@ has moved to %@", self.url, [self.response.URL absoluteString]);
     }
     else if(self.response.statusCode == 304) {
-      DLog(@"%@ not modified", self.url);
+      
+      for(MKNKVoidBlock notModifiedBlock in self.notModifiedHandlers) {
+        
+        notModifiedBlock();
+      }
     }
     else if(self.response.statusCode == 307) {
       DLog(@"%@ temporarily redirected", self.url);
