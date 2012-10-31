@@ -519,7 +519,7 @@ static NSOperationQueue *_sharedNetworkQueue;
 
 -(NSString*) cacheDirectoryName {
 
-  __block NSString *cacheDirectoryName = nil;
+  static NSString *cacheDirectoryName = nil;
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
