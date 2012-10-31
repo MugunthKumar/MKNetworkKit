@@ -4,7 +4,26 @@ MKNetworkKit is ready for production use on iOS apps.
 
 MKNetworkKit can also be compiled to a static library and included. I will be updating the documentation on how to do this soon.
 
+
 ---
+
+###Why MKNetworkKit?
+
+* Single queue for the whole app
+* Auto queue sizing
+* High performance caching built in
+* Performs exactly one operation for similar requests
+* Background completion
+* cURL-able debug lines
+* Frozen operations. Operations like "faving a tweet" or "marking as read" are frozen when network connectivity is not available and executed when online
+
+These are just a few of most interesting features on MKNetworkKit.
+
+---
+
+###How to use
+Read the [blog post](http://mk.sg/8w) for more.
+
 ###Licensing
 
 MKNetworkKit is licensed under MIT License
@@ -29,27 +48,6 @@ THE SOFTWARE.
 ---
 ###Attribution free licensing
 In case you need attribution free licensing for MKNetworkKit, you can buy one from [my license store](http://blog.mugunthkumar.com/license-store/).
-
-###Why MKNetworkKit?
-
-MKNetworkKit is inspired by the other two popular network frameworks ASIHTTPRequest and AFNetworking.
-Mostly ASI, to some extent, AFNetworking. I've been an unofficial "evangelist" of ASIHTTPRequest till the plug was pulled.
-
-Marrying the feature set from both, MKNetworkKit throws in a bunch of new features like
-
-* Single queue for the whole app
-* Auto queue sizing
-* Auto caching and restoring
-* Performs exactly one operation for similar requests
-* Background completion
-* Full ARC support
-* cURL-able debug lines.
-
-MKNetworkKit's goal was to make it as feature rich as ASIHTTPRequest yet simple and elegant to use like AFNetworking
-
----
-###How to use
-Read the [blog post](http://mk.sg/8w) for more.
 
 ---
 ### Documentation
