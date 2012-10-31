@@ -52,6 +52,7 @@
  *  
  */
 - (id) initWithHostName:(NSString*) hostName;
+
 /*!
  *  @abstract Initializes your network engine with a hostname and custom header fields
  *  
@@ -78,6 +79,7 @@
  *  
  */
 - (id) initWithHostName:(NSString*) hostName apiPath:(NSString*) apiPath customHeaderFields:(NSDictionary*) headers;
+
 /*!
  *  @abstract Creates a simple GET Operation with a request URL
  *  
@@ -134,7 +136,6 @@
                    httpMethod:(NSString*)method 
                           ssl:(BOOL) useSSL;
 
-
 /*!
  *  @abstract Creates a simple GET Operation with a request URL
  *  
@@ -187,8 +188,8 @@
  *  @seealso
  *  operationWithURLString:params:httpMethod:
  */
-
 -(void) prepareHeaders:(MKNetworkOperation*) operation;
+
 /*!
  *  @abstract Handy helper method for fetching images asynchronously in the background
  *
@@ -200,6 +201,7 @@
  *  imageAtUrl:onCompletion:
  */
 - (MKNetworkOperation*)imageAtURL:(NSURL *)url size:(CGSize) size onCompletion:(MKNKImageBlock) imageFetchedBlock;
+
 /*!
  *  @abstract Handy helper method for fetching images
  *  
@@ -209,6 +211,7 @@
  *  The image is returned to the caller via MKNKImageBlock callback block. 
  */
 - (MKNetworkOperation*)imageAtURL:(NSURL *)url onCompletion:(MKNKImageBlock) imageFetchedBlock;
+
 /*!
  *  @abstract Enqueues your operation into the shared queue
  *  
@@ -282,6 +285,7 @@
  *  This method is optional. If you don't use, factory methods in MKNetworkEngine creates MKNetworkOperation objects.
  */
 -(void) registerOperationSubclass:(Class) aClass;
+
 /*!
  *  @abstract Cache Directory Name
  *  

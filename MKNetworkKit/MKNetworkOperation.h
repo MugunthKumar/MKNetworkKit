@@ -177,7 +177,6 @@ typedef enum {
  *  @seealso
  *  postDataEncoding
  */
-
 -(void) setCustomPostDataEncodingHandler:(MKNKEncodingBlock) postDataEncodingHandler forType:(NSString*) contentType;
 
 /*!
@@ -288,6 +287,7 @@ typedef enum {
  *  set this parameter to a UILocalNotification object
  */
 @property (nonatomic, strong) UILocalNotification *localNotification;
+
 /*!
  *  @abstract Shows a local notification when an error occurs
  *  @property shouldShowLocalNotificationOnError
@@ -325,7 +325,7 @@ typedef enum {
  *  Example
  *  [op setToken:@"abracadabra" forAuthType:@"Token"] will set the header value to 
  *  "Authorization: Token abracadabra"
- 
+ * 
  *  @seealso
  *  setUsername:password:basicAuth:
  *  addHeaders:
@@ -383,7 +383,7 @@ typedef enum {
  *  handler was invoked with a cached data or with real data by calling the isCachedResponse method.
  *  This method is deprecated in favour of addCompletionHandler:errorHandler: that returns the completedOperation in the error block as well.
  *  While I will still continue to support this method, I'll remove it completely in a future release.
- 
+ *
  *  @seealso
  *  isCachedResponse
  *  addCompletionHandler:errorHandler:
