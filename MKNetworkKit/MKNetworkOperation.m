@@ -54,6 +54,7 @@
 
 @property (nonatomic, strong) NSMutableArray *responseBlocks;
 @property (nonatomic, strong) NSMutableArray *errorBlocks;
+@property (nonatomic, strong) NSMutableArray *errorBlocksType2;
 
 @property (nonatomic, assign) MKNetworkOperationState state;
 @property (nonatomic, assign) BOOL isCancelled;
@@ -394,6 +395,7 @@
   [theCopy setClientCertificate:[self.clientCertificate copy]];
   [theCopy setResponseBlocks:[self.responseBlocks copy]];
   [theCopy setErrorBlocks:[self.errorBlocks copy]];
+  [theCopy setErrorBlocksType2:[self.errorBlocksType2 copy]];
   [theCopy setState:self.state];
   [theCopy setIsCancelled:self.isCancelled];
   [theCopy setMutableData:[self.mutableData copy]];
@@ -420,6 +422,7 @@
   
   [self.responseBlocks addObjectsFromArray:operation.responseBlocks];
   [self.errorBlocks addObjectsFromArray:operation.errorBlocks];
+  [self.errorBlocksType2 addObjectsFromArray:operation.errorBlocksType2];
   [self.notModifiedHandlers addObjectsFromArray:operation.notModifiedHandlers];
   [self.uploadProgressChangedHandlers addObjectsFromArray:operation.uploadProgressChangedHandlers];
   [self.downloadProgressChangedHandlers addObjectsFromArray:operation.downloadProgressChangedHandlers];
@@ -465,6 +468,14 @@
   [self.errorBlocks addObject:[error copy]];
 }
 
+-(void) addCompletionHandler:(MKNKResponseBlock)response errorHandler:(MKNKResponseErrorBlock)error {
+  
+  if(response)
+    [self.responseBlocks addObject:[response copy]];
+  if(error)
+    [self.errorBlocksType2 addObject:[error copy]];
+}
+
 -(void) onNotModified:(MKNKVoidBlock)notModifiedBlock {
   
   [self.notModifiedHandlers addObject:[notModifiedBlock copy]];
@@ -501,7 +512,7 @@
     
     self.responseBlocks = [NSMutableArray array];
     self.errorBlocks = [NSMutableArray array];
-    
+    self.errorBlocksType2 = [NSMutableArray array];
     self.filesToBePosted = [NSMutableArray array];
     self.dataToBePosted = [NSMutableArray array];
     self.fieldsToBePosted = [NSMutableDictionary dictionary];
@@ -843,6 +854,9 @@
     
     [self.errorBlocks removeAllObjects];
     self.errorBlocks = nil;
+    
+    [self.errorBlocksType2 removeAllObjects];
+    self.errorBlocksType2 = nil;
     
     [self.notModifiedHandlers removeAllObjects];
     self.notModifiedHandlers = nil;
@@ -1303,6 +1317,9 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
   DLog(@"%@, [%@]", self, [self.error localizedDescription]);
   for(MKNKErrorBlock errorBlock in self.errorBlocks)
     errorBlock(error);
+
+  for(MKNKResponseErrorBlock errorBlock in self.errorBlocksType2)
+    errorBlock(self, error);
   
 #if TARGET_OS_IPHONE
   DLog(@"State: %d", [[UIApplication sharedApplication] applicationState]);

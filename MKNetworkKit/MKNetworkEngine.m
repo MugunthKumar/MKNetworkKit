@@ -467,21 +467,18 @@ static NSOperationQueue *_sharedNetworkQueue;
   
   MKNetworkOperation *op = [self operationWithURLString:[url absoluteString]];
   
-  [op
-   onCompletion:^(MKNetworkOperation *completedOperation)
-   {
-     [completedOperation decompressedResponseImageOfSize:size
-                                       completionHandler:^(UIImage *decompressedImage) {
-                                         
-                                         imageFetchedBlock(decompressedImage,
-                                                           url,
-                                                           [completedOperation isCachedResponse]);
-                                       }];
-   }
-   onError:^(NSError* error) {
-     
-     DLog(@"%@", error);
-   }];
+  [op addCompletionHandler:^(MKNetworkOperation *completedOperation) {
+    [completedOperation decompressedResponseImageOfSize:size
+                                      completionHandler:^(UIImage *decompressedImage) {
+                                        
+                                        imageFetchedBlock(decompressedImage,
+                                                          url,
+                                                          [completedOperation isCachedResponse]);
+                                      }];
+  } errorHandler:^(MKNetworkOperation *completedOperation, NSError *error) {
+
+    DLog(@"%@", error);
+  }];
   
   [op onNotModified:^{
     
@@ -507,18 +504,16 @@ static NSOperationQueue *_sharedNetworkQueue;
   
   MKNetworkOperation *op = [self operationWithURLString:[url absoluteString]];
   
-  [op
-   onCompletion:^(MKNetworkOperation *completedOperation)
-   {
-     imageFetchedBlock([completedOperation responseImage],
-                       url,
-                       [completedOperation isCachedResponse]);
-     
-   }
-   onError:^(NSError* error) {
-     
-     DLog(@"%@", error);
-   }];
+  [op addCompletionHandler:^(MKNetworkOperation *completedOperation) {
+    
+    imageFetchedBlock([completedOperation responseImage],
+                      url,
+                      [completedOperation isCachedResponse]);
+    
+  } errorHandler:^(MKNetworkOperation *completedOperation, NSError *error) {
+    
+    DLog(@"%@", error);
+  }];
   
   [self enqueueOperation:op];
   
