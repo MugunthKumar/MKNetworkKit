@@ -1190,14 +1190,8 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
       sameSize = YES;
     }
     
-    static float scale = 0.0f;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-      scale = [UIScreen mainScreen].scale;
-    });
-    
-    size_t imageWidth = (size_t)targetSize.width * scale;
-    size_t imageHeight = (size_t)targetSize.height * scale;
+    size_t imageWidth = (size_t)targetSize.width;
+    size_t imageHeight = (size_t)targetSize.height;
 
     CGContextRef context = CGBitmapContextCreate(NULL,
                                                  imageWidth,
@@ -1227,7 +1221,13 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
     CGImageRef decompressedImageRef = CGBitmapContextCreateImage(context);
     CGContextRelease(context);
     
-    UIImage *decompressedImage = [[UIImage alloc] initWithCGImage:decompressedImageRef scale:image.scale orientation:image.imageOrientation];
+    static float scale = 0.0f;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+      scale = [UIScreen mainScreen].scale;
+    });
+    
+    UIImage *decompressedImage = [[UIImage alloc] initWithCGImage:decompressedImageRef scale:scale orientation:image.imageOrientation];
     CGImageRelease(decompressedImageRef);
     dispatch_async(dispatch_get_main_queue(), ^{
       imageDecompressionHandler(decompressedImage);
