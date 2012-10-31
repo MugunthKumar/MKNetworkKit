@@ -1189,8 +1189,16 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
       targetSize = CGSizeMake(1, 1);
       sameSize = YES;
     }
-    size_t imageWidth = (size_t)targetSize.width;
-    size_t imageHeight = (size_t)targetSize.height;
+    
+    static float scale = 0.0f;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+      scale = [UIScreen mainScreen].scale;
+    });
+    
+    size_t imageWidth = (size_t)targetSize.width * scale;
+    size_t imageHeight = (size_t)targetSize.height * scale;
+
     CGContextRef context = CGBitmapContextCreate(NULL,
                                                  imageWidth,
                                                  imageHeight,

@@ -59,7 +59,7 @@
      thisFlickrImage[@"id"], thisFlickrImage[@"secret"]];
     
     self.imageLoadingOperation = [ApplicationDelegate.flickrEngine imageAtURL:[NSURL URLWithString:self.loadingImageURLString]
-                                                                         size:CGSizeMake(self.thumbnailImage.frame.size.width * 2, self.thumbnailImage.frame.size.height * 2)
+                                                                         size:self.thumbnailImage.frame.size
                                     onCompletion:^(UIImage *fetchedImage, NSURL *url, BOOL isInCache) {
                                         
                                         if([self.loadingImageURLString isEqualToString:[url absoluteString]]) {
