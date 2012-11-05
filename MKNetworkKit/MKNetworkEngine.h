@@ -243,7 +243,7 @@
  *  This property is readonly cannot be updated. 
  *  You normally initialize an engine with its hostname using the initWithHostName:customHeaders: method
  */
-@property (readonly, strong, nonatomic) NSString *readonlyHostName;
+@property (readonly, copy, nonatomic) NSString *readonlyHostName;
 
 /*!
  *  @abstract Port Number that should be used by URL creating factory methods
@@ -263,7 +263,7 @@
  *	You can use this method to set a custom path to the API location if your server's API path is different from root (/) 
  *  This property is optional
  */
-@property (strong, nonatomic) NSString* apiPath;
+@property (copy, nonatomic) NSString* apiPath;
 
 /*!
  *  @abstract Handler that you implement to monitor reachability changes

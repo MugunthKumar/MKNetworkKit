@@ -41,7 +41,7 @@
 
 @interface MKNetworkOperation (/*Private Methods*/)
 @property (strong, nonatomic) NSURLConnection *connection;
-@property (strong, nonatomic) NSString *uniqueId;
+@property (copy, nonatomic) NSString *uniqueId;
 @property (strong, nonatomic) NSMutableURLRequest *request;
 @property (strong, nonatomic) NSHTTPURLResponse *response;
 
@@ -49,8 +49,8 @@
 @property (strong, nonatomic) NSMutableArray *filesToBePosted;
 @property (strong, nonatomic) NSMutableArray *dataToBePosted;
 
-@property (strong, nonatomic) NSString *username;
-@property (strong, nonatomic) NSString *password;
+@property (copy, nonatomic) NSString *username;
+@property (copy, nonatomic) NSString *password;
 
 @property (nonatomic, strong) NSMutableArray *responseBlocks;
 @property (nonatomic, strong) NSMutableArray *errorBlocks;
@@ -71,7 +71,7 @@
 @property (nonatomic, assign) NSInteger startPosition;
 
 @property (nonatomic, strong) NSMutableArray *downloadStreams;
-@property (nonatomic, strong) NSData *cachedResponse;
+@property (nonatomic, copy) NSData *cachedResponse;
 @property (nonatomic, copy) MKNKResponseBlock cacheHandlingBlock;
 
 #if TARGET_OS_IPHONE
