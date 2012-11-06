@@ -1,19 +1,23 @@
 This is version 0.85 of MKNetworkKit. Read the [blog post](http://mk.sg/8w) for more. The latest code is still not fully testing on Mac, though iOS is complete. Caching responses and invalidation of cache is not implemented the right way for the Mac target. 
 
-MKNetworkKit is ready for production use on iOS apps.
+MKNetworkKit is ready for production use on iOS apps. As on date, it's used by several thousands of apps including [Digg](https://itunes.apple.com/us/app/digg/id362872995?mt=8)
 
-MKNetworkKit can also be compiled to a static library and included. I will be updating the documentation on how to do this soon.
+MKNetworkKit officially supports Cocoapods. Add the following line to your Podfile.
 
+pod 'MKNetworkKit',  '~> 0.85'
 
 ---
 
 ###Why MKNetworkKit?
 
-* Single queue for the whole app
-* Auto queue sizing
-* High performance caching built in
+* Single network queue for the whole app
+* Auto queue sizing and auto network indicator support
+* High performance background caching (based on HTTP 1.1 caching specs) built in
+* You don't need a separate image cache library
+* Background image decompression
 * Performs exactly one operation for similar requests
 * Background completion
+* Local notification support for operations that failed in background
 * cURL-able debug lines
 * Frozen operations. Operations like "faving a tweet" or "marking as read" are frozen when network connectivity is not available and executed when online
 
