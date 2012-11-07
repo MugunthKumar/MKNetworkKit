@@ -50,7 +50,14 @@
 @property (nonatomic, strong) NSMutableDictionary *memoryCache;
 @property (nonatomic, strong) NSMutableArray *memoryCacheKeys;
 @property (nonatomic, strong) NSMutableDictionary *cacheInvalidationParams;
+
+#if OS_OBJECT_USE_OBJC
+@property (strong, nonatomic) dispatch_queue_t backgroundCacheQueue;
+@property (strong, nonatomic) dispatch_queue_t operationQueue;
+#else
 @property (assign, nonatomic) dispatch_queue_t backgroundCacheQueue;
+@property (assign, nonatomic) dispatch_queue_t operationQueue;
+#endif
 
 -(void) saveCache;
 -(void) saveCacheData:(NSData*) data forKey:(NSString*) cacheDataKey;
@@ -101,6 +108,7 @@ static NSOperationQueue *_sharedNetworkQueue;
     
     self.apiPath = apiPath;
     self.backgroundCacheQueue = dispatch_queue_create("com.mknetworkkit.cachequeue", DISPATCH_QUEUE_SERIAL);
+    self.operationQueue = dispatch_queue_create("com.mknetworkkit.operationqueue", DISPATCH_QUEUE_SERIAL);
     
     if(hostName) {
       [[NSNotificationCenter defaultCenter] addObserver:self
@@ -373,12 +381,6 @@ static NSOperationQueue *_sharedNetworkQueue;
 -(void) enqueueOperation:(MKNetworkOperation*) operation forceReload:(BOOL) forceReload {
   
   NSParameterAssert(operation != nil);
-  // Grab on to the current queue (We need it later)
-  dispatch_queue_t originalQueue = dispatch_get_current_queue();
-#if DO_GCD_RETAIN_RELEASE
-  dispatch_retain(originalQueue);
-#endif
-  // Jump off the main thread, mainly for disk cache reading purposes
   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
     [operation setCacheHandler:^(MKNetworkOperation* completedCacheableOperation) {
       
@@ -395,14 +397,14 @@ static NSOperationQueue *_sharedNetworkQueue;
     
     if([operation isCacheable]) {
       
-      if(!forceReload) {
-        NSData *cachedData = [self cachedDataForOperation:operation];
-        if(cachedData) {
-          dispatch_async(originalQueue, ^{
-            // Jump back to the original thread here since setCachedData updates the main thread
-            [operation setCachedData:cachedData];
-          });
-          
+      NSData *cachedData = [self cachedDataForOperation:operation];
+      if(cachedData) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+          // Jump back to the original thread here since setCachedData updates the main thread
+          [operation setCachedData:cachedData];
+        });
+        
+        if(!forceReload) {
           
           NSString *uniqueId = [operation uniqueIdentifier];
           NSMutableDictionary *savedCacheHeaders = (self.cacheInvalidationParams)[uniqueId];
@@ -411,7 +413,7 @@ static NSOperationQueue *_sharedNetworkQueue;
           if(savedCacheHeaders) {
             NSString *expiresOn = savedCacheHeaders[@"Expires"];
             
-            dispatch_sync(originalQueue, ^{
+            dispatch_sync(self.operationQueue, ^{
               NSDate *expiresOnDate = [NSDate dateFromRFC1123:expiresOn];
               expiryTimeInSeconds = [expiresOnDate timeIntervalSinceNow];
             });
@@ -421,7 +423,7 @@ static NSOperationQueue *_sharedNetworkQueue;
         }
       }
       
-      dispatch_async(originalQueue, ^{
+      dispatch_async(self.operationQueue, ^{
         
         NSUInteger index = [_sharedNetworkQueue.operations indexOfObject:operation];
         if(index == NSNotFound) {
@@ -447,9 +449,6 @@ static NSOperationQueue *_sharedNetworkQueue;
     
     if([self.reachability currentReachabilityStatus] == NotReachable)
       [self freezeOperations];
-#if DO_GCD_RETAIN_RELEASE
-    dispatch_release(originalQueue);
-#endif
   });
 }
 
@@ -476,7 +475,7 @@ static NSOperationQueue *_sharedNetworkQueue;
                                                           [completedOperation isCachedResponse]);
                                       }];
   } errorHandler:^(MKNetworkOperation *completedOperation, NSError *error) {
-
+    
     DLog(@"%@", error);
   }];
   
@@ -524,7 +523,7 @@ static NSOperationQueue *_sharedNetworkQueue;
 #pragma mark Cache related
 
 -(NSString*) cacheDirectoryName {
-
+  
   static NSString *cacheDirectoryName = nil;
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{

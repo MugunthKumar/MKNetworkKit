@@ -33,11 +33,6 @@
 #if TARGET_OS_IPHONE
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 60000
-#define DO_GCD_RETAIN_RELEASE 0
-#else
-#define DO_GCD_RETAIN_RELEASE 1
-#endif
 #elif TARGET_OS_MAC
 #import <Cocoa/Cocoa.h>
 #import <AppKit/AppKit.h>
