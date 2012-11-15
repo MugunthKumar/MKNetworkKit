@@ -423,7 +423,7 @@ static NSOperationQueue *_sharedNetworkQueue;
         }
       }
       
-      dispatch_async(self.operationQueue, ^{
+      dispatch_sync(self.operationQueue, ^{
         
         NSUInteger index = [_sharedNetworkQueue.operations indexOfObject:operation];
         if(index == NSNotFound) {
