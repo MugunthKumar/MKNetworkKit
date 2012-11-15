@@ -130,7 +130,7 @@ static NSOperationQueue *_sharedNetworkQueue;
       newHeadersDict[@"User-Agent"] = userAgentString;
       self.customHeaders = newHeadersDict;
     } else {
-      self.customHeaders = headers;
+      self.customHeaders = [headers mutableCopy];
     }
     
     self.customOperationSubclass = [MKNetworkOperation class];
