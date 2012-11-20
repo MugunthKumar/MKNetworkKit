@@ -33,8 +33,9 @@
 
     [op addCompletionHandler:^(MKNetworkOperation *completedOperation) {
     
-        NSDictionary *response = [completedOperation responseJSON];
-        imageURLBlock(response[@"photos"][@"photo"]);
+        [completedOperation responseJSONWithCompletionHandler:^(id jsonObject) {
+          imageURLBlock(jsonObject[@"photos"][@"photo"]);
+        }];        
         
     } errorHandler:^(MKNetworkOperation *errorOp, NSError* error) {
         

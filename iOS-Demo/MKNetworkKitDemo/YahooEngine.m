@@ -48,7 +48,7 @@
          DLog(@"%@", valueString);
 
          if([completedOperation isCachedResponse]) {
-             DLog(@"Data from cache %@", [completedOperation responseJSON]);
+             DLog(@"Data from cache %@", [completedOperation responseString]);
          }
          else {
              DLog(@"Data from server %@", [completedOperation responseString]);
