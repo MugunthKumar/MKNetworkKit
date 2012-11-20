@@ -4,6 +4,7 @@
 //
 //  Originally created by Marcus Rohrmoser
 //  http://blog.mro.name/2009/08/nsdateformatter-http-header/
+//  Updated with strptime methods by Bo98
 //
 //  No obvious license attached
 
