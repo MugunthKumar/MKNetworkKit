@@ -176,7 +176,7 @@ static NSOperationQueue *_sharedNetworkQueue;
   if (object == _sharedNetworkQueue && [keyPath isEqualToString:@"operationCount"]) {
     
     [[NSNotificationCenter defaultCenter] postNotificationName:kMKNetworkEngineOperationCountChanged
-                                                        object:[NSNumber numberWithInteger:[_sharedNetworkQueue operationCount]]];
+                                                        object:[NSNumber numberWithInteger:(NSInteger)[_sharedNetworkQueue operationCount]]];
 #if TARGET_OS_IPHONE
     [UIApplication sharedApplication].networkActivityIndicatorVisible =
     ([_sharedNetworkQueue.operations count] > 0);
@@ -260,10 +260,10 @@ static NSOperationQueue *_sharedNetworkQueue;
     NSString *archivePath = [[self cacheDirectoryName] stringByAppendingPathComponent:pendingOperationFile];
     MKNetworkOperation *pendingOperation = [NSKeyedUnarchiver unarchiveObjectWithFile:archivePath];
     [self enqueueOperation:pendingOperation];
-    NSError *error = nil;
-    [[NSFileManager defaultManager] removeItemAtPath:archivePath error:&error];
-    if(error)
-      DLog(@"%@", error);
+    NSError *error2 = nil;
+    [[NSFileManager defaultManager] removeItemAtPath:archivePath error:&error2];
+    if(error2)
+      DLog(@"%@", error2);
   }
 }
 
@@ -576,10 +576,10 @@ static NSOperationQueue *_sharedNetworkQueue;
     
     [self.memoryCacheKeys insertObject:cacheDataKey atIndex:0]; // remove it and insert it at start
     
-    if([self.memoryCacheKeys count] >= [self cacheMemoryCost])
+    if([self.memoryCacheKeys count] >= (NSUInteger)[self cacheMemoryCost])
     {
       NSString *lastKey = [self.memoryCacheKeys lastObject];
-      NSData *data = (self.memoryCache)[lastKey];
+      NSData *data2 = (self.memoryCache)[lastKey];
       NSString *filePath = [[self cacheDirectoryName] stringByAppendingPathComponent:lastKey];
       
       if([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
@@ -588,7 +588,7 @@ static NSOperationQueue *_sharedNetworkQueue;
         [[NSFileManager defaultManager] removeItemAtPath:filePath error:&error];
         ELog(error);
       }
-      [data writeToFile:filePath atomically:YES];
+      [data2 writeToFile:filePath atomically:YES];
       
       [self.memoryCacheKeys removeLastObject];
       [self.memoryCache removeObjectForKey:lastKey];
