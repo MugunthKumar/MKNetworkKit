@@ -2,12 +2,14 @@
 //  NSDate+RFC1123.m
 //  MKNetworkKit
 //
-//  Created by Marcus Rohrmoser
+//  Originally created by Marcus Rohrmoser
 //  http://blog.mro.name/2009/08/nsdateformatter-http-header/
 //
 //  No obvious license attached
 
 #import "NSDate+RFC1123.h"
+#import <time.h>
+#import <xlocale.h>
 
 @implementation NSDate (RFC1123)
 
@@ -16,64 +18,58 @@
     if(value_ == nil)
         return nil;    
     
-    __strong static NSDateFormatter *rfc1123 = nil;
-    if (!rfc1123) {
-        static dispatch_once_t oncePredicate;
-        dispatch_once(&oncePredicate, ^{
-            rfc1123 = [[NSDateFormatter alloc] init];
-            rfc1123.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
-            rfc1123.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
-            rfc1123.dateFormat = @"EEE',' dd MMM yyyy HH':'mm':'ss z";
-        });
-    }
-    NSDate *ret = [rfc1123 dateFromString:value_];
-    if(ret != nil)
-        return ret;
+    const char *str = [value_ UTF8String];
+    const char *fmt;
+    NSDate *retDate;
+    char *ret;
     
-    static NSDateFormatter *rfc850 = nil;
-    if(!rfc850)
-    {
-        static dispatch_once_t oncePredicate;
-        dispatch_once(&oncePredicate, ^{
-            rfc850 = [[NSDateFormatter alloc] init];
-            rfc850.locale = rfc1123.locale;
-            rfc850.timeZone = rfc1123.timeZone;
-            rfc850.dateFormat = @"EEEE',' dd'-'MMM'-'yy HH':'mm':'ss z";
-        });
+    fmt = "%a, %d %b %Y %H:%M:%S %Z";
+    struct tm rfc1123timeinfo;
+    memset(&rfc1123timeinfo, 0, sizeof(rfc1123timeinfo));
+    ret = strptime_l(str, fmt, &rfc1123timeinfo, NULL);
+    if (ret) {
+        time_t rfc1123time = mktime(&rfc1123timeinfo);
+        retDate = [NSDate dateWithTimeIntervalSince1970:rfc1123time];
+        if (retDate != nil)
+            return retDate;
     }
-    ret = [rfc850 dateFromString:value_];
-    if(ret != nil)
-        return ret;
     
-    static NSDateFormatter *asctime = nil;
-    if(!asctime)
-    {
-        static dispatch_once_t oncePredicate;
-        dispatch_once(&oncePredicate, ^{
-            
-            asctime = [[NSDateFormatter alloc] init];
-            asctime.locale = rfc1123.locale;
-            asctime.timeZone = rfc1123.timeZone;
-            asctime.dateFormat = @"EEE MMM d HH':'mm':'ss yyyy";
-        });
+    
+    fmt = "%A, %d-%b-%y %H:%M:%S %Z";
+    struct tm rfc850timeinfo;
+    memset(&rfc850timeinfo, 0, sizeof(rfc850timeinfo));
+    ret = strptime_l(str, fmt, &rfc850timeinfo, NULL);
+    if (ret) {
+        time_t rfc850time = mktime(&rfc850timeinfo);
+        retDate = [NSDate dateWithTimeIntervalSince1970:rfc850time];
+        if (retDate != nil)
+            return retDate;
     }
-    return [asctime dateFromString:value_];
+    
+    fmt = "%a %b %e %H:%M:%S %Y";
+    struct tm asctimeinfo;
+    memset(&asctimeinfo, 0, sizeof(asctimeinfo));
+    ret = strptime_l(str, fmt, &asctimeinfo, NULL);
+    if (ret) {
+        time_t asctime = mktime(&asctimeinfo);
+        return [NSDate dateWithTimeIntervalSince1970:asctime];
+    }
+    
+    return nil;
 }
 
 -(NSString*)rfc1123String
 {
-    static NSDateFormatter *df = nil;
-    if(!df)
-    {
-        static dispatch_once_t oncePredicate;
-        dispatch_once(&oncePredicate, ^{
-            df = [[NSDateFormatter alloc] init];
-            df.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
-            df.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
-            df.dateFormat = @"EEE',' dd MMM yyyy HH':'mm':'ss 'GMT'";
-        });
+    time_t date = (time_t)[self timeIntervalSince1970];
+    struct tm timeinfo;
+    gmtime_r(&date, &timeinfo);
+    char buffer[32];
+    size_t ret = strftime_l(buffer, sizeof(buffer), "%a, %d %b %Y %H:%M:%S GMT", &timeinfo, NULL);
+    if (ret) {
+        return @(buffer);
+    } else {
+        return nil;
     }
-    return [df stringFromDate:self];
 }
 
 @end

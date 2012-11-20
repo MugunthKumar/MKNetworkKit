@@ -190,6 +190,7 @@
  */
 -(void) prepareHeaders:(MKNetworkOperation*) operation;
 
+#if TARGET_OS_IPHONE
 /*!
  *  @abstract Handy helper method for fetching images asynchronously in the background
  *
@@ -201,6 +202,7 @@
  *  imageAtUrl:onCompletion:
  */
 - (MKNetworkOperation*)imageAtURL:(NSURL *)url size:(CGSize) size onCompletion:(MKNKImageBlock) imageFetchedBlock;
+#endif
 
 /*!
  *  @abstract Handy helper method for fetching images
