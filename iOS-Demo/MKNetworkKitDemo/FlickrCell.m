@@ -60,7 +60,7 @@
     
     self.imageLoadingOperation = [ApplicationDelegate.flickrEngine imageAtURL:[NSURL URLWithString:self.loadingImageURLString]
                                                                          size:self.thumbnailImage.frame.size
-                                    onCompletion:^(UIImage *fetchedImage, NSURL *url, BOOL isInCache) {
+                                    completionHandler:^(UIImage *fetchedImage, NSURL *url, BOOL isInCache) {
                                         
                                         if([self.loadingImageURLString isEqualToString:[url absoluteString]]) {
                                             
@@ -68,6 +68,8 @@
                                             self.thumbnailImage.image = fetchedImage;
                                           } completion:nil];
                                         }
+                                    } errorHandler:^(MKNetworkOperation *completedOperation, NSError *error) {
+                                      
                                     }];
 }
 

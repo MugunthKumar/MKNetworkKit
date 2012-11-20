@@ -453,8 +453,9 @@ static NSOperationQueue *_sharedNetworkQueue;
 }
 
 #if TARGET_OS_IPHONE
-- (MKNetworkOperation*)imageAtURL:(NSURL *)url size:(CGSize) size onCompletion:(MKNKImageBlock) imageFetchedBlock {
-  
+
+- (MKNetworkOperation*)imageAtURL:(NSURL *)url size:(CGSize) size completionHandler:(MKNKImageBlock) imageFetchedBlock errorHandler:(MKNKResponseErrorBlock) errorBlock {
+    
 #ifdef DEBUG
   // I could enable caching here, but that hits performance and inturn affects table view scrolling
   // if imageAtURL is called for loading thumbnails.
@@ -477,18 +478,20 @@ static NSOperationQueue *_sharedNetworkQueue;
                                       }];
   } errorHandler:^(MKNetworkOperation *completedOperation, NSError *error) {
     
+    errorBlock(completedOperation, error);
     DLog(@"%@", error);
-  }];
-  
-  [op onNotModified:^{
-    
-    DLog(@"Not modified");
   }];
   
   [self enqueueOperation:op];
   
   return op;
 }
+
+- (MKNetworkOperation*)imageAtURL:(NSURL *)url size:(CGSize) size onCompletion:(MKNKImageBlock) imageFetchedBlock {
+  
+  return [self imageAtURL:url size:size completionHandler:imageFetchedBlock errorHandler:^(MKNetworkOperation* op, NSError* error){}];
+}
+
 #endif
 
 - (MKNetworkOperation*)imageAtURL:(NSURL *)url onCompletion:(MKNKImageBlock) imageFetchedBlock

@@ -201,18 +201,30 @@
  *  @seealso
  *  imageAtUrl:onCompletion:
  */
-- (MKNetworkOperation*)imageAtURL:(NSURL *)url size:(CGSize) size onCompletion:(MKNKImageBlock) imageFetchedBlock;
-#endif
+- (MKNetworkOperation*)imageAtURL:(NSURL *)url size:(CGSize) size onCompletion:(MKNKImageBlock) imageFetchedBlock DEPRECATED_ATTRIBUTE;
 
 /*!
  *  @abstract Handy helper method for fetching images
- *  
+ *
  *  @discussion
  *	Creates an operation with the given image URL.
  *  The hostname of the engine is *NOT* prefixed.
- *  The image is returned to the caller via MKNKImageBlock callback block. 
+ *  The image is returned to the caller via MKNKImageBlock callback block.
  */
-- (MKNetworkOperation*)imageAtURL:(NSURL *)url onCompletion:(MKNKImageBlock) imageFetchedBlock;
+- (MKNetworkOperation*)imageAtURL:(NSURL *)url onCompletion:(MKNKImageBlock) imageFetchedBlock DEPRECATED_ATTRIBUTE;
+
+/*!
+ *  @abstract Handy helper method for fetching images asynchronously in the background
+ *
+ *  @discussion
+ *	Creates an operation with the given image URL.
+ *  The hostname of the engine is *NOT* prefixed.
+ *  The image is returned to the caller via MKNKImageBlock callback block. This image is resized as per the size and decompressed in background.
+ *  @seealso
+ *  imageAtUrl:onCompletion:
+ */
+- (MKNetworkOperation*)imageAtURL:(NSURL *)url size:(CGSize) size completionHandler:(MKNKImageBlock) imageFetchedBlock errorHandler:(MKNKResponseErrorBlock) errorBlock;
+#endif
 
 /*!
  *  @abstract Enqueues your operation into the shared queue
