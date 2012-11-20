@@ -34,17 +34,17 @@
 
 /* Begin PBXFileReference section */
 		AB0AEA12149B2B45007327D6 /* client.p12 */ = {isa = PBXFileReference; lastKnownFileType = file; path = client.p12; sourceTree = "<group>"; };
-		AB148FD0147F4EF8001F4A86 /* ExampleUploader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExampleUploader.h; sourceTree = "<group>"; };
-		AB148FD1147F4EF8001F4A86 /* ExampleUploader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExampleUploader.m; sourceTree = "<group>"; };
+		AB148FD0147F4EF8001F4A86 /* ExampleUploader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = ExampleUploader.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		AB148FD1147F4EF8001F4A86 /* ExampleUploader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ExampleUploader.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		AB148FD4147F5166001F4A86 /* ExampleDownloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExampleDownloader.h; sourceTree = "<group>"; };
 		AB148FD5147F5167001F4A86 /* ExampleDownloader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExampleDownloader.m; sourceTree = "<group>"; };
 		AB20C33E1487C854004B0825 /* ExamplePost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExamplePost.h; sourceTree = "<group>"; };
-		AB20C33F1487C854004B0825 /* ExamplePost.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExamplePost.m; sourceTree = "<group>"; };
+		AB20C33F1487C854004B0825 /* ExamplePost.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ExamplePost.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		AB3A308F148F09AE00D06246 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		AB6E44D914CBA3CC0089D19C /* FlickrTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlickrTableViewController.h; sourceTree = "<group>"; };
 		AB6E44DA14CBA3CC0089D19C /* FlickrTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlickrTableViewController.m; sourceTree = "<group>"; };
 		AB6E44DC14CBA43F0089D19C /* FlickrCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlickrCell.h; sourceTree = "<group>"; };
-		AB6E44DD14CBA43F0089D19C /* FlickrCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlickrCell.m; sourceTree = "<group>"; };
+		AB6E44DD14CBA43F0089D19C /* FlickrCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FlickrCell.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		AB6E44DF14CBA62B0089D19C /* FlickrEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlickrEngine.h; sourceTree = "<group>"; };
 		AB6E44E014CBA62B0089D19C /* FlickrEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlickrEngine.m; sourceTree = "<group>"; };
 		AB74B0BD1467CC120088BF09 /* MKNetworkKit-iOS-Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MKNetworkKit-iOS-Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -53,8 +53,8 @@
 		AB74B0C51467CC120088BF09 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		AB74B1101467E5790088BF09 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		AB74B1121467E5850088BF09 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
-		AB80BBB4148B672100B6DC2A /* AuthTestEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AuthTestEngine.h; sourceTree = "<group>"; };
-		AB80BBB5148B672100B6DC2A /* AuthTestEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AuthTestEngine.m; sourceTree = "<group>"; };
+		AB80BBB4148B672100B6DC2A /* AuthTestEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = AuthTestEngine.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		AB80BBB5148B672100B6DC2A /* AuthTestEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = AuthTestEngine.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		AB94373516411E0A0002299C /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		ABB5C2C7148B3E230056D3E9 /* SampleImage.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = SampleImage.jpg; path = ../SampleImage.jpg; sourceTree = "<group>"; };
 		ABB5C2C9148B3F370056D3E9 /* libMKNetworkKit-iOS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libMKNetworkKit-iOS.a"; path = "../MKNetworkKit-iOS/build/Release-iphoneos/libMKNetworkKit-iOS.a"; sourceTree = "<group>"; };

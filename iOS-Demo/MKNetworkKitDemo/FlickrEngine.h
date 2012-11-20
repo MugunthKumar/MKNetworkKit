@@ -31,5 +31,5 @@
 @interface FlickrEngine : MKNetworkEngine
 
 typedef void (^FlickrImagesResponseBlock)(NSMutableArray* imageURLs);
--(void) imagesForTag:(NSString*) tag onCompletion:(FlickrImagesResponseBlock) imageURLBlock onError:(MKNKErrorBlock) errorBlock;
+-(void) imagesForTag:(NSString*) tag completionHandler:(FlickrImagesResponseBlock) imageURLBlock errorHandler:(MKNKErrorBlock) errorBlock;
 @end

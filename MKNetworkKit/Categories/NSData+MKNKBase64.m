@@ -1,5 +1,5 @@
 //
-//  NSData+Base64.m
+//  NSData+MKNKBase64.m
 //  base64
 //
 //  Created by Matt Gallagher on 2009/06/03.
@@ -21,7 +21,7 @@
 //     distribution.
 //
 
-#import "NSData+Base64.h"
+#import "NSData+MKNKBase64.h"
 
 //
 // Mapping from 6 bit pattern to ASCII character.
@@ -262,7 +262,7 @@ char *NewBase64Encode(
 	return outputBuffer;
 }
 
-@implementation NSData (Base64)
+@implementation NSData (MKNKBase64)
 
 //
 // dataFromBase64String:
@@ -296,7 +296,7 @@ char *NewBase64Encode(
 //
 - (NSString *)base64EncodedString
 {
-	size_t outputLength;
+	size_t outputLength = 0;
 	char *outputBuffer =
 		NewBase64Encode([self bytes], [self length], false, &outputLength);
 	

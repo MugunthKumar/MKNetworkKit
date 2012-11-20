@@ -15,6 +15,6 @@
 -(int) cacheMemoryCost;
 
 -(MKNetworkOperation*) uploadImageFromFile:(NSString*) file 
-                              onCompletion:(TwitPicBlock) completionBlock
-                                   onError:(MKNKErrorBlock) errorBlock;
+                              completionHandler:(TwitPicBlock) completionBlock
+                                   errorHandler:(MKNKErrorBlock) errorBlock;
 @end

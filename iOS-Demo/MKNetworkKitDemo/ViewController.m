@@ -70,7 +70,7 @@
         
     self.currencyOperation = [ApplicationDelegate.yahooEngine currencyRateFor:@"SGD" 
                                                                    inCurrency:@"USD" 
-                                                                 onCompletion:^(double rate) {
+                                                                 completionHandler:^(double rate) {
                                                                      
                                                                      [[[UIAlertView alloc] initWithTitle:@"Today's Singapore Dollar Rates"                              
                                                                                                                      message:[NSString stringWithFormat:@"%.2f", rate]
@@ -78,8 +78,8 @@
                                                                                                            cancelButtonTitle:NSLocalizedString(@"Dismiss", @"")
                                                                                                            otherButtonTitles:nil] show];
                                                                  } 
-                                                                      onError:^(NSError* error) {
-                                                                          
+                                                                      errorHandler:^(NSError* error) {
+                                                                        
                                                                           
                                                                           DLog(@"%@\t%@\t%@\t%@", [error localizedDescription], [error localizedFailureReason], 
                                                                                [error localizedRecoveryOptions], [error localizedRecoverySuggestion]);
@@ -97,7 +97,7 @@
     }
     NSString *uploadPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingFormat:@"/SampleImage.jpg"];
     self.uploadOperation = [ApplicationDelegate.sampleAuth uploadImageFromFile:uploadPath 
-                                                                       onCompletion:^(NSString *twitPicURL) {
+                                                                       completionHandler:^(NSString *twitPicURL) {
                                                                            
                                                                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Uploaded to"                              
                                                                                                                            message:twitPicURL
@@ -107,7 +107,7 @@
                                                                            [alert show];
                                                                            self.uploadProgessBar.progress = 0.0;
                                                                        } 
-                                                                            onError:^(NSError* error) {
+                                                                            errorHandler:^(NSError* error) {
                                                                                 
                                                                                 [UIAlertView showWithError:error];
                                                                             }];    
@@ -135,7 +135,7 @@
         self.downloadProgessBar.progress = progress;
     }];
     
-    [self.downloadOperation onCompletion:^(MKNetworkOperation* completedRequest) {
+    [self.downloadOperation addCompletionHandler:^(MKNetworkOperation* completedRequest) {
         
         DLog(@"%@", completedRequest);   
         self.downloadProgessBar.progress = 0.0f;
@@ -146,7 +146,7 @@
                                               otherButtonTitles:nil];
         [alert show];
     }
-                                 onError:^(NSError* error) {
+                                 errorHandler:^(MKNetworkOperation *errorOp, NSError* error) {
                                      
                                      DLog(@"%@", error);
                                      [UIAlertView showWithError:error];

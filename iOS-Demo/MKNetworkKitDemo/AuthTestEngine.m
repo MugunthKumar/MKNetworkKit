@@ -18,10 +18,10 @@
   
   [op setUsername:@"admin" password:@"password" basicAuth:YES];
   
-  [op onCompletion:^(MKNetworkOperation *operation) {
+  [op addCompletionHandler:^(MKNetworkOperation *operation) {
     
     DLog(@"%@", [operation responseString]); 
-  } onError:^(NSError *error) {
+  } errorHandler:^(MKNetworkOperation *errorOp, NSError* error) {
     
     DLog(@"%@", [error localizedDescription]);         
   }];
@@ -37,10 +37,10 @@
   
   [op setUsername:@"admin" password:@"password"];
   
-  [op onCompletion:^(MKNetworkOperation *operation) {
+  [op addCompletionHandler:^(MKNetworkOperation *operation) {
     
     DLog(@"%@", [operation responseString]); 
-  } onError:^(NSError *error) {
+  } errorHandler:^(MKNetworkOperation *errorOp, NSError* error) {
     
     DLog(@"%@", [error localizedDescription]);         
   }];
@@ -55,10 +55,10 @@
   [op setUsername:username password:password];
   [op setCredentialPersistence:NSURLCredentialPersistenceNone];
   
-  [op onCompletion:^(MKNetworkOperation *operation) {
+  [op addCompletionHandler:^(MKNetworkOperation *operation) {
     
     DLog(@"%@", [operation responseString]); 
-  } onError:^(NSError *error) {
+  } errorHandler:^(MKNetworkOperation *errorOp, NSError* error) {
     
     DLog(@"%@", [error localizedDescription]);         
   }];
@@ -76,10 +76,10 @@
   NSString *certPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"client.p12"];
   [op setClientCertificate:certPath];
   
-  [op onCompletion:^(MKNetworkOperation *operation) {
+  [op addCompletionHandler:^(MKNetworkOperation *operation) {
     
     DLog(@"%@", [operation responseString]); 
-  } onError:^(NSError *error) {
+  } errorHandler:^(MKNetworkOperation *errorOp, NSError* error) {
     
     DLog(@"%@", [error localizedDescription]);         
   }];
@@ -87,8 +87,8 @@
 }
 
 -(MKNetworkOperation*) uploadImageFromFile:(NSString*) file 
-                              onCompletion:(TwitPicBlock) completionBlock
-                                   onError:(MKNKErrorBlock) errorBlock {
+                              completionHandler:(TwitPicBlock) completionBlock
+                                   errorHandler:(MKNKErrorBlock) errorBlock {
   
   MKNetworkOperation *op = [self operationWithPath:@"mknetworkkit/upload.php" 
                                             params:@{@"Submit": @"YES"}
@@ -99,14 +99,14 @@
   // setFreezable uploads your images after connection is restored!
   [op setFreezable:YES];
   
-  [op onCompletion:^(MKNetworkOperation* completedOperation) {
+  [op addCompletionHandler:^(MKNetworkOperation* completedOperation) {
     
     NSString *xmlString = [completedOperation responseString];
     
     DLog(@"%@", xmlString);
     completionBlock(xmlString);
   }
-           onError:^(NSError* error) {
+           errorHandler:^(MKNetworkOperation *errorOp, NSError* error) {
              
              errorBlock(error);
            }];

@@ -19,10 +19,10 @@
     
     //[op setUsername:@"bobs@thga.me" password:@"12345678"];
 
-    [op onCompletion:^(MKNetworkOperation *operation) {
+    [op addCompletionHandler:^(MKNetworkOperation *operation) {
         
         DLog(@"%@", operation);
-    } onError:^(NSError *error) {
+    } errorHandler:^(MKNetworkOperation *errorOp, NSError* error) {
 
         DLog(@"%@", error);
     }];

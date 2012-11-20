@@ -55,12 +55,12 @@
 
 - (void)viewDidAppear:(BOOL)animated
 {
-    [ApplicationDelegate.flickrEngine imagesForTag:@"Singapore" onCompletion:^(NSMutableArray* images) {
+    [ApplicationDelegate.flickrEngine imagesForTag:@"Singapore" completionHandler:^(NSMutableArray* images) {
         
         self.flickrImages = images;
         [self.tableView reloadData];        
     }
-                                   onError:^(NSError* error) {
+                                   errorHandler:^(NSError* error) {
                                        
                                    }];
     

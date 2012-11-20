@@ -28,7 +28,7 @@
 @implementation ExampleUploader
 
 -(MKNetworkOperation*) uploadImageFromFile:(NSString*) file 
-                              onCompletion:(TwitPicBlock) completionBlock
+                              addCompletionHandler:(TwitPicBlock) completionBlock
                                    onError:(MKNKErrorBlock) errorBlock {
   
   MKNetworkOperation *op = [self operationWithPath:@"api/upload" 
@@ -41,7 +41,7 @@
   // setFreezable uploads your images after connection is restored!
   [op setFreezable:YES];
   
-  [op onCompletion:^(MKNetworkOperation* completedOperation) {
+  [op addCompletionHandler:^(MKNetworkOperation* completedOperation) {
     
     NSString *xmlString = [completedOperation responseString];
     NSUInteger start = [xmlString rangeOfString:@"<mediaurl>"].location;
@@ -56,7 +56,7 @@
     xmlString = [xmlString substringToIndex:end];
     completionBlock(xmlString);
   }
-           onError:^(NSError* error) {
+           errorHandler:^(MKNetworkOperation *errorOp, NSError* error) {
              
              errorBlock(error);
            }];

@@ -27,16 +27,16 @@
 
 @implementation FlickrEngine
 
--(void) imagesForTag:(NSString*) tag onCompletion:(FlickrImagesResponseBlock) imageURLBlock onError:(MKNKErrorBlock) errorBlock {
+-(void) imagesForTag:(NSString*) tag completionHandler:(FlickrImagesResponseBlock) imageURLBlock errorHandler:(MKNKErrorBlock) errorBlock {
 
     MKNetworkOperation *op = [self operationWithPath:FLICKR_IMAGE_URL([tag urlEncodedString])];
 
-    [op onCompletion:^(MKNetworkOperation *completedOperation) {
+    [op addCompletionHandler:^(MKNetworkOperation *completedOperation) {
     
         NSDictionary *response = [completedOperation responseJSON];
         imageURLBlock(response[@"photos"][@"photo"]);
         
-    } onError:^(NSError *error) {
+    } errorHandler:^(MKNetworkOperation *errorOp, NSError* error) {
         
         errorBlock(error);
     }];

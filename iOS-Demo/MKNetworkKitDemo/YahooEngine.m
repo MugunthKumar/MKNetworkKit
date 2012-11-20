@@ -32,14 +32,14 @@
 
 -(MKNetworkOperation*) currencyRateFor:(NSString*) sourceCurrency 
                             inCurrency:(NSString*) targetCurrency 
-                          onCompletion:(CurrencyResponseBlock) completionBlock
-                               onError:(MKNKErrorBlock) errorBlock {
+                          completionHandler:(CurrencyResponseBlock) completionBlock
+                               errorHandler:(MKNKErrorBlock) errorBlock {
     
     MKNetworkOperation *op = [self operationWithPath:YAHOO_URL(sourceCurrency, targetCurrency) 
                                                    params:nil 
                                              httpMethod:@"GET"];
     
-    [op onCompletion:^(MKNetworkOperation *completedOperation)
+    [op addCompletionHandler:^(MKNetworkOperation *completedOperation)
      {
          // the completionBlock will be called twice. 
          // if you are interested only in new values, move that code within the else block
@@ -56,7 +56,7 @@
          
          completionBlock([valueString doubleValue]);
          
-     }onError:^(NSError* error) {
+     }errorHandler:^(MKNetworkOperation *errorOp, NSError* error) {
          
          errorBlock(error);
      }];
