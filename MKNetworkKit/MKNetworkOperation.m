@@ -284,7 +284,7 @@
 
 -(MKNetworkOperationState) state {
   
-  return _state;
+  return (MKNetworkOperationState)_state;
 }
 
 -(void) setState:(MKNetworkOperationState)newState {
@@ -326,7 +326,7 @@
 
 - (void)encodeWithCoder:(NSCoder *)encoder
 {
-  [encoder encodeInteger:self.stringEncoding forKey:@"stringEncoding"];
+  [encoder encodeInteger:(NSInteger)self.stringEncoding forKey:@"stringEncoding"];
   [encoder encodeInteger:_postDataEncoding forKey:@"postDataEncoding"];
   
   [encoder encodeObject:self.uniqueId forKey:@"uniqueId"];
@@ -343,7 +343,7 @@
   [encoder encodeInt32:_state forKey:@"state"];
   [encoder encodeBool:self.isCancelled forKey:@"isCancelled"];
   [encoder encodeObject:self.mutableData forKey:@"mutableData"];
-  [encoder encodeInteger:self.downloadedDataSize forKey:@"downloadedDataSize"];
+  [encoder encodeInteger:(NSInteger)self.downloadedDataSize forKey:@"downloadedDataSize"];
   [encoder encodeObject:self.downloadStreams forKey:@"downloadStreams"];
   [encoder encodeInteger:self.startPosition forKey:@"startPosition"];
   [encoder encodeInteger:self.credentialPersistence forKey:@"credentialPersistence"];
@@ -353,7 +353,7 @@
 {
   self = [super init];
   if (self) {
-    [self setStringEncoding:[decoder decodeIntegerForKey:@"stringEncoding"]];
+    [self setStringEncoding:(NSStringEncoding)[decoder decodeIntegerForKey:@"stringEncoding"]];
     _postDataEncoding = (MKNKPostDataEncodingType) [decoder decodeIntegerForKey:@"postDataEncoding"];
     self.request = [decoder decodeObjectForKey:@"request"];
     self.uniqueId = [decoder decodeObjectForKey:@"uniqueId"];
@@ -365,7 +365,7 @@
     self.username = [decoder decodeObjectForKey:@"username"];
     self.password = [decoder decodeObjectForKey:@"password"];
     self.clientCertificate = [decoder decodeObjectForKey:@"clientCertificate"];
-    [self setState:[decoder decodeInt32ForKey:@"state"]];
+    [self setState:(MKNetworkOperationState)[decoder decodeInt32ForKey:@"state"]];
     self.isCancelled = [decoder decodeBoolForKey:@"isCancelled"];
     self.mutableData = [decoder decodeObjectForKey:@"mutableData"];
     self.downloadedDataSize = [decoder decodeIntegerForKey:@"downloadedDataSize"];
@@ -989,7 +989,7 @@
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
   
-  NSUInteger size = [self.response expectedContentLength] < 0 ? 0 : [self.response expectedContentLength];
+  NSUInteger size = [self.response expectedContentLength] < 0 ? 0 : (NSUInteger)[self.response expectedContentLength];
   self.response = (NSHTTPURLResponse*) response;
   
   // dont' save data if the operation was created to download directly to a stream.
