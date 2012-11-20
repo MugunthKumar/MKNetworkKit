@@ -26,8 +26,8 @@
 		ABB5C2C5148B3B360056D3E9 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = ABB5C2B7148B3B360056D3E9 /* Reachability.m */; };
 		ABB5C2CD148B40910056D3E9 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABB5C2CB148B40910056D3E9 /* SystemConfiguration.framework */; };
 		ABB5C2CE148B40910056D3E9 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABB5C2CC148B40910056D3E9 /* CFNetwork.framework */; };
-		ABDC97461498A6DE0034CEBE /* NSData+MKNKBase64.h in Headers */ = {isa = PBXBuildFile; fileRef = ABDC97441498A6DE0034CEBE /* NSData+MKNKBase64.h */; };
-		ABDC97471498A6DE0034CEBE /* NSData+MKNKBase64.m in Sources */ = {isa = PBXBuildFile; fileRef = ABDC97451498A6DE0034CEBE /* NSData+MKNKBase64.m */; };
+		ABE5A85F165B5A34001F93EF /* NSData+MKBase64.h in Headers */ = {isa = PBXBuildFile; fileRef = ABE5A85D165B5A34001F93EF /* NSData+MKBase64.h */; };
+		ABE5A860165B5A34001F93EF /* NSData+MKBase64.m in Sources */ = {isa = PBXBuildFile; fileRef = ABE5A85E165B5A34001F93EF /* NSData+MKBase64.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,8 +52,8 @@
 		ABB5C2B7148B3B360056D3E9 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		ABB5C2CB148B40910056D3E9 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		ABB5C2CC148B40910056D3E9 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
-		ABDC97441498A6DE0034CEBE /* NSData+MKNKBase64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+MKNKBase64.h"; sourceTree = "<group>"; };
-		ABDC97451498A6DE0034CEBE /* NSData+MKNKBase64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+MKNKBase64.m"; sourceTree = "<group>"; };
+		ABE5A85D165B5A34001F93EF /* NSData+MKBase64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+MKBase64.h"; sourceTree = "<group>"; };
+		ABE5A85E165B5A34001F93EF /* NSData+MKBase64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+MKBase64.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -127,8 +127,8 @@
 			children = (
 				AB3A3096148F0A3B00D06246 /* NSDate+RFC1123.h */,
 				AB3A3097148F0A3B00D06246 /* NSDate+RFC1123.m */,
-				ABDC97441498A6DE0034CEBE /* NSData+MKNKBase64.h */,
-				ABDC97451498A6DE0034CEBE /* NSData+MKNKBase64.m */,
+				ABE5A85D165B5A34001F93EF /* NSData+MKBase64.h */,
+				ABE5A85E165B5A34001F93EF /* NSData+MKBase64.m */,
 				ABB5C2AA148B3B360056D3E9 /* NSDictionary+RequestEncoding.h */,
 				ABB5C2AB148B3B360056D3E9 /* NSDictionary+RequestEncoding.m */,
 				ABB5C2AC148B3B360056D3E9 /* NSString+MKNetworkKitAdditions.h */,
@@ -173,7 +173,7 @@
 				ABB5C2C2148B3B360056D3E9 /* MKNetworkOperation.h in Headers */,
 				ABB5C2C4148B3B360056D3E9 /* Reachability.h in Headers */,
 				AB3A3098148F0A3B00D06246 /* NSDate+RFC1123.h in Headers */,
-				ABDC97461498A6DE0034CEBE /* NSData+MKNKBase64.h in Headers */,
+				ABE5A85F165B5A34001F93EF /* NSData+MKBase64.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -235,7 +235,7 @@
 				ABB5C2C3148B3B360056D3E9 /* MKNetworkOperation.m in Sources */,
 				ABB5C2C5148B3B360056D3E9 /* Reachability.m in Sources */,
 				AB3A3099148F0A3B00D06246 /* NSDate+RFC1123.m in Sources */,
-				ABDC97471498A6DE0034CEBE /* NSData+MKNKBase64.m in Sources */,
+				ABE5A860165B5A34001F93EF /* NSData+MKBase64.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

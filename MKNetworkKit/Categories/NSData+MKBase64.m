@@ -21,7 +21,7 @@
 //     distribution.
 //
 
-#import "NSData+MKNKBase64.h"
+#import "NSData+MKBase64.h"
 
 //
 // Mapping from 6 bit pattern to ASCII character.
