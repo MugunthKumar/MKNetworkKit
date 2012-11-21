@@ -454,6 +454,36 @@ static NSOperationQueue *_sharedNetworkQueue;
 
 #if TARGET_OS_IPHONE
 
+- (MKNetworkOperation*)imageAtURL:(NSURL *)url completionHandler:(MKNKImageBlock) imageFetchedBlock errorHandler:(MKNKResponseErrorBlock) errorBlock {
+ 
+#ifdef DEBUG
+  // I could enable caching here, but that hits performance and inturn affects table view scrolling
+  // if imageAtURL is called for loading thumbnails.
+  if(![self isCacheEnabled]) DLog(@"imageAtURL:onCompletion: requires caching to be enabled.")
+#endif
+    
+    if (url == nil) {
+      return nil;
+    }
+  
+  MKNetworkOperation *op = [self operationWithURLString:[url absoluteString]];
+  
+  [op addCompletionHandler:^(MKNetworkOperation *completedOperation) {
+    
+    imageFetchedBlock([completedOperation responseImage],
+                      url,
+                      [completedOperation isCachedResponse]);
+    
+  } errorHandler:^(MKNetworkOperation *completedOperation, NSError *error) {
+    
+    errorBlock(completedOperation, error);
+  }];
+  
+  [self enqueueOperation:op];
+  
+  return op;
+}
+
 - (MKNetworkOperation*)imageAtURL:(NSURL *)url size:(CGSize) size completionHandler:(MKNKImageBlock) imageFetchedBlock errorHandler:(MKNKResponseErrorBlock) errorBlock {
     
 #ifdef DEBUG
@@ -496,32 +526,7 @@ static NSOperationQueue *_sharedNetworkQueue;
 
 - (MKNetworkOperation*)imageAtURL:(NSURL *)url onCompletion:(MKNKImageBlock) imageFetchedBlock
 {
-#ifdef DEBUG
-  // I could enable caching here, but that hits performance and inturn affects table view scrolling
-  // if imageAtURL is called for loading thumbnails.
-  if(![self isCacheEnabled]) DLog(@"imageAtURL:onCompletion: requires caching to be enabled.")
-#endif
-    
-    if (url == nil) {
-      return nil;
-    }
-  
-  MKNetworkOperation *op = [self operationWithURLString:[url absoluteString]];
-  
-  [op addCompletionHandler:^(MKNetworkOperation *completedOperation) {
-    
-    imageFetchedBlock([completedOperation responseImage],
-                      url,
-                      [completedOperation isCachedResponse]);
-    
-  } errorHandler:^(MKNetworkOperation *completedOperation, NSError *error) {
-    
-    DLog(@"%@", error);
-  }];
-  
-  [self enqueueOperation:op];
-  
-  return op;
+  return [self imageAtURL:url completionHandler:imageFetchedBlock errorHandler:^(MKNetworkOperation* op, NSError* error){}];
 }
 
 #pragma mark -
