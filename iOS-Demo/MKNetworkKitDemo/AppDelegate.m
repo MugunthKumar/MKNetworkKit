@@ -45,7 +45,7 @@
                                            customHeaderFields:nil];
     
     self.sampleDownloader = [[ExampleDownloader alloc] initWithHostName:nil customHeaderFields:nil];
-    self.samplePoster = [[ExamplePost alloc] initWithHostName:@"thgame.phpfog.com" customHeaderFields:nil];
+    self.samplePoster = [[ExamplePost alloc] initWithHostName:@"stockfresh.com" customHeaderFields:nil];
     self.sampleAuth = [[AuthTestEngine alloc] initWithHostName:@"api.mk.sg" customHeaderFields:nil];
     [self.sampleAuth useCache];
     self.flickrEngine = [[FlickrEngine alloc] initWithHostName:@"api.flickr.com" customHeaderFields:nil];

@@ -12,13 +12,12 @@
 
 -(MKNetworkOperation*) postDataToServer {
     
-    MKNetworkOperation *op = [self operationWithPath:@"Versions/1.5/login.php" 
-                                              params:@{@"email": @"bobs@thga.me",
-                                                      @"password": @"12345678"}
+    MKNetworkOperation *op = [self operationWithPath:@"index.php" 
+                                              params:@{@"email": @"stock_user",
+                                                      @"password": @"stock_pass",
+                              @"where":@"/", @"f":@"signin"}
                                           httpMethod:@"POST"];    
     
-    //[op setUsername:@"bobs@thga.me" password:@"12345678"];
-
     [op addCompletionHandler:^(MKNetworkOperation *operation) {
         
         DLog(@"%@", operation);
