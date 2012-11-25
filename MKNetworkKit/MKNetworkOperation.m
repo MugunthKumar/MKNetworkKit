@@ -826,7 +826,7 @@
 
 - (BOOL)isReady {
   
-  return (self.state == MKNetworkOperationStateReady);
+  return (self.state == MKNetworkOperationStateReady && [super isReady]);
 }
 
 - (BOOL)isFinished
