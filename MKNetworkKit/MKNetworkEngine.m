@@ -425,23 +425,22 @@ static NSOperationQueue *_sharedNetworkQueue;
       
       dispatch_sync(self.operationQueue, ^{
         
-        NSUInteger index = [_sharedNetworkQueue.operations indexOfObject:operation];
-        if(index == NSNotFound) {
+        NSArray *operations = _sharedNetworkQueue.operations;
+        NSUInteger index = [operations indexOfObject:operation];
+        BOOL operationFinished = NO;
+        if(index != NSNotFound) {
           
-          if(expiryTimeInSeconds <= 0)
-            [_sharedNetworkQueue addOperation:operation];
-          else if(forceReload)
-            [_sharedNetworkQueue addOperation:operation];
-          // else don't do anything
-        }
-        else {
-          // This operation is already being processed
-          MKNetworkOperation *queuedOperation = (MKNetworkOperation*) (_sharedNetworkQueue.operations)[index];
-          [queuedOperation updateHandlersFromOperation:operation];
+          MKNetworkOperation *queuedOperation = (MKNetworkOperation*) (operations)[index];
+          operationFinished = [queuedOperation isFinished];
+          if(!operationFinished)
+            [queuedOperation updateHandlersFromOperation:operation];
         }
         
-        
+        if(expiryTimeInSeconds <= 0 || forceReload || operationFinished)
+          [_sharedNetworkQueue addOperation:operation];
+        // else don't do anything
       });
+      
     } else {
       
       [_sharedNetworkQueue addOperation:operation];
