@@ -1,0 +1,3 @@
+[submodule "MKNetworkKit-Tests/External/Kiwi"]
+	path = MKNetworkKit-Tests/External/Kiwi
+	url = https://github.com/allending/Kiwi.git

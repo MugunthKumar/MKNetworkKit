@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		50A5FD0216690C2500BB4A2F /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 50A5FD0016690C2500BB4A2F /* InfoPlist.strings */; };
-		50A5FD0516690C2500BB4A2F /* MKNetworkKit_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 50A5FD0416690C2500BB4A2F /* MKNetworkKit_Tests.m */; };
 		50A5FD0B16690C5500BB4A2F /* libMKNetworkKit-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 50A5FD0A16690C5500BB4A2F /* libMKNetworkKit-iOS.a */; };
 		50A5FD0F16690D9700BB4A2F /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50A5FD0E16690D9700BB4A2F /* SenTestingKit.framework */; };
 		50A5FD1116690DA800BB4A2F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50A5FD1016690DA800BB4A2F /* UIKit.framework */; };
@@ -16,16 +15,47 @@
 		50A5FD1716690E9500BB4A2F /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50A5FD1616690E9500BB4A2F /* SystemConfiguration.framework */; };
 		50A5FD1916690EB600BB4A2F /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50A5FD1816690EB600BB4A2F /* Security.framework */; };
 		50A5FD1A16690EDA00BB4A2F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50A5FD0C16690D7B00BB4A2F /* CoreGraphics.framework */; };
+		50A5FF05166918F200BB4A2F /* MKNetworkEngineSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 50A5FF04166918F200BB4A2F /* MKNetworkEngineSpec.m */; };
+		50A5FF0616691B1D00BB4A2F /* libKiwi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 50A5FEFC1669181400BB4A2F /* libKiwi.a */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		50A5FEFB1669181400BB4A2F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 50A5FEF01669181400BB4A2F /* Kiwi.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = F5015B9F11583A77002E9A98;
+			remoteInfo = Kiwi;
+		};
+		50A5FEFD1669181400BB4A2F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 50A5FEF01669181400BB4A2F /* Kiwi.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 832C83C7157263B300F160D5;
+			remoteInfo = "Kiwi-OSX";
+		};
+		50A5FEFF1669181400BB4A2F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 50A5FEF01669181400BB4A2F /* Kiwi.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = F5015C9E11584017002E9A98;
+			remoteInfo = KiwiTests;
+		};
+		50A5FF011669181400BB4A2F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 50A5FEF01669181400BB4A2F /* Kiwi.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = A3B16542139967B800E9CC6E;
+			remoteInfo = KiwiExamples;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		50A5FCF416690C2500BB4A2F /* MKNetworkKit-Tests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "MKNetworkKit-Tests.octest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		50A5FCFF16690C2500BB4A2F /* MKNetworkKit-Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "MKNetworkKit-Tests-Info.plist"; sourceTree = "<group>"; };
 		50A5FD0116690C2500BB4A2F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		50A5FD0316690C2500BB4A2F /* MKNetworkKit_Tests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKNetworkKit_Tests.h; sourceTree = "<group>"; };
-		50A5FD0416690C2500BB4A2F /* MKNetworkKit_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKNetworkKit_Tests.m; sourceTree = "<group>"; };
 		50A5FD0616690C2500BB4A2F /* MKNetworkKit-Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MKNetworkKit-Tests-Prefix.pch"; sourceTree = "<group>"; };
-		50A5FD0A16690C5500BB4A2F /* libMKNetworkKit-iOS.a */ = {isa = PBXFileReference; lastKnownFileType = file; name = "libMKNetworkKit-iOS.a"; path = "../MKNetworkKit-iOS/build/Release-iphoneos/libMKNetworkKit-iOS.a"; sourceTree = "<group>"; };
+		50A5FD0A16690C5500BB4A2F /* libMKNetworkKit-iOS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libMKNetworkKit-iOS.a"; path = "../MKNetworkKit-iOS/build/Release-iphoneos/libMKNetworkKit-iOS.a"; sourceTree = "<group>"; };
 		50A5FD0C16690D7B00BB4A2F /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.0.sdk/System/Library/Frameworks/CoreGraphics.framework; sourceTree = DEVELOPER_DIR; };
 		50A5FD0E16690D9700BB4A2F /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		50A5FD1016690DA800BB4A2F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.0.sdk/System/Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
@@ -33,6 +63,8 @@
 		50A5FD1416690E0500BB4A2F /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.0.sdk/System/Library/Frameworks/CFNetwork.framework; sourceTree = DEVELOPER_DIR; };
 		50A5FD1616690E9500BB4A2F /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.0.sdk/System/Library/Frameworks/SystemConfiguration.framework; sourceTree = DEVELOPER_DIR; };
 		50A5FD1816690EB600BB4A2F /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.0.sdk/System/Library/Frameworks/Security.framework; sourceTree = DEVELOPER_DIR; };
+		50A5FEF01669181400BB4A2F /* Kiwi.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Kiwi.xcodeproj; path = Kiwi/Kiwi.xcodeproj; sourceTree = "<group>"; };
+		50A5FF04166918F200BB4A2F /* MKNetworkEngineSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKNetworkEngineSpec.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -40,6 +72,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				50A5FF0616691B1D00BB4A2F /* libKiwi.a in Frameworks */,
 				50A5FD1916690EB600BB4A2F /* Security.framework in Frameworks */,
 				50A5FD1A16690EDA00BB4A2F /* CoreGraphics.framework in Frameworks */,
 				50A5FD1716690E9500BB4A2F /* SystemConfiguration.framework in Frameworks */,
@@ -56,9 +89,10 @@
 		50A5FCE616690C0700BB4A2F = {
 			isa = PBXGroup;
 			children = (
+				50A5FEEE166917E300BB4A2F /* External */,
+				50A5FCF616690C2500BB4A2F /* Frameworks */,
 				50A5FD0A16690C5500BB4A2F /* libMKNetworkKit-iOS.a */,
 				50A5FCFD16690C2500BB4A2F /* MKNetworkKit-Tests */,
-				50A5FCF616690C2500BB4A2F /* Frameworks */,
 				50A5FCF516690C2500BB4A2F /* Products */,
 			);
 			sourceTree = "<group>";
@@ -88,9 +122,8 @@
 		50A5FCFD16690C2500BB4A2F /* MKNetworkKit-Tests */ = {
 			isa = PBXGroup;
 			children = (
-				50A5FD0316690C2500BB4A2F /* MKNetworkKit_Tests.h */,
-				50A5FD0416690C2500BB4A2F /* MKNetworkKit_Tests.m */,
 				50A5FCFE16690C2500BB4A2F /* Supporting Files */,
+				50A5FF04166918F200BB4A2F /* MKNetworkEngineSpec.m */,
 			);
 			path = "MKNetworkKit-Tests";
 			sourceTree = "<group>";
@@ -103,6 +136,25 @@
 				50A5FD0616690C2500BB4A2F /* MKNetworkKit-Tests-Prefix.pch */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		50A5FEEE166917E300BB4A2F /* External */ = {
+			isa = PBXGroup;
+			children = (
+				50A5FEF01669181400BB4A2F /* Kiwi.xcodeproj */,
+			);
+			path = External;
+			sourceTree = "<group>";
+		};
+		50A5FEF11669181400BB4A2F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				50A5FEFC1669181400BB4A2F /* libKiwi.a */,
+				50A5FEFE1669181400BB4A2F /* libKiwi-OSX.a */,
+				50A5FF001669181400BB4A2F /* KiwiTests.octest */,
+				50A5FF021669181400BB4A2F /* KiwiExamples.octest */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -144,12 +196,49 @@
 			mainGroup = 50A5FCE616690C0700BB4A2F;
 			productRefGroup = 50A5FCF516690C2500BB4A2F /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 50A5FEF11669181400BB4A2F /* Products */;
+					ProjectRef = 50A5FEF01669181400BB4A2F /* Kiwi.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				50A5FCF316690C2500BB4A2F /* MKNetworkKit-Tests */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		50A5FEFC1669181400BB4A2F /* libKiwi.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libKiwi.a;
+			remoteRef = 50A5FEFB1669181400BB4A2F /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		50A5FEFE1669181400BB4A2F /* libKiwi-OSX.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libKiwi-OSX.a";
+			remoteRef = 50A5FEFD1669181400BB4A2F /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		50A5FF001669181400BB4A2F /* KiwiTests.octest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = KiwiTests.octest;
+			remoteRef = 50A5FEFF1669181400BB4A2F /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		50A5FF021669181400BB4A2F /* KiwiExamples.octest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = KiwiExamples.octest;
+			remoteRef = 50A5FF011669181400BB4A2F /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		50A5FCF116690C2500BB4A2F /* Resources */ = {
@@ -183,7 +272,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				50A5FD0516690C2500BB4A2F /* MKNetworkKit_Tests.m in Sources */,
+				50A5FF05166918F200BB4A2F /* MKNetworkEngineSpec.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -243,8 +332,10 @@
 				INFOPLIST_FILE = "MKNetworkKit-Tests/MKNetworkKit-Tests-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "-all_load";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
+				USER_HEADER_SEARCH_PATHS = "$(SOURCE_ROOT)/External/Kiwi/Kiwi";
 				WRAPPER_EXTENSION = octest;
 			};
 			name = Debug;
@@ -271,8 +362,10 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = "MKNetworkKit-Tests/MKNetworkKit-Tests-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				OTHER_LDFLAGS = "-all_load";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
+				USER_HEADER_SEARCH_PATHS = "$(SOURCE_ROOT)/External/Kiwi/Kiwi";
 				VALIDATE_PRODUCT = YES;
 				WRAPPER_EXTENSION = octest;
 			};
@@ -297,6 +390,7 @@
 				50A5FD0916690C2500BB4A2F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
