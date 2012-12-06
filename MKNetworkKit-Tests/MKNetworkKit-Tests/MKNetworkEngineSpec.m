@@ -12,6 +12,7 @@ describe(@"Network Engine", ^{
         beforeEach(^{
             engine = [[MKNetworkEngine alloc] initWithHostName:kMKTestHostName];
         });
+
         it(@"should return operation with appropriate hostname", ^{
             MKNetworkOperation *op = [engine operationWithPath:kMKTestPath];
             [[op.readonlyRequest.URL.host should] equal:kMKTestHostName];
@@ -49,6 +50,13 @@ describe(@"Network Engine", ^{
                                                          customHeaderFields:@{ @"Some-Header" : @"Bar" }];
         MKNetworkOperation *op = [engine operationWithPath:kMKTestPath];
         [[op.readonlyRequest.allHTTPHeaderFields[@"Some-Header"] should] equal:@"Bar"];
+    });
+
+    it(@"should have apiPath", ^{
+        MKNetworkEngine *engine = [[MKNetworkEngine alloc] initWithHostName:kMKTestHostName
+                                                                    apiPath:kMKTestApiPath
+                                                         customHeaderFields:nil];
+        [[engine.apiPath should] equal:kMKTestApiPath];
     });
 
     it(@"should return operation with appropriate apiPath", ^{
