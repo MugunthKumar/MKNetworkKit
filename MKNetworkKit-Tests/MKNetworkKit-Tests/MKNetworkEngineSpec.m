@@ -1,4 +1,5 @@
 #import "Kiwi.h"
+#import <OHHTTPStubs/OHHTTPStubs.h>
 
 SPEC_BEGIN(MKNetworkEngineSpec)
 
@@ -65,6 +66,21 @@ describe(@"Network Engine", ^{
                                                          customHeaderFields:nil];
         MKNetworkOperation *op = [engine operationWithPath:kMKTestPath];
         [[[op.readonlyRequest.URL path] should] equal:[NSString stringWithFormat:@"/%@/%@", kMKTestApiPath, kMKTestPath]];
+    });
+
+    it(@"should run operation", ^{
+        [OHHTTPStubs addRequestHandler:^OHHTTPStubsResponse *(NSURLRequest *request, BOOL onlyCheck) {
+            NSData *data = [@"test" dataUsingEncoding:NSUTF8StringEncoding];
+            return [OHHTTPStubsResponse responseWithData:data statusCode:200 responseTime:0.5 headers:nil];
+        }];
+        MKNetworkEngine *engine = [[MKNetworkEngine alloc] initWithHostName:kMKTestHostName];
+        MKNetworkOperation *op = [engine operationWithPath:kMKTestPath];
+        __block NSString *result;
+        [op addCompletionHandler:^(MKNetworkOperation *completedOperation) {
+            result = [completedOperation responseString];
+        } errorHandler:nil];
+        [engine enqueueOperation:op];
+        [[expectFutureValue(result) shouldEventually] equal:@"test"];
     });
 });
 
