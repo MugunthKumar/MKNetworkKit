@@ -521,12 +521,13 @@ static NSOperationQueue *_sharedNetworkQueue;
   return [self imageAtURL:url size:size completionHandler:imageFetchedBlock errorHandler:^(MKNetworkOperation* op, NSError* error){}];
 }
 
-#endif
-
 - (MKNetworkOperation*)imageAtURL:(NSURL *)url onCompletion:(MKNKImageBlock) imageFetchedBlock
 {
   return [self imageAtURL:url completionHandler:imageFetchedBlock errorHandler:^(MKNetworkOperation* op, NSError* error){}];
 }
+
+#endif
+
 
 #pragma mark -
 #pragma mark Cache related
