@@ -68,19 +68,56 @@ describe(@"Network Engine", ^{
         [[[op.readonlyRequest.URL path] should] equal:[NSString stringWithFormat:@"/%@/%@", kMKTestApiPath, kMKTestPath]];
     });
 
-    it(@"should run operation", ^{
-        [OHHTTPStubs addRequestHandler:^OHHTTPStubsResponse *(NSURLRequest *request, BOOL onlyCheck) {
-            NSData *data = [@"test" dataUsingEncoding:NSUTF8StringEncoding];
-            return [OHHTTPStubsResponse responseWithData:data statusCode:200 responseTime:0.5 headers:nil];
-        }];
-        MKNetworkEngine *engine = [[MKNetworkEngine alloc] initWithHostName:kMKTestHostName];
-        MKNetworkOperation *op = [engine operationWithPath:kMKTestPath];
-        __block NSString *result;
-        [op addCompletionHandler:^(MKNetworkOperation *completedOperation) {
-            result = [completedOperation responseString];
-        } errorHandler:nil];
-        [engine enqueueOperation:op];
-        [[expectFutureValue(result) shouldEventually] equal:@"test"];
+    context(@"operation is finished", ^{
+        __block MKNetworkEngine *engine = nil;
+        __block MKNetworkOperation *operation = nil;
+        __block BOOL completionBlockCalled = NO;
+        __block BOOL errorBlockCalled = NO;
+
+        beforeEach(^{
+            engine = [[MKNetworkEngine alloc] initWithHostName:kMKTestHostName];
+            operation= [engine operationWithPath:kMKTestPath];
+
+            completionBlockCalled = NO;
+            errorBlockCalled = NO;
+            [operation addCompletionHandler:^(MKNetworkOperation *completedOperation) {
+                completionBlockCalled = YES;
+            } errorHandler:^(MKNetworkOperation *completedOperation, NSError *error) {
+                errorBlockCalled = YES;
+            }];
+        });
+
+        context(@"with success", ^{
+            beforeEach(^{
+                [OHHTTPStubs removeAllRequestHandlers];
+                [OHHTTPStubs addRequestHandler:^OHHTTPStubsResponse *(NSURLRequest *request, BOOL onlyCheck) {
+                    NSData *data = [@"test" dataUsingEncoding:NSUTF8StringEncoding];
+                    return [OHHTTPStubsResponse responseWithData:data statusCode:200 responseTime:0.5 headers:nil];
+                }];
+                [engine enqueueOperation:operation];
+            });
+            it(@"calls completion block on successfull operation", ^{
+                [[expectFutureValue(theValue(completionBlockCalled)) shouldEventually] beTrue];
+            });
+            it(@"doesn't call errorBlock if operation was successfull", ^{
+                [[expectFutureValue(theValue(errorBlockCalled)) shouldEventually] beFalse];
+            });
+        });
+        context(@"with failure", ^{
+            beforeEach(^{
+                [OHHTTPStubs removeAllRequestHandlers];
+                [OHHTTPStubs addRequestHandler:^OHHTTPStubsResponse *(NSURLRequest *request, BOOL onlyCheck) {
+                    return [OHHTTPStubsResponse responseWithData:nil statusCode:400 responseTime:0.5 headers:nil];
+                }];
+                [engine enqueueOperation:operation];
+            });
+            it(@"calls error block on successfull operation", ^{
+                [[expectFutureValue(theValue(errorBlockCalled)) shouldEventually] beTrue];
+            });
+            it(@"doesn't call errorBlock if operation was successfull", ^{
+                [[expectFutureValue(theValue(completionBlockCalled)) shouldEventually] beFalse];
+            });
+        });
     });
 });
 
