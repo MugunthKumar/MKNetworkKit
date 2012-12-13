@@ -7,6 +7,9 @@ static NSString *const kMKTestHostName = @"example.com";
 static NSString *const kMKTestApiPath = @"api/v1";
 static NSString *const kMKTestPath = @"foo";
 
+static NSString *const kMKPathSuccessful = @"kMKPathSuccessful";
+static NSString *const kMKPathError400 = @"kMKPathError400";
+
 describe(@"Network Engine", ^{
     context(@"with hostname", ^{
         __block MKNetworkEngine *engine = nil;
@@ -71,28 +74,35 @@ describe(@"Network Engine", ^{
     context(@"operation is finished", ^{
         __block MKNetworkEngine *engine = nil;
         __block MKNetworkOperation *operation = nil;
-        __block BOOL completionBlockCalled = NO;
-        __block BOOL errorBlockCalled = NO;
 
         beforeEach(^{
-            engine = [[MKNetworkEngine alloc] initWithHostName:kMKTestHostName];
-            operation= [engine operationWithPath:kMKTestPath];
-
-            completionBlockCalled = NO;
-            errorBlockCalled = NO;
-            [operation addCompletionHandler:^(MKNetworkOperation *completedOperation) {
-                completionBlockCalled = YES;
-            } errorHandler:^(MKNetworkOperation *completedOperation, NSError *error) {
-                errorBlockCalled = YES;
+            [OHHTTPStubs addRequestHandler:^OHHTTPStubsResponse *(NSURLRequest *request, BOOL onlyCheck) {
+                if (onlyCheck) {
+                    return OHHTTPStubsResponseUseStub;
+                }
+                NSString *path = [request.URL.path substringFromIndex:1]; // to remove first slash
+                if ([path isEqualToString:kMKPathSuccessful]) {
+                    NSData *data = [@"test" dataUsingEncoding:NSUTF8StringEncoding];
+                    return [OHHTTPStubsResponse responseWithData:data statusCode:200 responseTime:0.5 headers:nil];
+                } else { // means kMKPathError400
+                    return [OHHTTPStubsResponse responseWithData:nil statusCode:400 responseTime:0.5 headers:nil];
+                }
             }];
+
+            engine = [[MKNetworkEngine alloc] initWithHostName:kMKTestHostName];
         });
 
         context(@"with success", ^{
+            __block BOOL completionBlockCalled = NO;
+            __block BOOL errorBlockCalled = NO;
             beforeEach(^{
-                [OHHTTPStubs removeAllRequestHandlers];
-                [OHHTTPStubs addRequestHandler:^OHHTTPStubsResponse *(NSURLRequest *request, BOOL onlyCheck) {
-                    NSData *data = [@"test" dataUsingEncoding:NSUTF8StringEncoding];
-                    return [OHHTTPStubsResponse responseWithData:data statusCode:200 responseTime:0.5 headers:nil];
+                completionBlockCalled = NO;
+                errorBlockCalled = NO;
+                operation = [engine operationWithPath:kMKPathSuccessful];
+                [operation addCompletionHandler:^(MKNetworkOperation *completedOperation) {
+                    completionBlockCalled = YES;
+                } errorHandler:^(MKNetworkOperation *completedOperation, NSError *error) {
+                    errorBlockCalled = YES;
                 }];
                 [engine enqueueOperation:operation];
             });
@@ -104,10 +114,16 @@ describe(@"Network Engine", ^{
             });
         });
         context(@"with failure", ^{
+            __block BOOL completionBlockCalled = NO;
+            __block BOOL errorBlockCalled = NO;
             beforeEach(^{
-                [OHHTTPStubs removeAllRequestHandlers];
-                [OHHTTPStubs addRequestHandler:^OHHTTPStubsResponse *(NSURLRequest *request, BOOL onlyCheck) {
-                    return [OHHTTPStubsResponse responseWithData:nil statusCode:400 responseTime:0.5 headers:nil];
+                completionBlockCalled = NO;
+                errorBlockCalled = NO;
+                operation = [engine operationWithPath:kMKPathError400];
+                [operation addCompletionHandler:^(MKNetworkOperation *completedOperation) {
+                    completionBlockCalled = YES;
+                } errorHandler:^(MKNetworkOperation *completedOperation, NSError *error) {
+                    errorBlockCalled = YES;
                 }];
                 [engine enqueueOperation:operation];
             });
