@@ -201,7 +201,7 @@
 		ABB5C26E148B3B010056D3E9 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0420;
+				LastUpgradeCheck = 0450;
 				ORGANIZATIONNAME = Steinlogic;
 			};
 			buildConfigurationList = ABB5C271148B3B010056D3E9 /* Build configuration list for PBXProject "MKNetworkKit-OSX" */;
@@ -290,6 +290,7 @@
 		ABB5C289148B3B010056D3E9 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MKNetworkKit-OSX/MKNetworkKit-OSX-Prefix.pch";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -299,6 +300,7 @@
 		ABB5C28A148B3B010056D3E9 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MKNetworkKit-OSX/MKNetworkKit-OSX-Prefix.pch";
 				PRODUCT_NAME = "$(TARGET_NAME)";
