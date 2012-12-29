@@ -206,9 +206,15 @@ static NSOperationQueue *_sharedNetworkQueue;
   }
   else if([self.reachability currentReachabilityStatus] == ReachableViaWWAN)
   {
-    DLog(@"Server [%@] is reachable only via cellular data", self.hostName);
-    [_sharedNetworkQueue setMaxConcurrentOperationCount:2];
-    [self checkAndRestoreFrozenOperations];
+    if(self.wifiOnlyMode) {
+      
+      DLog(@" Disabling engine as server [%@] is reachable only via cellular data.", self.hostName);
+      [_sharedNetworkQueue setMaxConcurrentOperationCount:0];
+    } else {
+      DLog(@"Server [%@] is reachable only via cellular data", self.hostName);
+      [_sharedNetworkQueue setMaxConcurrentOperationCount:2];
+      [self checkAndRestoreFrozenOperations];
+    }
   }
   else if([self.reachability currentReachabilityStatus] == NotReachable)
   {

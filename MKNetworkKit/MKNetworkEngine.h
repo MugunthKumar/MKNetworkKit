@@ -282,6 +282,15 @@
 @property (assign, nonatomic) int portNumber;
 
 /*!
+ *  @abstract WiFi only mode
+ *  @property wifiOnlyMode
+ *
+ *  @discussion
+ *	When you set this property to YES, MKNetworkEngine will not run operations on mobile data network.
+ */
+@property (assign, nonatomic) BOOL wifiOnlyMode;
+
+/*!
  *  @abstract Sets an api path if it is different from root URL
  *  @property apiPath
  *  
