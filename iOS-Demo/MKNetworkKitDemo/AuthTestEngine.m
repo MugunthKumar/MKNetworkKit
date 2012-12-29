@@ -83,7 +83,7 @@
 -(void) clientCertTest {
   
   MKNetworkOperation *op = [self operationWithURLString:@"https://testbed.mknetworkkit.com"];
-  op.clientCertificate = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"client.crt"];
+  op.clientCertificate = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"client.p12"];
   op.clientCertificatePassword = @"test";
   
   [op addCompletionHandler:^(MKNetworkOperation *operation) {
