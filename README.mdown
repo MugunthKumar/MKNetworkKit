@@ -1,10 +1,10 @@
-This is version 0.85 of MKNetworkKit. Read the [blog post](http://mk.sg/8w) for more. The latest code is still not fully testing on Mac, though iOS is complete. Caching responses and invalidation of cache is not implemented the right way for the Mac target. 
+This is version 0.87 of MKNetworkKit. Read the [blog post](http://mk.sg/8w) for more. The latest code is still not fully testing on Mac, though iOS is complete. Caching responses and invalidation of cache is not implemented the right way for the Mac target. 
 
 MKNetworkKit is ready for production use on iOS apps. As on date, it's used by several thousands of apps including [Digg](https://itunes.apple.com/us/app/digg/id362872995?mt=8)
 
 MKNetworkKit officially supports Cocoapods. Add the following line to your Podfile.
 
-pod 'MKNetworkKit',  '~> 0.85'
+pod 'MKNetworkKit',  '~> 0.87'
 
 ---
 
@@ -83,12 +83,13 @@ Gentle Bytes appledoc@gentlebytes.com
 ---
 ###TODO
 
-* Fix and test Client certificate/Server trust auth
-* Test streaming
-* Test multiple file attachments in a single request
-
-* Example code for Mac
-* Fix AppleDoc warnings
+Streaming post body test
+Twitter streams test
+multiple images upload test
+Hash implementation for MKNetworkOperation 
+Batch network queue
+A rare crash in setCache method (Multiple issues on Github that I cannot reproduce)
+Frozen operations should report via NSNotifications
 
 ---
 ###Known Issues
