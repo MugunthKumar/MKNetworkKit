@@ -118,7 +118,11 @@ static NSOperationQueue *_sharedNetworkQueue;
       
       self.hostName = hostName;
       self.reachability = [Reachability reachabilityWithHostname:self.hostName];
-      [self.reachability startNotifier];
+      
+      dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        
+        [self.reachability startNotifier];
+      });
     }
     
     if(headers[@"User-Agent"] == nil) {
