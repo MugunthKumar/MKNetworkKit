@@ -11,7 +11,7 @@
 		AB148FD6147F5167001F4A86 /* ExampleDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = AB148FD5147F5167001F4A86 /* ExampleDownloader.m */; };
 		AB20C3401487C854004B0825 /* ExamplePost.m in Sources */ = {isa = PBXBuildFile; fileRef = AB20C33F1487C854004B0825 /* ExamplePost.m */; };
 		AB3A3090148F09AE00D06246 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB3A308F148F09AE00D06246 /* Security.framework */; };
-		AB480DE8168F09A60017D04B /* client.p12 in Resources */ = {isa = PBXBuildFile; fileRef = AB480DE7168F09A60017D04B /* client.p12 */; };
+		AB480DEE168F164F0017D04B /* client.crt in Resources */ = {isa = PBXBuildFile; fileRef = AB480DED168F164F0017D04B /* client.crt */; };
 		AB6E44DB14CBA3CC0089D19C /* FlickrTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB6E44DA14CBA3CC0089D19C /* FlickrTableViewController.m */; };
 		AB6E44DE14CBA43F0089D19C /* FlickrCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AB6E44DD14CBA43F0089D19C /* FlickrCell.m */; };
 		AB6E44E114CBA62B0089D19C /* FlickrEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = AB6E44E014CBA62B0089D19C /* FlickrEngine.m */; };
@@ -40,7 +40,7 @@
 		AB20C33E1487C854004B0825 /* ExamplePost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExamplePost.h; sourceTree = "<group>"; };
 		AB20C33F1487C854004B0825 /* ExamplePost.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ExamplePost.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		AB3A308F148F09AE00D06246 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
-		AB480DE7168F09A60017D04B /* client.p12 */ = {isa = PBXFileReference; lastKnownFileType = file; path = client.p12; sourceTree = "<group>"; };
+		AB480DED168F164F0017D04B /* client.crt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = client.crt; sourceTree = "<group>"; };
 		AB6E44D914CBA3CC0089D19C /* FlickrTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlickrTableViewController.h; sourceTree = "<group>"; };
 		AB6E44DA14CBA3CC0089D19C /* FlickrTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlickrTableViewController.m; sourceTree = "<group>"; };
 		AB6E44DC14CBA43F0089D19C /* FlickrCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlickrCell.h; sourceTree = "<group>"; };
@@ -93,7 +93,7 @@
 			isa = PBXGroup;
 			children = (
 				AB94373516411E0A0002299C /* Default-568h@2x.png */,
-				AB480DE7168F09A60017D04B /* client.p12 */,
+				AB480DED168F164F0017D04B /* client.crt */,
 				ABB5C2C9148B3F370056D3E9 /* libMKNetworkKit-iOS.a */,
 				ABB5C2C7148B3E230056D3E9 /* SampleImage.jpg */,
 				ABF149B91467F312008B20C9 /* MKNetworkKit-iOS-Demo */,
@@ -212,7 +212,7 @@
 				ABF149CA1467F312008B20C9 /* MainStoryboard.storyboard in Resources */,
 				ABB5C2C8148B3E230056D3E9 /* SampleImage.jpg in Resources */,
 				AB94373616411E0A0002299C /* Default-568h@2x.png in Resources */,
-				AB480DE8168F09A60017D04B /* client.p12 in Resources */,
+				AB480DEE168F164F0017D04B /* client.crt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
