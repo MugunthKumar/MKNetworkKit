@@ -132,7 +132,7 @@
 		ABA53C03148F0D6900809400 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0420;
+				LastUpgradeCheck = 0450;
 				ORGANIZATIONNAME = Steinlogic;
 			};
 			buildConfigurationList = ABA53C06148F0D6900809400 /* Build configuration list for PBXProject "MKNetworkKit-OSX-Demo" */;
@@ -255,6 +255,7 @@
 		ABA53C2B148F0D6A00809400 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MKNetworkKit-OSX-Demo/MKNetworkKit-OSX-Demo-Prefix.pch";
 				INFOPLIST_FILE = "MKNetworkKit-OSX-Demo/MKNetworkKit-OSX-Demo-Info.plist";
@@ -270,6 +271,7 @@
 		ABA53C2C148F0D6A00809400 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MKNetworkKit-OSX-Demo/MKNetworkKit-OSX-Demo-Prefix.pch";
 				INFOPLIST_FILE = "MKNetworkKit-OSX-Demo/MKNetworkKit-OSX-Demo-Info.plist";
@@ -301,6 +303,7 @@
 				ABA53C2C148F0D6A00809400 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

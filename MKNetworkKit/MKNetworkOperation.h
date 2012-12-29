@@ -211,6 +211,16 @@ typedef enum {
 @property (nonatomic, readonly, strong) NSError *error;
 
 /*!
+ *  @abstract Boolean variable that states whether the operation should continue if the certificate is invalid.
+ *  @property shouldContinueWithInvalidCertificate
+ *
+ *  @discussion
+ *	If you set this property to YES, the operation will continue as if the certificate was valid (if you use Server Trust Auth)
+ *  The default value is NO. MKNetworkKit will not run an operation with a server that is not trusted.
+ */
+@property (nonatomic, assign) BOOL shouldContinueWithInvalidCertificate;
+
+/*!
  *  @abstract Cache headers of the response
  *  @property cacheHeaders
  *  
@@ -248,6 +258,15 @@ typedef enum {
  *	If your request needs to be authenticated using a client certificate, set the certificate path here
  */
 @property (copy, nonatomic) NSString *clientCertificate;
+
+/*!
+ *  @abstract Authentication methods (Password for the Client Certificate)
+ *  @property clientCertificatePassword
+ *
+ *  @discussion
+ *	If your client certificate is encrypted with a password, specify it here
+ */
+@property (copy, nonatomic) NSString *clientCertificatePassword;
 
 /*!
  *  @abstract Custom authentication handler
