@@ -170,7 +170,8 @@
     
     //[ApplicationDelegate.sampleAuth basicAuthTest];
     //[ApplicationDelegate.sampleAuth digestAuthTest];
-    [ApplicationDelegate.sampleAuth digestAuthTestWithUser:self.userTextField.text password:self.passwordTextField.text];
-    //[ApplicationDelegate.sampleAuth clientCertTest];
+    //[ApplicationDelegate.sampleAuth digestAuthTestWithUser:self.userTextField.text password:self.passwordTextField.text];
+    //[ApplicationDelegate.sampleAuth serverTrustTest];
+    [ApplicationDelegate.sampleAuth clientCertTest];
 }
 @end

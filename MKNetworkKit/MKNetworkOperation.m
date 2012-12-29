@@ -974,7 +974,7 @@ OSStatus extractIdentityAndTrust(CFDataRef inPKCS12Data,        // 5
 
 - (void)connection:(NSURLConnection *)connection willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
   
-  if ([challenge previousFailureCount] == 0) {
+  if (challenge.previousFailureCount == 0) {
     
     if (((challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodDefault) ||
          (challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodHTTPBasic) ||
@@ -1003,13 +1003,14 @@ OSStatus extractIdentityAndTrust(CFDataRef inPKCS12Data,        // 5
         SecIdentityCopyCertificate(identity, &certificate);
         const void *certs[] = { certificate };
         CFArrayRef certsArray = CFArrayCreate(NULL, certs, 1, NULL);
+        NSArray *certificatesForCredential = (__bridge NSArray *)certsArray;
         NSURLCredential *credential = [NSURLCredential credentialWithIdentity:identity
-                                                                 certificates:(__bridge NSArray *)certificate
+                                                                 certificates:certificatesForCredential
                                                                   persistence:NSURLCredentialPersistencePermanent];
+        [challenge.sender useCredential:credential forAuthenticationChallenge:challenge];
         CFRelease(identity);
         CFRelease(certificate);
         CFRelease(certsArray);
-        [challenge.sender useCredential:credential forAuthenticationChallenge:challenge];
       } else {
         [challenge.sender cancelAuthenticationChallenge:challenge];
       }

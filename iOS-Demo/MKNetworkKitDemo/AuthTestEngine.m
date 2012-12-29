@@ -66,15 +66,9 @@
 }
 
 
--(void) clientCertTest {
+-(void) serverTrustTest {
   
-  MKNetworkOperation *op = [self operationWithPath:@"mknetworkkit/client_auth.php"
-                                            params:nil 
-                                        httpMethod:@"GET" 
-                                               ssl:YES];
-  
-  NSString *certPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"client.p12"];
-  [op setClientCertificate:certPath];
+  MKNetworkOperation *op = [self operationWithURLString:@"https://testbed.mknetworkkit.com"];  
   
   [op addCompletionHandler:^(MKNetworkOperation *operation) {
     
@@ -82,6 +76,22 @@
   } errorHandler:^(MKNetworkOperation *errorOp, NSError* error) {
     
     DLog(@"%@", [error localizedDescription]);         
+  }];
+  [self enqueueOperation:op];
+}
+
+-(void) clientCertTest {
+  
+  MKNetworkOperation *op = [self operationWithURLString:@"https://testbed.mknetworkkit.com"];
+  op.clientCertificate = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"client.p12"];
+  op.clientCertificatePassword = @"test";
+  
+  [op addCompletionHandler:^(MKNetworkOperation *operation) {
+    
+    DLog(@"%@", [operation responseString]);
+  } errorHandler:^(MKNetworkOperation *errorOp, NSError* error) {
+    
+    DLog(@"%@", [error localizedDescription]);
   }];
   [self enqueueOperation:op];
 }
