@@ -7,9 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		AB148FD2147F4EF8001F4A86 /* ExampleUploader.m in Sources */ = {isa = PBXBuildFile; fileRef = AB148FD1147F4EF8001F4A86 /* ExampleUploader.m */; };
-		AB148FD6147F5167001F4A86 /* ExampleDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = AB148FD5147F5167001F4A86 /* ExampleDownloader.m */; };
-		AB20C3401487C854004B0825 /* ExamplePost.m in Sources */ = {isa = PBXBuildFile; fileRef = AB20C33F1487C854004B0825 /* ExamplePost.m */; };
+		AB2B455716916A44004470F9 /* TestsEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = AB2B455616916A44004470F9 /* TestsEngine.m */; };
+		AB2B455F16916F45004470F9 /* HTTPSTestEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = AB2B455E16916F45004470F9 /* HTTPSTestEngine.m */; };
 		AB3A3090148F09AE00D06246 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB3A308F148F09AE00D06246 /* Security.framework */; };
 		AB480DFF168F1D520017D04B /* client.p12 in Resources */ = {isa = PBXBuildFile; fileRef = AB480DFE168F1D520017D04B /* client.p12 */; };
 		AB6E44DB14CBA3CC0089D19C /* FlickrTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB6E44DA14CBA3CC0089D19C /* FlickrTableViewController.m */; };
@@ -20,7 +19,6 @@
 		AB74B0C61467CC120088BF09 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB74B0C51467CC120088BF09 /* CoreGraphics.framework */; };
 		AB74B1111467E5790088BF09 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB74B1101467E5790088BF09 /* CFNetwork.framework */; };
 		AB74B1131467E5850088BF09 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB74B1121467E5850088BF09 /* SystemConfiguration.framework */; };
-		AB80BBB6148B672100B6DC2A /* AuthTestEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = AB80BBB5148B672100B6DC2A /* AuthTestEngine.m */; };
 		AB94373616411E0A0002299C /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = AB94373516411E0A0002299C /* Default-568h@2x.png */; };
 		ABB5C2C8148B3E230056D3E9 /* SampleImage.jpg in Resources */ = {isa = PBXBuildFile; fileRef = ABB5C2C7148B3E230056D3E9 /* SampleImage.jpg */; };
 		ABB5C2CA148B3F370056D3E9 /* libMKNetworkKit-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ABB5C2C9148B3F370056D3E9 /* libMKNetworkKit-iOS.a */; };
@@ -33,12 +31,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		AB148FD0147F4EF8001F4A86 /* ExampleUploader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = ExampleUploader.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
-		AB148FD1147F4EF8001F4A86 /* ExampleUploader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ExampleUploader.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		AB148FD4147F5166001F4A86 /* ExampleDownloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExampleDownloader.h; sourceTree = "<group>"; };
-		AB148FD5147F5167001F4A86 /* ExampleDownloader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExampleDownloader.m; sourceTree = "<group>"; };
-		AB20C33E1487C854004B0825 /* ExamplePost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExamplePost.h; sourceTree = "<group>"; };
-		AB20C33F1487C854004B0825 /* ExamplePost.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ExamplePost.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		AB2B455516916A44004470F9 /* TestsEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestsEngine.h; sourceTree = "<group>"; };
+		AB2B455616916A44004470F9 /* TestsEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestsEngine.m; sourceTree = "<group>"; };
+		AB2B455D16916F45004470F9 /* HTTPSTestEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTPSTestEngine.h; sourceTree = "<group>"; };
+		AB2B455E16916F45004470F9 /* HTTPSTestEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HTTPSTestEngine.m; sourceTree = "<group>"; };
 		AB3A308F148F09AE00D06246 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		AB480DFE168F1D520017D04B /* client.p12 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = client.p12; sourceTree = "<group>"; };
 		AB6E44D914CBA3CC0089D19C /* FlickrTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlickrTableViewController.h; sourceTree = "<group>"; };
@@ -53,8 +49,6 @@
 		AB74B0C51467CC120088BF09 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		AB74B1101467E5790088BF09 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		AB74B1121467E5850088BF09 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
-		AB80BBB4148B672100B6DC2A /* AuthTestEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = AuthTestEngine.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
-		AB80BBB5148B672100B6DC2A /* AuthTestEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = AuthTestEngine.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		AB94373516411E0A0002299C /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		ABB5C2C7148B3E230056D3E9 /* SampleImage.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = SampleImage.jpg; path = ../SampleImage.jpg; sourceTree = "<group>"; };
 		ABB5C2C9148B3F370056D3E9 /* libMKNetworkKit-iOS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libMKNetworkKit-iOS.a"; path = "../MKNetworkKit-iOS/build/Release-iphoneos/libMKNetworkKit-iOS.a"; sourceTree = "<group>"; };
@@ -137,20 +131,16 @@
 				ABF149C41467F312008B20C9 /* ViewController.m */,
 				ABC25177146802B900264474 /* YahooEngine.h */,
 				ABC25178146802B900264474 /* YahooEngine.m */,
-				AB148FD0147F4EF8001F4A86 /* ExampleUploader.h */,
-				AB148FD1147F4EF8001F4A86 /* ExampleUploader.m */,
-				AB148FD4147F5166001F4A86 /* ExampleDownloader.h */,
-				AB148FD5147F5167001F4A86 /* ExampleDownloader.m */,
-				AB20C33E1487C854004B0825 /* ExamplePost.h */,
-				AB20C33F1487C854004B0825 /* ExamplePost.m */,
-				AB80BBB4148B672100B6DC2A /* AuthTestEngine.h */,
-				AB80BBB5148B672100B6DC2A /* AuthTestEngine.m */,
 				AB6E44D914CBA3CC0089D19C /* FlickrTableViewController.h */,
 				AB6E44DA14CBA3CC0089D19C /* FlickrTableViewController.m */,
 				AB6E44DC14CBA43F0089D19C /* FlickrCell.h */,
 				AB6E44DD14CBA43F0089D19C /* FlickrCell.m */,
 				AB6E44DF14CBA62B0089D19C /* FlickrEngine.h */,
 				AB6E44E014CBA62B0089D19C /* FlickrEngine.m */,
+				AB2B455D16916F45004470F9 /* HTTPSTestEngine.h */,
+				AB2B455E16916F45004470F9 /* HTTPSTestEngine.m */,
+				AB2B455516916A44004470F9 /* TestsEngine.h */,
+				AB2B455616916A44004470F9 /* TestsEngine.m */,
 			);
 			name = "MKNetworkKit-iOS-Demo";
 			path = MKNetworkKitDemo;
@@ -243,13 +233,11 @@
 				ABF149CB1467F312008B20C9 /* main.m in Sources */,
 				ABF149CD1467F312008B20C9 /* ViewController.m in Sources */,
 				ABC25179146802B900264474 /* YahooEngine.m in Sources */,
-				AB148FD2147F4EF8001F4A86 /* ExampleUploader.m in Sources */,
-				AB148FD6147F5167001F4A86 /* ExampleDownloader.m in Sources */,
-				AB20C3401487C854004B0825 /* ExamplePost.m in Sources */,
-				AB80BBB6148B672100B6DC2A /* AuthTestEngine.m in Sources */,
 				AB6E44DB14CBA3CC0089D19C /* FlickrTableViewController.m in Sources */,
 				AB6E44DE14CBA43F0089D19C /* FlickrCell.m in Sources */,
 				AB6E44E114CBA62B0089D19C /* FlickrEngine.m in Sources */,
+				AB2B455716916A44004470F9 /* TestsEngine.m in Sources */,
+				AB2B455F16916F45004470F9 /* HTTPSTestEngine.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

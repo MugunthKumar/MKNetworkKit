@@ -24,12 +24,14 @@
 //  THE SOFTWARE.
 
 #import <UIKit/UIKit.h>
+
 #import "YahooEngine.h"
-#import "ExampleUploader.h"
-#import "ExampleDownloader.h"
-#import "ExamplePost.h"
-#import "AuthTestEngine.h"
+
+#import "TestsEngine.h"
+
 #import "FlickrEngine.h"
+
+#import "HTTPSTestEngine.h"
 
 #define ApplicationDelegate ((AppDelegate *)[UIApplication sharedApplication].delegate)
 
@@ -38,13 +40,8 @@
 @property (strong, nonatomic) UIWindow *window;
 
 @property (strong, nonatomic) YahooEngine *yahooEngine;
-@property (strong, nonatomic) ExampleUploader *twitPicUploader;
-@property (strong, nonatomic) ExampleDownloader *sampleDownloader;
-@property (strong, nonatomic) ExamplePost *samplePoster;
-@property (strong, nonatomic) AuthTestEngine *sampleAuth;
 @property (strong, nonatomic) FlickrEngine *flickrEngine;
+
+@property (strong, nonatomic) TestsEngine *testsEngine;
+@property (strong, nonatomic) HTTPSTestEngine *httpsTestsEngine;
 @end
-
-
-#define kTwitterUserName @""
-#define kTwitterPassword @""

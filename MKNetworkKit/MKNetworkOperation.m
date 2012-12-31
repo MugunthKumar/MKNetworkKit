@@ -110,7 +110,13 @@ OSStatus extractIdentityAndTrust(CFDataRef inPKCS12Data,
 
 -(BOOL) isCacheable {
   
-  return [self.request.HTTPMethod isEqualToString:@"GET"];
+  if(self.username != nil) return NO;
+  if(self.password != nil) return NO;
+  if(self.clientCertificate != nil) return NO;
+  if(self.clientCertificatePassword != nil) return NO;
+  if(![self.request.HTTPMethod isEqualToString:@"GET"]) return NO;  
+  if([self.request.URL.scheme.lowercaseString isEqualToString:@"https"]) return NO;
+  return YES;
 }
 
 
@@ -408,6 +414,7 @@ OSStatus extractIdentityAndTrust(CFDataRef inPKCS12Data,
   [theCopy setUsername:[self.username copy]];
   [theCopy setPassword:[self.password copy]];
   [theCopy setClientCertificate:[self.clientCertificate copy]];
+  [theCopy setClientCertificatePassword:[self.clientCertificatePassword copy]];
   [theCopy setResponseBlocks:[self.responseBlocks copy]];
   [theCopy setErrorBlocks:[self.errorBlocks copy]];
   [theCopy setErrorBlocksType2:[self.errorBlocksType2 copy]];
@@ -545,6 +552,8 @@ OSStatus extractIdentityAndTrust(CFDataRef inPKCS12Data,
       self.fieldsToBePosted = [params mutableCopy];
     
     self.stringEncoding = NSUTF8StringEncoding; // use a delegate to get these values later
+    
+    if(!method) method = @"GET";
     
     if ([method isEqualToString:@"GET"])
       self.cacheHeaders = [NSMutableDictionary dictionary];

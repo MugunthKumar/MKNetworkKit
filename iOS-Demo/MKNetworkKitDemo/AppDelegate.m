@@ -29,27 +29,18 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    // Override point for customization after application launch.
-    NSString *str = @"TEST";
-    [str md5];
-    
-    NSMutableDictionary *headerFields = [NSMutableDictionary dictionary]; 
-    [headerFields setValue:@"iOS" forKey:@"x-client-identifier"];
-    
-    self.yahooEngine = [[YahooEngine alloc] initWithHostName:@"download.finance.yahoo.com" 
-                                     customHeaderFields:headerFields];
-    // not that these header fields are mandated by yahoo. This line is to show the feature of MKNetworkKit
-    [self.yahooEngine useCache];        
-    
-    self.twitPicUploader = [[ExampleUploader alloc] initWithHostName:@"twitpic.com" 
-                                           customHeaderFields:nil];
-    
-    self.sampleDownloader = [[ExampleDownloader alloc] initWithHostName:nil customHeaderFields:nil];
-    self.samplePoster = [[ExamplePost alloc] initWithHostName:@"stockfresh.com" customHeaderFields:nil];
-    self.sampleAuth = [[AuthTestEngine alloc] initWithHostName:@"api.mk.sg" customHeaderFields:nil];
-    [self.sampleAuth useCache];
-    self.flickrEngine = [[FlickrEngine alloc] initWithHostName:@"api.flickr.com" customHeaderFields:nil];
+    self.yahooEngine = [[YahooEngine alloc] initWithHostName:@"download.finance.yahoo.com"];
+    [self.yahooEngine useCache];
+
+  // you can initialize an engine in your app delegate like the previous Yahoo engine or
+  // write a method like initWithDefaultSettings in your subclass and initialize there like the tests engine
+  
+    self.testsEngine = [[TestsEngine alloc] initWithDefaultSettings];
+    self.httpsTestsEngine = [[HTTPSTestEngine alloc] initWithDefaultSettings];
+  
+    self.flickrEngine = [[FlickrEngine alloc] initWithHostName:@"api.flickr.com"];
     [self.flickrEngine useCache];
+  
     return YES;
 }
 							

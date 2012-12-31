@@ -334,7 +334,14 @@ static NSOperationQueue *_sharedNetworkQueue;
   if(self.apiPath)
     [urlString appendFormat:@"/%@", self.apiPath];
   
-  [urlString appendFormat:@"/%@", path];
+  if(![path isEqualToString:@"/"]) { // fetch for root?
+    
+    if(path.length > 0 && [path characterAtIndex:0] == '/') // if user passes /, don't prefix a slash
+      [urlString appendFormat:@"%@", path];
+    else if (path != nil)
+      [urlString appendFormat:@"/%@", path];
+  }
+
   
   return [self operationWithURLString:urlString params:body httpMethod:method];
 }

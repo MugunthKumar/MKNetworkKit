@@ -63,10 +63,12 @@
                                     completionHandler:^(UIImage *fetchedImage, NSURL *url, BOOL isInCache) {
                                         
                                         if([self.loadingImageURLString isEqualToString:[url absoluteString]]) {
-                                            
-                                          [UIView animateWithDuration:isInCache?0.0f:0.4f delay:0 options:UIViewAnimationOptionShowHideTransitionViews animations:^{
-                                            self.thumbnailImage.image = fetchedImage;
-                                          } completion:nil];
+                                          
+                                          [UIView transitionWithView:self.contentView
+                                                            duration:isInCache?0.1f:0.4f
+                                                             options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
+                                                               self.thumbnailImage.image = fetchedImage;
+                                                             } completion:nil];
                                         }
                                     } errorHandler:^(MKNetworkOperation *completedOperation, NSError *error) {
                                       
