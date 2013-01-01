@@ -97,13 +97,13 @@ Gentle Bytes appledoc@gentlebytes.com
 ---
 ###TODO
 
-Streaming post body test
-Twitter streams test
-multiple images upload test
-Hash implementation for MKNetworkOperation 
-Batch network queue
-A rare crash in setCache method (Multiple issues on Github that I cannot reproduce)
-Frozen operations should report via NSNotifications
+* Streaming post body test
+* Twitter streams test
+* multiple images upload test
+* Hash implementation for MKNetworkOperation
+* Batch network queue
+* A rare crash in setCache method (Multiple issues on Github that I cannot reproduce)
+* Frozen operations should report via NSNotifications
 
 ---
 ###Known Issues
