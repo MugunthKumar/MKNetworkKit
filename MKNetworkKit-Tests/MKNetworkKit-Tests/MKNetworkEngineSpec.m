@@ -7,9 +7,6 @@ static NSString *const kMKTestHostName = @"example.com";
 static NSString *const kMKTestApiPath = @"api/v1";
 static NSString *const kMKTestPath = @"foo";
 
-static NSString *const kMKPathSuccessful = @"kMKPathSuccessful";
-static NSString *const kMKPathError400 = @"kMKPathError400";
-
 describe(@"Network Engine", ^{
     context(@"with hostname", ^{
         __block MKNetworkEngine *engine = nil;
@@ -71,68 +68,47 @@ describe(@"Network Engine", ^{
         [[[op.readonlyRequest.URL path] should] equal:[NSString stringWithFormat:@"/%@/%@", kMKTestApiPath, kMKTestPath]];
     });
 
-    context(@"operation is finished", ^{
+    context(@"operation is finished with success", ^{
         __block MKNetworkEngine *engine = nil;
         __block MKNetworkOperation *operation = nil;
+        __block BOOL completionBlockCalled = NO;
+        __block BOOL errorBlockCalled = NO;
 
         beforeEach(^{
-            [OHHTTPStubs addRequestHandler:^OHHTTPStubsResponse *(NSURLRequest *request, BOOL onlyCheck) {
-                if (onlyCheck) {
-                    return OHHTTPStubsResponseUseStub;
-                }
-                NSString *path = [request.URL.path substringFromIndex:1]; // to remove first slash
-                if ([path isEqualToString:kMKPathSuccessful]) {
-                    NSData *data = [@"test" dataUsingEncoding:NSUTF8StringEncoding];
-                    return [OHHTTPStubsResponse responseWithData:data statusCode:200 responseTime:0.5 headers:nil];
-                } else { // means kMKPathError400
-                    return [OHHTTPStubsResponse responseWithData:nil statusCode:400 responseTime:0.5 headers:nil];
-                }
-            }];
-
             engine = [[MKNetworkEngine alloc] initWithHostName:kMKTestHostName];
+            completionBlockCalled = NO;
+            errorBlockCalled = NO;
+            operation = [engine operationWithPath:kMKTestPath];
+            [operation addCompletionHandler:^(MKNetworkOperation *completedOperation) {
+                completionBlockCalled = YES;
+            } errorHandler:^(MKNetworkOperation *completedOperation, NSError *error) {
+                errorBlockCalled = YES;
+            }];
+        });
+        afterEach(^{
+            [OHHTTPStubs removeAllRequestHandlers];
         });
 
-        context(@"with success", ^{
-            __block BOOL completionBlockCalled = NO;
-            __block BOOL errorBlockCalled = NO;
-            beforeEach(^{
-                completionBlockCalled = NO;
-                errorBlockCalled = NO;
-                operation = [engine operationWithPath:kMKPathSuccessful];
-                [operation addCompletionHandler:^(MKNetworkOperation *completedOperation) {
-                    completionBlockCalled = YES;
-                } errorHandler:^(MKNetworkOperation *completedOperation, NSError *error) {
-                    errorBlockCalled = YES;
-                }];
-                [engine enqueueOperation:operation];
-            });
-            it(@"calls completion block on successfull operation", ^{
-                [[expectFutureValue(theValue(completionBlockCalled)) shouldEventually] beTrue];
-            });
-            it(@"doesn't call errorBlock if operation was successfull", ^{
-                [[expectFutureValue(theValue(errorBlockCalled)) shouldEventually] beFalse];
-            });
+        it(@"calls completion block on successfull operation and don't call errorBlock", ^{
+            [OHHTTPStubs shouldStubRequestsPassingTest:^BOOL(NSURLRequest *request) {
+                return YES;
+            } withStubResponse:^OHHTTPStubsResponse *(NSURLRequest *request) {
+                NSData *data = [@"test" dataUsingEncoding:NSUTF8StringEncoding];
+                return [OHHTTPStubsResponse responseWithData:data statusCode:200 responseTime:0.5 headers:nil];
+            }];
+            [engine enqueueOperation:operation];
+            [[expectFutureValue(theValue(completionBlockCalled)) shouldEventually] beTrue];
+            [[expectFutureValue(theValue(errorBlockCalled)) shouldEventually] beFalse];
         });
-        context(@"with failure", ^{
-            __block BOOL completionBlockCalled = NO;
-            __block BOOL errorBlockCalled = NO;
-            beforeEach(^{
-                completionBlockCalled = NO;
-                errorBlockCalled = NO;
-                operation = [engine operationWithPath:kMKPathError400];
-                [operation addCompletionHandler:^(MKNetworkOperation *completedOperation) {
-                    completionBlockCalled = YES;
-                } errorHandler:^(MKNetworkOperation *completedOperation, NSError *error) {
-                    errorBlockCalled = YES;
-                }];
-                [engine enqueueOperation:operation];
-            });
-            it(@"calls error block on successfull operation", ^{
-                [[expectFutureValue(theValue(errorBlockCalled)) shouldEventually] beTrue];
-            });
-            it(@"doesn't call errorBlock if operation was successfull", ^{
-                [[expectFutureValue(theValue(completionBlockCalled)) shouldEventually] beFalse];
-            });
+        it(@"calls error block and doesn't call completion block on failure", ^{
+            [OHHTTPStubs shouldStubRequestsPassingTest:^BOOL(NSURLRequest *request) {
+                return YES;
+            } withStubResponse:^OHHTTPStubsResponse *(NSURLRequest *request) {
+                return [OHHTTPStubsResponse responseWithData:nil statusCode:404 responseTime:0.5 headers:nil];
+            }];
+            [engine enqueueOperation:operation];
+            [[expectFutureValue(theValue(errorBlockCalled)) shouldEventually] beTrue];
+            [[expectFutureValue(theValue(completionBlockCalled)) shouldEventually] beFalse];
         });
     });
 });
