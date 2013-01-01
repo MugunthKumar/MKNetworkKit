@@ -1,0 +1,6 @@
+[submodule "MKNetworkKit-Tests/External/Kiwi"]
+	path = MKNetworkKit-Tests/External/Kiwi
+	url = https://github.com/allending/Kiwi.git
+[submodule "MKNetworkKit-Tests/External/OHHTTPStubs"]
+	path = MKNetworkKit-Tests/External/OHHTTPStubs
+	url = https://github.com/AliSoftware/OHHTTPStubs.git

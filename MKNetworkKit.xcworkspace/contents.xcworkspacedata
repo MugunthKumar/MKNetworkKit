@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:MKNetworkKit-Tests/MKNetworkKit-Tests.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:Mac-Demo/MKNetworkKit-OSX-Demo/MKNetworkKit-OSX-Demo.xcodeproj">
    </FileRef>
    <FileRef
