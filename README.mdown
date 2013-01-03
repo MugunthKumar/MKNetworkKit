@@ -2,10 +2,6 @@ This is version 0.87 of MKNetworkKit. Read the [blog post](http://mk.sg/8w) for 
 
 MKNetworkKit is ready for production use on iOS apps. As on date, it's used by several thousands of apps including [Digg](https://itunes.apple.com/us/app/digg/id362872995?mt=8)
 
-MKNetworkKit officially supports Cocoapods. Add the following line to your Podfile.
-
-pod 'MKNetworkKit',  '~> 0.87'
-
 ---
 
 ###Why MKNetworkKit?
@@ -25,8 +21,26 @@ These are just a few of most interesting features on MKNetworkKit.
 
 ---
 
+###Installation
+
+The preferred way of installation is via [CocoaPods](http://cocoapods.org). Just add
+
+```ruby
+pod 'MKNetworkKit'
+```
+
+and run `pod install`. It will install the most recent version of MKNetworkKit.
+
+If you would like to use the latest code of MKNetworkKit use:
+
+```ruby
+pod 'MKNetworkKit', :head
+```
+
 ###How to use
 Read the [blog post](http://mk.sg/8w) for more.
+
+---
 
 ###Licensing
 
@@ -83,13 +97,13 @@ Gentle Bytes appledoc@gentlebytes.com
 ---
 ###TODO
 
-Streaming post body test
-Twitter streams test
-multiple images upload test
-Hash implementation for MKNetworkOperation 
-Batch network queue
-A rare crash in setCache method (Multiple issues on Github that I cannot reproduce)
-Frozen operations should report via NSNotifications
+* Streaming post body test
+* Twitter streams test
+* multiple images upload test
+* Hash implementation for MKNetworkOperation
+* Batch network queue
+* A rare crash in setCache method (Multiple issues on Github that I cannot reproduce)
+* Frozen operations should report via NSNotifications
 
 ---
 ###Known Issues
