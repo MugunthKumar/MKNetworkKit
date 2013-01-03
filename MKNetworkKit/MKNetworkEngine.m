@@ -163,12 +163,7 @@ static NSOperationQueue *_sharedNetworkQueue;
   [[NSNotificationCenter defaultCenter] removeObserver:self name:NSApplicationWillResignActiveNotification object:nil];
   [[NSNotificationCenter defaultCenter] removeObserver:self name:NSApplicationWillTerminateNotification object:nil];
 #endif
-  
-}
 
-+(void) dealloc {
-  
-  [_sharedNetworkQueue removeObserver:[self self] forKeyPath:@"operationCount"];
 }
 
 #pragma mark -
