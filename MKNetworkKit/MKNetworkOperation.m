@@ -114,7 +114,7 @@ OSStatus extractIdentityAndTrust(CFDataRef inPKCS12Data,
   if(self.password != nil) return NO;
   if(self.clientCertificate != nil) return NO;
   if(self.clientCertificatePassword != nil) return NO;
-  if(![self.request.HTTPMethod isEqualToString:@"GET"]) return NO;  
+  if(![self.request.HTTPMethod isEqualToString:@"GET"]) return NO;
   if([self.request.URL.scheme.lowercaseString isEqualToString:@"https"]) return NO;
   return YES;
 }
@@ -1305,9 +1305,15 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
 
 -(void) decompressedResponseImageOfSize:(CGSize) size completionHandler:(void (^)(UIImage *decompressedImage)) imageDecompressionHandler {
   
+  static float scale = 1.0f;
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    scale = [[UIScreen mainScreen] scale];
+  });
+  
   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
     
-    __block CGSize targetSize = size;
+    __block CGSize targetSize = CGSizeMake(size.width * scale, size.height * scale);
     UIImage *image = [self responseImage];
     CGImageRef imageRef = image.CGImage;
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
@@ -1348,13 +1354,7 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
     }
     CGImageRef decompressedImageRef = CGBitmapContextCreateImage(context);
     CGContextRelease(context);
-    
-    static float scale = 0.0f;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-      scale = [UIScreen mainScreen].scale;
-    });
-    
+        
     UIImage *decompressedImage = [[UIImage alloc] initWithCGImage:decompressedImageRef scale:scale orientation:image.imageOrientation];
     CGImageRelease(decompressedImageRef);
     dispatch_async(dispatch_get_main_queue(), ^{
