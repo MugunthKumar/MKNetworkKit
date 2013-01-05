@@ -343,7 +343,7 @@ typedef enum {
  *  To use HTTP Basic Authentication, consider using the method setUsername:password:basicAuth: instead.
  *
  *  Example
- *  [op setToken:@"abracadabra" forAuthType:@"Token"] will set the header value to 
+ *  [op setAuthorizationHeaderValue:@"abracadabra" forAuthType:@"Token"] will set the header value to
  *  "Authorization: Token abracadabra"
  * 
  *  @seealso
