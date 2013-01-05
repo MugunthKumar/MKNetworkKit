@@ -1,6 +1,13 @@
 #import "Kiwi.h"
 #import <OHHTTPStubs/OHHTTPStubs.h>
 
+// needed for testing `registerOperationSubclass:`
+@interface MyNetworkOperation : MKNetworkOperation
+@end
+@implementation MyNetworkOperation
+@end
+
+
 SPEC_BEGIN(MKNetworkEngineSpec)
 
 static NSString *const kMKTestHostName = @"example.com";
@@ -43,6 +50,12 @@ describe(@"Network Engine", ^{
             NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObject:@"bar" forKey:@"foo"];
             MKNetworkOperation *op = [engine operationWithPath:kMKTestPath params:params];
             [[[op.readonlyRequest.URL query] should] equal:@"foo=bar"];
+        });
+
+        it(@"can return operation of custom subclass", ^{
+            MKNetworkEngine *engine = [[MKNetworkEngine alloc] initWithHostName:kMKTestHostName];
+            [engine registerOperationSubclass:[MyNetworkOperation class]];
+            [[[engine operationWithPath:kMKTestApiPath] should] beKindOfClass:[MyNetworkOperation class]];
         });
     });
 
