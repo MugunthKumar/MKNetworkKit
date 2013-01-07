@@ -43,6 +43,8 @@ typedef void (^MKNKImageBlock) (NSImage* fetchedImage, NSURL* url, BOOL isInCach
 typedef void (^MKNKResponseErrorBlock)(MKNetworkOperation* completedOperation, NSError* error);
 typedef void (^MKNKErrorBlock)(NSError* error);
 
+typedef NSInputStream *(^MKNKUploadStreamConstructorBlock)(MKNetworkOperation *operation, NSURLConnection *connection);
+
 typedef void (^MKNKAuthBlock)(NSURLAuthenticationChallenge* challenge);
 
 typedef NSString* (^MKNKEncodingBlock) (NSDictionary* postDataDict);
@@ -460,6 +462,17 @@ typedef enum {
  *
  */
 -(void) setUploadStream:(NSInputStream*) inputStream;
+
+/*!
+ *  @abstract Sets a constructor for creating a stream for upload
+ *
+ *  @discussion
+ *	This method can be used to upload a resource for a post body directly from a stream.
+ *  We have to use a constructor, not a stream directly, because in some cases we need
+ *  to recreate a stream. See https://devforums.apple.com/message/344093 for details.
+ *
+ */
+-(void) setUploadStreamConstructor:(MKNKUploadStreamConstructorBlock) uploadStreamConstructor
 
 /*!
  *  @abstract Downloads a resource directly to a file or any output stream

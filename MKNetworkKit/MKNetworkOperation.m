@@ -79,6 +79,8 @@ OSStatus extractIdentityAndTrust(CFDataRef inPKCS12Data,
 @property (nonatomic, copy) NSData *cachedResponse;
 @property (nonatomic, copy) MKNKResponseBlock cacheHandlingBlock;
 
+@property (nonatomic, copy) MKNKUploadStreamConstructorBlock uploadStreamConstructorBlock;
+
 @property (nonatomic, assign) SecTrustRef serverTrust;
 
 #if TARGET_OS_IPHONE
@@ -517,6 +519,12 @@ OSStatus extractIdentityAndTrust(CFDataRef inPKCS12Data,
   
 #warning Method not tested yet.
   self.request.HTTPBodyStream = inputStream;
+}
+
+-(void) setUploadStreamConstructor:(MKNKUploadStreamConstructorBlock) uploadStreamConstructor {
+    self.uploadStreamConstructorBlock = uploadStreamConstructor;
+    [self addHeaders:@{ @"Expect" : @"100-continue" }];
+    self.request.HTTPBodyStream = uploadStreamConstructor(self, nil);
 }
 
 -(void) addDownloadStream:(NSOutputStream*) outputStream {
@@ -1084,6 +1092,11 @@ OSStatus extractIdentityAndTrust(CFDataRef inPKCS12Data,        // 5
     //        [[challenge sender] cancelAuthenticationChallenge:challenge];
     [[challenge sender] continueWithoutCredentialForAuthenticationChallenge:challenge];
   }
+}
+
+// https://devforums.apple.com/message/344093#344093
+- (NSInputStream *)connection:(NSURLConnection *)connection needNewBodyStream:(NSURLRequest *)request {
+    return self.uploadStreamConstructorBlock(self, connection);
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
