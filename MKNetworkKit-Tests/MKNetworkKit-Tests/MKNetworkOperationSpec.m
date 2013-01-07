@@ -98,34 +98,38 @@ describe(@"Operation", ^{
         });
     });
 
-    it(@"should call operationSucceeded", ^{
+    context(@"when finished with status code", ^{
+        __block MKNetworkOperation *op = nil;
+        beforeEach(^{
+            op =[[MKNetworkOperation alloc] initWithURLString:@"http://example.com/api" params:nil httpMethod:@"GET"];
+            [op stub:@selector(notifyCache)];
+        });
         NSArray *successCodes = @[@200, @201, @202, @203, @204, @205, @206];
         for (NSNumber *statusCode in successCodes) {
-            MKNetworkOperation *op =[[MKNetworkOperation alloc] initWithURLString:@"http://example.com/api" params:nil httpMethod:@"GET"];
-            [op stub:@selector(notifyCache)];
-            NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:nil
-                                                                      statusCode:[statusCode intValue]
-                                                                     HTTPVersion:nil
-                                                                    headerFields:nil];
-            [op stub:@selector(response) andReturn:response];
-            [[op should] receive:@selector(operationSucceeded)];
-            [op connectionDidFinishLoading:[NSURLConnection nullMock]];
+            it([NSString stringWithFormat:@"%@ - should call operationSucceeded", statusCode], ^{
+                NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:nil
+                                                                          statusCode:[statusCode intValue]
+                                                                         HTTPVersion:nil
+                                                                        headerFields:nil];
+                [op stub:@selector(response) andReturn:response];
+                [[op should] receive:@selector(operationSucceeded)];
+                [op connectionDidFinishLoading:[NSURLConnection nullMock]];
+            });
         }
-    });
-    it(@"should call operationFailedWithError", ^{
+
         NSArray *failedCodes = @[@400, @401, @402, @403, @404, @405, @406, @407,
                                  @408, @409, @410, @411, @412, @413, @414, @415,
                                  @416, @417, @500, @501, @502, @503, @504, @505];
         for (NSNumber *statusCode in failedCodes) {
-            MKNetworkOperation *op =[[MKNetworkOperation alloc] initWithURLString:@"http://example.com/api" params:nil httpMethod:@"GET"];
-            [op stub:@selector(notifyCache)];
-            NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:nil
-                                                                      statusCode:[statusCode intValue]
-                                                                     HTTPVersion:nil
-                                                                    headerFields:nil];
-            [op stub:@selector(response) andReturn:response];
-            [[op should] receive:@selector(operationFailedWithError:)];
-            [op connectionDidFinishLoading:[NSURLConnection nullMock]];
+            it([NSString stringWithFormat:@"%@ - should call operationFailedWithError", statusCode], ^{
+                NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:nil
+                                                                          statusCode:[statusCode intValue]
+                                                                         HTTPVersion:nil
+                                                                        headerFields:nil];
+                [op stub:@selector(response) andReturn:response];
+                [[op should] receive:@selector(operationFailedWithError:)];
+                [op connectionDidFinishLoading:[NSURLConnection nullMock]];
+            });
         }
     });
 });
