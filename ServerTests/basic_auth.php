@@ -12,7 +12,7 @@ if (!isset($_SERVER['PHP_AUTH_USER'])) {
 	}
 	else
 	{
-		echo "<p>Sorry, invalid crednetials</p>";
+		echo "<p>Sorry, invalid credentials</p>";
 	}
 }
 ?>
