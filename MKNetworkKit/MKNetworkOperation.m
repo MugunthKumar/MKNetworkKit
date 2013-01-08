@@ -252,7 +252,10 @@ OSStatus extractIdentityAndTrust(CFDataRef inPKCS12Data,
 
 
 -(BOOL) isEqual:(id)object {
-  
+  if(object == self)
+    return YES;
+  if(!object || ![object isKindOfClass:[self class]])
+    return NO;
   if([self.request.HTTPMethod isEqualToString:@"GET"] || [self.request.HTTPMethod isEqualToString:@"HEAD"]) {
     
     MKNetworkOperation *anotherObject = (MKNetworkOperation*) object;
