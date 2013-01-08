@@ -262,6 +262,9 @@ OSStatus extractIdentityAndTrust(CFDataRef inPKCS12Data,
   return NO;
 }
 
+-(NSUInteger) hash {
+  return [[self uniqueIdentifier] hash];
+}
 
 -(NSString*) uniqueIdentifier {
   
