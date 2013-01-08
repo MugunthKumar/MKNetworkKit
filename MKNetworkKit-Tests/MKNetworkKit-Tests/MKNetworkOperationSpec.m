@@ -132,6 +132,26 @@ describe(@"Operation", ^{
             });
         }
     });
+    context(@"with the same operation", ^{
+        __block MKNetworkOperation *op1 = nil;
+        __block MKNetworkOperation *op2 = nil;
+        beforeEach(^{
+            op1 =[[MKNetworkOperation alloc] initWithURLString:@"http://example.com/api" params:nil httpMethod:@"GET"];
+            op2 =[[MKNetworkOperation alloc] initWithURLString:@"http://example.com/api" params:nil httpMethod:@"GET"];
+        });
+        it(@"should equal", ^{
+            [[op1 should] equal:op2];
+        });
+        it(@"shouldn't be inserted twice into NSSet", ^{
+            NSMutableSet *collection = [NSMutableSet set];
+            [collection addObject:op1];
+            [collection addObject:op2];
+
+            [[theValue([collection count]) should] equal:theValue(1)];
+            [[theValue([collection containsObject:op1]) should] beTrue];
+            [[theValue([collection containsObject:op2]) should] beTrue];
+        });
+    });
 });
 
 SPEC_END
