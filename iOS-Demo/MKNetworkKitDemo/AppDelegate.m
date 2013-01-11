@@ -36,6 +36,8 @@
   // write a method like initWithDefaultSettings in your subclass and initialize there like the tests engine
   
     self.testsEngine = [[TestsEngine alloc] initWithDefaultSettings];
+  [self.testsEngine useCache];
+  
     self.httpsTestsEngine = [[HTTPSTestEngine alloc] initWithDefaultSettings];
   
     self.flickrEngine = [[FlickrEngine alloc] initWithHostName:@"api.flickr.com"];

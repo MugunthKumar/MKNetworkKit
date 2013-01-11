@@ -116,6 +116,7 @@ OSStatus extractIdentityAndTrust(CFDataRef inPKCS12Data,
   if(self.clientCertificatePassword != nil) return NO;
   if(![self.request.HTTPMethod isEqualToString:@"GET"]) return NO;
   if([self.request.URL.scheme.lowercaseString isEqualToString:@"https"]) return NO;
+  if(self.downloadStreams.count > 0) return NO; // should not cache operations that have streams attached
   return YES;
 }
 
@@ -1246,6 +1247,7 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
   if (self.response.statusCode >= 200 && self.response.statusCode < 300 && ![self isCancelled]) {
     
     self.cachedResponse = nil; // remove cached data
+
     [self notifyCache];
     [self operationSucceeded];
     
