@@ -27,6 +27,6 @@
 
 - (NSString *) md5;
 + (NSString*) uniqueString;
-- (NSString*) urlEncodedString;
+- (NSString*) mk_urlEncodedString;
 - (NSString*) urlDecodedString;
 @end

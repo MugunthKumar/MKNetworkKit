@@ -29,7 +29,7 @@
 
 -(void) imagesForTag:(NSString*) tag completionHandler:(FlickrImagesResponseBlock) imageURLBlock errorHandler:(MKNKErrorBlock) errorBlock {
 
-    MKNetworkOperation *op = [self operationWithPath:FLICKR_IMAGE_URL([tag urlEncodedString])];
+    MKNetworkOperation *op = [self operationWithPath:FLICKR_IMAGE_URL([tag mk_urlEncodedString])];
 
     [op addCompletionHandler:^(MKNetworkOperation *completedOperation) {
     
