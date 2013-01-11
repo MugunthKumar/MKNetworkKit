@@ -479,13 +479,14 @@ static NSOperationQueue *_sharedNetworkQueue;
   
   [op addCompletionHandler:^(MKNetworkOperation *completedOperation) {
     
-    imageFetchedBlock([completedOperation responseImage],
-                      url,
-                      [completedOperation isCachedResponse]);
+    if (imageFetchedBlock)
+        imageFetchedBlock([completedOperation responseImage],
+                          url,
+                          [completedOperation isCachedResponse]);
     
   } errorHandler:^(MKNetworkOperation *completedOperation, NSError *error) {
-    
-    errorBlock(completedOperation, error);
+      if (errorBlock)
+          errorBlock(completedOperation, error);
   }];
   
   [self enqueueOperation:op];
