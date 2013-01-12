@@ -110,12 +110,13 @@ OSStatus extractIdentityAndTrust(CFDataRef inPKCS12Data,
 
 -(BOOL) isCacheable {
   
+  if(self.shouldNotCacheResponse) return NO;
   if(self.username != nil) return NO;
   if(self.password != nil) return NO;
   if(self.clientCertificate != nil) return NO;
   if(self.clientCertificatePassword != nil) return NO;
   if(![self.request.HTTPMethod isEqualToString:@"GET"]) return NO;
-  if([self.request.URL.scheme.lowercaseString isEqualToString:@"https"]) return NO;
+  if([self.request.URL.scheme.lowercaseString isEqualToString:@"https"]) return self.shouldCacheResponseEvenIfProtocolIsHTTPS;
   if(self.downloadStreams.count > 0) return NO; // should not cache operations that have streams attached
   return YES;
 }

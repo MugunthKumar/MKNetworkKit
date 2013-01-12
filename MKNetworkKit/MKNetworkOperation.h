@@ -211,6 +211,27 @@ typedef enum {
 @property (nonatomic, readonly, strong) NSError *error;
 
 /*!
+ *  @abstract Boolean variable that states whether the operation's response should be cached despite coming from a secured source
+ *  @property shouldCacheEvenIfProtocolIsHTTPS
+ *
+ *  @discussion
+ *	If you set this property to YES, the operation's data will be cached even if the source is secure (HTTPS)
+ *  The default value is NO. MKNetworkKit will not cache responses from secure servers
+ */
+@property (nonatomic, assign) BOOL shouldCacheResponseEvenIfProtocolIsHTTPS;
+
+/*!
+ *  @abstract Boolean variable that states whether the operation's response should be cached
+ *  @property shouldNotCacheResponse
+ *
+ *  @discussion
+ *	If you set this property to YES, the operation's data will not be cached even if the engine's useCache is enabled
+ *  The default value is NO. MKNetworkKit will cache responses based on the engine setting.
+ *  This property should be used sparingly if your backend isn't written adhering to HTTP 1.1 caching standards
+ */
+@property (nonatomic, assign) BOOL shouldNotCacheResponse;
+
+/*!
  *  @abstract Boolean variable that states whether the operation should continue if the certificate is invalid.
  *  @property shouldContinueWithInvalidCertificate
  *
