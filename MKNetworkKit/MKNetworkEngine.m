@@ -476,7 +476,8 @@ static NSOperationQueue *_sharedNetworkQueue;
     }
   
   MKNetworkOperation *op = [self operationWithURLString:[url absoluteString]];
-  
+  op.shouldCacheResponseEvenIfProtocolIsHTTPS = YES;
+
   [op addCompletionHandler:^(MKNetworkOperation *completedOperation) {
     
     if (imageFetchedBlock)
@@ -509,7 +510,8 @@ static NSOperationQueue *_sharedNetworkQueue;
     }
   
   MKNetworkOperation *op = [self operationWithURLString:[url absoluteString]];
-  
+  op.shouldCacheResponseEvenIfProtocolIsHTTPS = YES;
+
   [op addCompletionHandler:^(MKNetworkOperation *completedOperation) {
     [completedOperation decompressedResponseImageOfSize:size
                                       completionHandler:^(UIImage *decompressedImage) {
