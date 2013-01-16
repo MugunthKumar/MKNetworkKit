@@ -1394,6 +1394,11 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
 
 -(void) responseJSONWithCompletionHandler:(void (^)(id jsonObject)) jsonDecompressionHandler {
   
+  [self responseJSONWithOptions:0 completionHandler:jsonDecompressionHandler];
+}
+
+-(void) responseJSONWithOptions:(NSJSONReadingOptions) options completionHandler:(void (^)(id jsonObject)) jsonDecompressionHandler {
+  
   if([self responseData] == nil) {
     
     jsonDecompressionHandler(nil);
@@ -1403,7 +1408,7 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
     
     NSError *error = nil;
-    id returnValue = [NSJSONSerialization JSONObjectWithData:[self responseData] options:0 error:&error];
+    id returnValue = [NSJSONSerialization JSONObjectWithData:[self responseData] options:options error:&error];
     if(error) {
       
       DLog(@"JSON Parsing Error: %@", error);
@@ -1417,6 +1422,7 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
     });
   });
 }
+
 #pragma mark -
 #pragma mark Overridable methods
 
