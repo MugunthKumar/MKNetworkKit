@@ -1326,15 +1326,9 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
     CGImageRef imageRef = image.CGImage;
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
     CGImageAlphaInfo alphaInfo = CGImageGetAlphaInfo(imageRef);
-    BOOL sameSize = NO;
-    if (CGSizeEqualToSize(targetSize, CGSizeMake(CGImageGetWidth(imageRef), CGImageGetHeight(imageRef)))) {
-      targetSize = CGSizeMake(1, 1);
-      sameSize = YES;
-    }
-    
+
     size_t imageWidth = (size_t)targetSize.width;
     size_t imageHeight = (size_t)targetSize.height;
-    
     CGContextRef context = CGBitmapContextCreate(NULL,
                                                  imageWidth,
                                                  imageHeight,
@@ -1353,13 +1347,6 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
     
     CGRect rect = (CGRect){CGPointZero, {imageWidth, imageHeight}};
     CGContextDrawImage(context, rect, imageRef);
-    if (sameSize) {
-      CGContextRelease(context);
-      dispatch_async(dispatch_get_main_queue(), ^{
-        imageDecompressionHandler(image);
-      });
-      return;
-    }
     CGImageRef decompressedImageRef = CGBitmapContextCreateImage(context);
     CGContextRelease(context);
         
