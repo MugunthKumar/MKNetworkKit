@@ -54,22 +54,24 @@ const float kFreshLoadAnimationDuration = 0.35f;
   DefaultEngine = engine;
 }
 
--(void) setImageFromURL:(NSURL*) url placeHolderImage:(UIImage*) image {
+-(MKNetworkOperation*) setImageFromURL:(NSURL*) url placeHolderImage:(UIImage*) image {
   
-  [self setImageFromURL:url placeHolderImage:image usingEngine:DefaultEngine animation:YES];
+  return [self setImageFromURL:url placeHolderImage:image usingEngine:DefaultEngine animation:YES];
 }
 
--(void) setImageFromURL:(NSURL*) url placeHolderImage:(UIImage*) image animation:(BOOL) yesOrNo {
+-(MKNetworkOperation*) setImageFromURL:(NSURL*) url placeHolderImage:(UIImage*) image animation:(BOOL) yesOrNo {
   
-  [self setImageFromURL:url placeHolderImage:image usingEngine:DefaultEngine animation:yesOrNo];
+  return [self setImageFromURL:url placeHolderImage:image usingEngine:DefaultEngine animation:yesOrNo];
 }
 
--(void) setImageFromURL:(NSURL*) url placeHolderImage:(UIImage*) image usingEngine:(MKNetworkEngine*) imageCacheEngine animation:(BOOL) yesOrNo {
+-(MKNetworkOperation*) setImageFromURL:(NSURL*) url placeHolderImage:(UIImage*) image usingEngine:(MKNetworkEngine*) imageCacheEngine animation:(BOOL) yesOrNo {
   
-  self.image = image;
-  [self.imageFetchOperation cancel];
+  if(image) self.image = image;
+  [self.imageFetchOperation cancel];  
+  if(!imageCacheEngine) imageCacheEngine = DefaultEngine;
   
-  self.imageFetchOperation = [DefaultEngine imageAtURL:url
+  if(imageCacheEngine) {
+  self.imageFetchOperation = [imageCacheEngine imageAtURL:url
                                      completionHandler:^(UIImage *fetchedImage, NSURL *url, BOOL isInCache) {
                                        
                                        [UIView transitionWithView:self.superview
@@ -82,5 +84,11 @@ const float kFreshLoadAnimationDuration = 0.35f;
                                        
                                        DLog(@"%@", error);
                                      }];
+  } else {
+    
+    DLog(@"No default engine found and imageCacheEngine parameter is null")
+  }
+  
+  return self.imageFetchOperation;
 }
 @end

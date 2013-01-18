@@ -40,7 +40,6 @@
  *  MKNetworkEngine also allows you to provide custom header fields that gets appended automatically to every request
  */
 @interface MKNetworkEngine : NSObject
-
 /*!
  *  @abstract Initializes your network engine with a hostname
  *  
@@ -259,6 +258,25 @@
  *  enqueueOperation:
  */
 -(void) enqueueOperation:(MKNetworkOperation*) operation forceReload:(BOOL) forceReload;
+
+/*!
+ *  @abstract Cancels operations matching a given string
+ *
+ *  @discussion
+ *	Cancels all operations in the shared queue that matches a given string. This string could be your host name or a path
+ *
+ */
++(void) cancelOperationsContainingURLString:(NSString*) string;
+
+/*!
+ *  @abstract Cancels all operations created by this engine
+ *
+ *  @discussion
+ *	Cancels all operations that matches this engine's host name
+ *  This method is a no-op if the engine's host name was not set.
+ *
+ */
+- (void) cancelAllOperations;
 
 /*!
  *  @abstract HostName of the engine
