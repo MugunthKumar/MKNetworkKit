@@ -58,7 +58,7 @@
 #import "Categories/NSDictionary+RequestEncoding.h"
 #import "Categories/NSDate+RFC1123.h"
 #import "Categories/NSData+MKBase64.h"
-
+#import "Categories/UIImageView+MKNetworkKitAdditions.h"
 #if TARGET_OS_IPHONE
 #import "Categories/UIAlertView+MKNetworkKitAdditions.h"
 #elif TARGET_OS_MAC
