@@ -569,9 +569,15 @@ OSStatus extractIdentityAndTrust(CFDataRef inPKCS12Data,
          [method isEqualToString:@"DELETE"]) && (params && [params count] > 0)) {
       
       finalURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@?%@", aURLString,
-                                       [self encodedPostDataString]]];
+                                       [self.fieldsToBePosted urlEncodedKeyValueString]]];
     } else {
       finalURL = [NSURL URLWithString:aURLString];
+    }
+    
+    if(finalURL == nil) {
+      
+      DLog(@"Cannot create a URL with %@ and parameters %@ and method %@", aURLString, self.fieldsToBePosted, method);
+      return nil;
     }
     
     self.request = [NSMutableURLRequest requestWithURL:finalURL
