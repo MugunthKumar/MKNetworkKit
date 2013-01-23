@@ -242,7 +242,28 @@ static NSOperationQueue *_sharedNetworkQueue;
     [NSKeyedArchiver archiveRootObject:operation toFile:archivePath];
     [operation cancel];
   }
+}
+
++(void) cancelOperationsContainingURLString:(NSString*) string {
   
+  NSArray *runningOperations = _sharedNetworkQueue.operations;
+  [runningOperations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+    
+    MKNetworkOperation *thisOperation = obj;
+    if([[thisOperation.readonlyRequest.URL absoluteString] rangeOfString:string].location != NSNotFound) {
+    
+      [thisOperation cancel];
+    }
+  }];
+}
+
+-(void) cancelAllOperations {
+
+  if(self.hostName) {
+    [MKNetworkEngine cancelOperationsContainingURLString:self.hostName];
+  } else {
+    DLog(@"Host name is not set. Cannot cancel operations.");
+  }
 }
 
 -(void) checkAndRestoreFrozenOperations {

@@ -585,10 +585,30 @@ typedef enum {
  *  @discussion
  *	This method is used for accessing the downloaded data as a NSDictionary or an NSArray. If the operation is still in progress, the method returns nil. If the response is not a valid JSON, this method returns nil. The difference between this and responseJSON is that, this method decodes JSON in the background.
  *
+ *  @see also
+ *  responseJSON
+ *  responseJSONWithOptions:completionHandler:
+ *
  *  @availability
  *  iOS 5 and above or Mac OS 10.7 and above
  */
 -(void) responseJSONWithCompletionHandler:(void (^)(id jsonObject)) jsonDecompressionHandler;
+
+/*!
+ *  @abstract Helper method to retrieve the contents as a NSDictionary or NSArray depending on the JSON contents in the background
+ *
+ *  @discussion
+ *	This method is used for accessing the downloaded data as a NSDictionary or an NSArray. If the operation is still in progress, the method returns nil. If the response is not a valid JSON, this method returns nil. The difference between this and responseJSON is that, this method decodes JSON in the background and allows passing JSON reading options like parsing JSON fragments.
+ *
+ *  @see also
+ *  responseJSON
+ *  responseJSONWithCompletionHandler:
+ *
+ *  @availability
+ *  iOS 5 and above or Mac OS 10.7 and above
+ */
+-(void) responseJSONWithOptions:(NSJSONReadingOptions) options completionHandler:(void (^)(id jsonObject)) jsonDecompressionHandler;
+
 /*!
  *  @abstract Overridable custom method where you can add your custom business logic error handling
  *  
