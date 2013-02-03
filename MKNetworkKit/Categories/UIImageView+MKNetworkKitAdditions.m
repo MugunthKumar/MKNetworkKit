@@ -54,6 +54,11 @@ const float kFreshLoadAnimationDuration = 0.35f;
   DefaultEngine = engine;
 }
 
+-(MKNetworkOperation*) setImageFromURL:(NSURL*) url {
+  
+  return [self setImageFromURL:url placeHolderImage:nil];
+}
+
 -(MKNetworkOperation*) setImageFromURL:(NSURL*) url placeHolderImage:(UIImage*) image {
   
   return [self setImageFromURL:url placeHolderImage:image usingEngine:DefaultEngine animation:YES];
