@@ -470,8 +470,11 @@ static NSOperationQueue *_sharedNetworkQueue;
           
           MKNetworkOperation *queuedOperation = (MKNetworkOperation*) (operations)[index];
           operationFinished = [queuedOperation isFinished];
-          if(!operationFinished)
-            [queuedOperation updateHandlersFromOperation:operation];
+          if(!operationFinished) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+              [queuedOperation updateHandlersFromOperation:operation];
+            });
+          }
         }
         
         if(expiryTimeInSeconds <= 0 || forceReload || operationFinished)
