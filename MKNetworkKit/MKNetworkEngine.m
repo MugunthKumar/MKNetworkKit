@@ -544,15 +544,15 @@ static NSOperationQueue *_sharedNetworkQueue;
   [op addCompletionHandler:^(MKNetworkOperation *completedOperation) {
     [completedOperation decompressedResponseImageOfSize:size
                                       completionHandler:^(UIImage *decompressedImage) {
-                                        
-                                        imageFetchedBlock(decompressedImage,
-                                                          url,
-                                                          [completedOperation isCachedResponse]);
+                                          if (imageFetchedBlock)
+                                              imageFetchedBlock(decompressedImage,
+                                                                url,
+                                                                [completedOperation isCachedResponse]);
                                       }];
   } errorHandler:^(MKNetworkOperation *completedOperation, NSError *error) {
-    
-    errorBlock(completedOperation, error);
-    DLog(@"%@", error);
+      if (errorBlock)
+          errorBlock(completedOperation, error);
+      DLog(@"%@", error);
   }];
   
   [self enqueueOperation:op];
