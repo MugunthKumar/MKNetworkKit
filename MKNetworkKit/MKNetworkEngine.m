@@ -414,6 +414,8 @@ static NSOperationQueue *_sharedNetworkQueue;
 -(void) enqueueOperation:(MKNetworkOperation*) operation forceReload:(BOOL) forceReload {
   
   NSParameterAssert(operation != nil);
+  if(operation == nil) return;
+  
   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
     [operation setCacheHandler:^(MKNetworkOperation* completedCacheableOperation) {
       

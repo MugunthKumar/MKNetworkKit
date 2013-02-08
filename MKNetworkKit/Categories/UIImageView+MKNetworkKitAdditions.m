@@ -54,6 +54,11 @@ const float kFreshLoadAnimationDuration = 0.35f;
   DefaultEngine = engine;
 }
 
+-(MKNetworkOperation*) setImageFromURL:(NSURL*) url {
+  
+  return [self setImageFromURL:url placeHolderImage:nil];
+}
+
 -(MKNetworkOperation*) setImageFromURL:(NSURL*) url placeHolderImage:(UIImage*) image {
   
   return [self setImageFromURL:url placeHolderImage:image usingEngine:DefaultEngine animation:YES];
@@ -67,23 +72,24 @@ const float kFreshLoadAnimationDuration = 0.35f;
 -(MKNetworkOperation*) setImageFromURL:(NSURL*) url placeHolderImage:(UIImage*) image usingEngine:(MKNetworkEngine*) imageCacheEngine animation:(BOOL) yesOrNo {
   
   if(image) self.image = image;
-  [self.imageFetchOperation cancel];  
+  [self.imageFetchOperation cancel];
   if(!imageCacheEngine) imageCacheEngine = DefaultEngine;
   
   if(imageCacheEngine) {
-  self.imageFetchOperation = [imageCacheEngine imageAtURL:url
-                                     completionHandler:^(UIImage *fetchedImage, NSURL *url, BOOL isInCache) {
-                                       
-                                       [UIView transitionWithView:self.superview
-                                                         duration:isInCache?kFromCacheAnimationDuration:kFreshLoadAnimationDuration
-                                                          options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
-                                                            self.image = fetchedImage;
-                                                          } completion:nil];
-
-                                     } errorHandler:^(MKNetworkOperation *completedOperation, NSError *error) {
-                                       
-                                       DLog(@"%@", error);
-                                     }];
+    self.imageFetchOperation = [imageCacheEngine imageAtURL:url
+                                                       size:self.frame.size
+                                          completionHandler:^(UIImage *fetchedImage, NSURL *url, BOOL isInCache) {
+                                            
+                                            [UIView transitionWithView:self.superview
+                                                              duration:isInCache?kFromCacheAnimationDuration:kFreshLoadAnimationDuration
+                                                               options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
+                                                                 self.image = fetchedImage;
+                                                               } completion:nil];
+                                            
+                                          } errorHandler:^(MKNetworkOperation *completedOperation, NSError *error) {
+                                            
+                                            DLog(@"%@", error);
+                                          }];
   } else {
     
     DLog(@"No default engine found and imageCacheEngine parameter is null")
