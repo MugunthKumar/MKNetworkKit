@@ -451,7 +451,10 @@ static NSOperationQueue *_sharedNetworkQueue;
               expiryTimeInSeconds = [expiresOnDate timeIntervalSinceNow];
             });
             
-            [operation updateOperationBasedOnPreviousHeaders:savedCacheHeaders];
+            dispatch_async(dispatch_get_main_queue(), ^{
+              
+              [operation updateOperationBasedOnPreviousHeaders:savedCacheHeaders];
+            });
           }
         }
       }
