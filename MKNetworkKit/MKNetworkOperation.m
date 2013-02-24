@@ -602,6 +602,11 @@ OSStatus extractIdentityAndTrust(CFDataRef inPKCS12Data,
   return self;
 }
 
+-(void) addParams:(NSDictionary*) paramsDictionary {
+  
+  [self.fieldsToBePosted addEntriesFromDictionary:paramsDictionary];
+}
+
 -(void) addHeaders:(NSDictionary*) headersDictionary {
   
   [headersDictionary enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
