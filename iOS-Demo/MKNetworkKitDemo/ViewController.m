@@ -122,11 +122,12 @@
         DLog(@"%.2f", progress*100.0);
         self.downloadProgessBar.progress = progress;
     }];
-    
+  
+  __weak ViewController *weakSelf = self;
     [self.downloadOperation addCompletionHandler:^(MKNetworkOperation* completedRequest) {
         
         DLog(@"%@", completedRequest);   
-        self.downloadProgessBar.progress = 0.0f;
+        weakSelf.downloadProgessBar.progress = 0.0f;
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Download Completed"                              
                                                         message:@"The file is in your Caches directory"
                                                        delegate:nil

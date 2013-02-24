@@ -453,7 +453,10 @@ static NSOperationQueue *_sharedNetworkQueue;
               expiryTimeInSeconds = [expiresOnDate timeIntervalSinceNow];
             });
             
-            [operation updateOperationBasedOnPreviousHeaders:savedCacheHeaders];
+            dispatch_async(dispatch_get_main_queue(), ^{
+              
+              [operation updateOperationBasedOnPreviousHeaders:savedCacheHeaders];
+            });
           }
         }
       }
@@ -467,8 +470,11 @@ static NSOperationQueue *_sharedNetworkQueue;
           
           MKNetworkOperation *queuedOperation = (MKNetworkOperation*) (operations)[index];
           operationFinished = [queuedOperation isFinished];
-          if(!operationFinished)
-            [queuedOperation updateHandlersFromOperation:operation];
+          if(!operationFinished) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+              [queuedOperation updateHandlersFromOperation:operation];
+            });
+          }
         }
         
         if(expiryTimeInSeconds <= 0 || forceReload || operationFinished)
@@ -538,15 +544,15 @@ static NSOperationQueue *_sharedNetworkQueue;
   [op addCompletionHandler:^(MKNetworkOperation *completedOperation) {
     [completedOperation decompressedResponseImageOfSize:size
                                       completionHandler:^(UIImage *decompressedImage) {
-                                        
-                                        imageFetchedBlock(decompressedImage,
-                                                          url,
-                                                          [completedOperation isCachedResponse]);
+                                          if (imageFetchedBlock)
+                                              imageFetchedBlock(decompressedImage,
+                                                                url,
+                                                                [completedOperation isCachedResponse]);
                                       }];
   } errorHandler:^(MKNetworkOperation *completedOperation, NSError *error) {
-    
-    errorBlock(completedOperation, error);
-    DLog(@"%@", error);
+      if (errorBlock)
+          errorBlock(completedOperation, error);
+      DLog(@"%@", error);
   }];
   
   [self enqueueOperation:op];
