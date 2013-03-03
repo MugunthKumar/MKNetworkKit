@@ -345,6 +345,16 @@ typedef enum {
 #endif
 
 /*!
+ *  @abstract Add additional POST/GET parameters to your request
+ *
+ *  @discussion
+ *	If you ever need to set additional params after creating your operation, you this method.
+ *  You normally set default parameters to the params parameter when you create a operation.
+ *  On specific cases where you need to add a new parameter for a call, you can use this
+ */
+-(void) addParams:(NSDictionary*) paramsDictionary;
+
+/*!
  *  @abstract Add additional header parameters
  *  
  *  @discussion

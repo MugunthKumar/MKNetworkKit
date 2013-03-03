@@ -602,6 +602,11 @@ OSStatus extractIdentityAndTrust(CFDataRef inPKCS12Data,
   return self;
 }
 
+-(void) addParams:(NSDictionary*) paramsDictionary {
+  
+  [self.fieldsToBePosted addEntriesFromDictionary:paramsDictionary];
+}
+
 -(void) addHeaders:(NSDictionary*) headersDictionary {
   
   [headersDictionary enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
@@ -639,11 +644,11 @@ OSStatus extractIdentityAndTrust(CFDataRef inPKCS12Data,
   if([self.filesToBePosted count] == 0 && [self.dataToBePosted count] == 0) {
     [[self.request allHTTPHeaderFields] enumerateKeysAndObjectsUsingBlock:^(id key, id val, BOOL *stop)
      {
-       [displayString appendFormat:@" -H \"%@: %@\"", key, val];
+       [displayString appendFormat:@" -H \'%@: %@\'", key, val];
      }];
   }
   
-  [displayString appendFormat:@" \"%@\"",  self.url];
+  [displayString appendFormat:@" \'%@\'",  self.url];
   
   if ([self.request.HTTPMethod isEqualToString:@"POST"] ||
       [self.request.HTTPMethod isEqualToString:@"PUT"] ||
@@ -653,17 +658,17 @@ OSStatus extractIdentityAndTrust(CFDataRef inPKCS12Data,
     if(self.postDataEncoding == MKNKPostDataEncodingTypeURL) {
       [self.fieldsToBePosted enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
         
-        [displayString appendFormat:@" %@ \"%@=%@\"", option, key, obj];
+        [displayString appendFormat:@" %@ \'%@=%@\'", option, key, obj];
       }];
     } else {
-      [displayString appendFormat:@" -d \"%@\"", [self encodedPostDataString]];
+      [displayString appendFormat:@" -d \'%@\'", [self encodedPostDataString]];
     }
     
     
     [self.filesToBePosted enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
       
       NSDictionary *thisFile = (NSDictionary*) obj;
-      [displayString appendFormat:@" -F \"%@=@%@;type=%@\"", thisFile[@"name"],
+      [displayString appendFormat:@" -F \'%@=@%@;type=%@\'", thisFile[@"name"],
        thisFile[@"filepath"], thisFile[@"mimetype"]];
     }];
     
