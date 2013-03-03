@@ -1347,6 +1347,7 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
                                                  alphaInfo | kCGBitmapByteOrder32Little);
     CGColorSpaceRelease(colorSpace);
     if (!context) {
+      DLog(@"Image decompression failed. Context is nil. Could happen if your image view size is CGSizeZero");
       return;
     }
     
