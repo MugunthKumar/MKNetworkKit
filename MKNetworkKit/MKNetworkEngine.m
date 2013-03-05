@@ -59,13 +59,6 @@
 @property (assign, nonatomic) dispatch_queue_t operationQueue;
 #endif
 
--(void) saveCache;
--(void) saveCacheData:(NSData*) data forKey:(NSString*) cacheDataKey;
-
--(void) freezeOperations;
--(void) checkAndRestoreFrozenOperations;
-
--(BOOL) isCacheEnabled;
 @end
 
 static NSOperationQueue *_sharedNetworkQueue;
@@ -594,7 +587,7 @@ static NSOperationQueue *_sharedNetworkQueue;
   return MKNETWORKCACHE_DEFAULT_COST;
 }
 
--(void) saveCache {
+-(void) saveCache:(NSNotification*) notification {
   
   for(NSString *cacheKey in [self.memoryCache allKeys])
   {
@@ -690,25 +683,25 @@ static NSOperationQueue *_sharedNetworkQueue;
   }
   
 #if TARGET_OS_IPHONE
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveCache)
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveCache:)
                                                name:UIApplicationDidReceiveMemoryWarningNotification
                                              object:nil];
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveCache)
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveCache:)
                                                name:UIApplicationDidEnterBackgroundNotification
                                              object:nil];
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveCache)
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveCache:)
                                                name:UIApplicationWillTerminateNotification
                                              object:nil];
   
 #elif TARGET_OS_MAC
   
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveCache)
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveCache:)
                                                name:NSApplicationWillHideNotification
                                              object:nil];
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveCache)
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveCache:)
                                                name:NSApplicationWillResignActiveNotification
                                              object:nil];
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveCache)
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveCache:)
                                                name:NSApplicationWillTerminateNotification
                                              object:nil];
   
@@ -719,7 +712,7 @@ static NSOperationQueue *_sharedNetworkQueue;
 
 -(void) emptyCache {
   
-  [self saveCache]; // ensures that invalidation params are written to disk properly
+  [self saveCache:nil]; // ensures that invalidation params are written to disk properly
   NSError *error = nil;
   NSArray *directoryContents = [[NSFileManager defaultManager]
                                 contentsOfDirectoryAtPath:[self cacheDirectoryName] error:&error];
