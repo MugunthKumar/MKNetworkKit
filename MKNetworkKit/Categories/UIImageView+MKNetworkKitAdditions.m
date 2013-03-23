@@ -25,6 +25,8 @@
 
 #import "UIImageView+MKNetworkKitAdditions.h"
 
+#import "MKNetworkEngine.h"
+
 #import <objc/runtime.h>
 
 static MKNetworkEngine *DefaultEngine;
