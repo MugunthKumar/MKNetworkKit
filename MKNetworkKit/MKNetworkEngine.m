@@ -410,15 +410,20 @@ static NSOperationQueue *_sharedNetworkQueue;
   if(operation == nil) return;
   
   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    
+    
+     __weak id weakSelf = self;
+    
+    
     [operation setCacheHandler:^(MKNetworkOperation* completedCacheableOperation) {
       
       // if this is not called, the request would have been a non cacheable request
       //completedCacheableOperation.cacheHeaders;
       NSString *uniqueId = [completedCacheableOperation uniqueIdentifier];
-      [self saveCacheData:[completedCacheableOperation responseData]
+      [weakSelf saveCacheData:[completedCacheableOperation responseData]
                    forKey:uniqueId];
       
-      (self.cacheInvalidationParams)[uniqueId] = completedCacheableOperation.cacheHeaders;
+      ([weakSelf cacheInvalidationParams])[uniqueId] = completedCacheableOperation.cacheHeaders;
     }];
     
     __block double expiryTimeInSeconds = 0.0f;
