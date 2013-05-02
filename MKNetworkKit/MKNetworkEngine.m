@@ -97,8 +97,13 @@ static NSOperationQueue *_sharedNetworkQueue;
 
 - (id) initWithHostName:(NSString*) hostName apiPath:(NSString*) apiPath customHeaderFields:(NSDictionary*) headers {
   
+  return [self initWithHostName:hostName portNumber:0 apiPath:apiPath customHeaderFields:headers];
+}
+
+- (id) initWithHostName:(NSString*) hostName portNumber:(int)portNumber apiPath:(NSString*) apiPath customHeaderFields:(NSDictionary*) headers {
   if((self = [super init])) {
     
+    self.portNumber = portNumber;
     self.apiPath = apiPath;
     self.backgroundCacheQueue = dispatch_queue_create("com.mknetworkkit.cachequeue", DISPATCH_QUEUE_SERIAL);
     self.operationQueue = dispatch_queue_create("com.mknetworkkit.operationqueue", DISPATCH_QUEUE_SERIAL);
