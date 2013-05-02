@@ -586,10 +586,6 @@ OSStatus extractIdentityAndTrust(CFDataRef inPKCS12Data,
     
     [self.request setHTTPMethod:method];
     
-    [self.request setValue:[NSString stringWithFormat:@"%@, en-us",
-                            [[NSLocale preferredLanguages] componentsJoinedByString:@", "]
-                            ] forHTTPHeaderField:@"Accept-Language"];
-    
     if (([method isEqualToString:@"POST"] ||
          [method isEqualToString:@"PUT"]) && (params && [params count] > 0)) {
       
@@ -1237,15 +1233,26 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
              willSendRequest: (NSURLRequest *)inRequest
             redirectResponse: (NSURLResponse *)inRedirectResponse;
 {
+  NSMutableURLRequest *r = [self.request mutableCopy];
   if (inRedirectResponse) {
-    NSMutableURLRequest *r = [self.request mutableCopy];
     [r setURL: [inRequest URL]];
-    
-    return r;
   } else {
-    return inRequest;
+    // Note that we need to configure the Accept-Language header this late in processing
+    // because NSURLRequest adds a default Accept-Language header late in the day, so we
+    // have to undo that here.
+    // For discussion see:
+    // http://lists.apple.com/archives/macnetworkprog/2009/Sep/msg00022.html
+    // http://stackoverflow.com/questions/5695914/nsurlrequest-where-an-app-can-find-the-default-headers-for-http-request
+    NSString* accept_language = self.shouldSendAcceptLanguageHeader ? [self languagesFromLocale] : nil;
+    [r setValue:accept_language forHTTPHeaderField:@"Accept-Language"];
   }
+  return r;
 }
+
+- (NSString*)languagesFromLocale {
+    return [NSString stringWithFormat:@"%@, en-us", [[NSLocale preferredLanguages] componentsJoinedByString:@", "]];
+}
+
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
   
   if([self isCancelled])

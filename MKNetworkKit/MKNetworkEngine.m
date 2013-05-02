@@ -131,6 +131,7 @@ static NSOperationQueue *_sharedNetworkQueue;
     }
     
     self.customOperationSubclass = [MKNetworkOperation class];
+    self.shouldSendAcceptLanguageHeader = YES;
   }
   
   return self;
@@ -372,6 +373,7 @@ static NSOperationQueue *_sharedNetworkQueue;
                                    httpMethod:(NSString*)method {
   
   MKNetworkOperation *operation = [[self.customOperationSubclass alloc] initWithURLString:urlString params:body httpMethod:method];
+  operation.shouldSendAcceptLanguageHeader = self.shouldSendAcceptLanguageHeader;
   
   [self prepareHeaders:operation];
   return operation;
