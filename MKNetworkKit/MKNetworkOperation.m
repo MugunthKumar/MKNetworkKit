@@ -614,6 +614,11 @@ OSStatus extractIdentityAndTrust(CFDataRef inPKCS12Data,
   }];
 }
 
+-(void) addHeader:(NSString*)key withValue:(NSString*)value {
+  
+  [self.request addValue:value forHTTPHeaderField:key];
+}
+
 -(void) setAuthorizationHeaderValue:(NSString*) token forAuthType:(NSString*) authType {
   
   [self.request setValue:[NSString stringWithFormat:@"%@ %@", authType, token]

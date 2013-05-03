@@ -355,6 +355,13 @@ typedef enum {
 -(void) addParams:(NSDictionary*) paramsDictionary;
 
 /*!
+ *  @abstract Add additional header
+ *
+ *  @discussion Add a single additional header.  See addHeaders for a full discussion.
+ */
+-(void) addHeader:(NSString*)key withValue:(NSString*)value;
+
+/*!
  *  @abstract Add additional header parameters
  *  
  *  @discussion
