@@ -644,6 +644,14 @@ typedef enum {
  */
 -(void) operationFailedWithError:(NSError*) error;
 
+/*!
+ *  @abstract Copy this MKNetworkOperation, with the intention of retrying the call.
+ *
+ *  @discussion This means that the request parameters and callbacks are all preserved, but anything related
+ *  to an ongoing request is discarded, so that a new request with the same configuration can be made.
+ */
+-(instancetype) copyForRetry;
+
 // internal methods called by MKNetworkEngine only.
 // Don't touch
 -(BOOL) isCacheable;
