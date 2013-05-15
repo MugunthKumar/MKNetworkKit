@@ -269,6 +269,15 @@
 +(void) cancelOperationsContainingURLString:(NSString*) string;
 
 /*!
+ *  @abstract Cancels operations matching the given block.
+ *
+ *  @discussion
+ *	Cancels all operations in the shared queue for which the given block returns YES.
+ *
+ */
++(void) cancelOperationsMatchingBlock:(BOOL (^)(MKNetworkOperation*))block;
+
+/*!
  *  @abstract Cancels all operations created by this engine
  *
  *  @discussion

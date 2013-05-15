@@ -239,15 +239,20 @@ static NSOperationQueue *_sharedNetworkQueue;
 
 +(void) cancelOperationsContainingURLString:(NSString*) string {
   
-  NSArray *runningOperations = _sharedNetworkQueue.operations;
-  [runningOperations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-    
-    MKNetworkOperation *thisOperation = obj;
-    if([[thisOperation.readonlyRequest.URL absoluteString] rangeOfString:string].location != NSNotFound) {
-    
-      [thisOperation cancel];
-    }
+  [self cancelOperationsMatchingBlock:^BOOL (MKNetworkOperation* op) {
+    return [[op.readonlyRequest.URL absoluteString] rangeOfString:string].location != NSNotFound;
   }];
+}
+
++(void) cancelOperationsMatchingBlock:(BOOL (^)(MKNetworkOperation* op))block {
+    
+    NSArray *runningOperations = _sharedNetworkQueue.operations;
+    [runningOperations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        
+        MKNetworkOperation *thisOperation = obj;
+        if (block(thisOperation))
+            [thisOperation cancel];
+    }];
 }
 
 -(void) cancelAllOperations {
