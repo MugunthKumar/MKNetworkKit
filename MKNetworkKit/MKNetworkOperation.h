@@ -372,6 +372,14 @@ typedef enum {
 -(void) addHeaders:(NSDictionary*) headersDictionary;
 
 /*!
+ *  @abstract Set a header, overwriting any value already set.
+ *
+ *  @discussion addHeader will append the value to any header already set.  If you want to overwrite
+ *  that value, then use setHeader instead.
+ */
+-(void) setHeader:(NSString*)key withValue:(NSString*)value;
+
+/*!
  *  @abstract Sets the authorization header after prefixing it with a given auth type
  *  
  *  @discussion
