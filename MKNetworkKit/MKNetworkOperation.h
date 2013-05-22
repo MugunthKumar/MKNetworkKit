@@ -365,6 +365,13 @@ typedef enum {
 -(void) addParams:(NSDictionary*) paramsDictionary;
 
 /*!
+ *  @abstract Add additional header
+ *
+ *  @discussion Add a single additional header.  See addHeaders for a full discussion.
+ */
+-(void) addHeader:(NSString*)key withValue:(NSString*)value;
+
+/*!
  *  @abstract Add additional header parameters
  *  
  *  @discussion
@@ -373,6 +380,14 @@ typedef enum {
  *  On specific cases where you need to set a new header parameter for just a single API call, you can use this
  */
 -(void) addHeaders:(NSDictionary*) headersDictionary;
+
+/*!
+ *  @abstract Set a header, overwriting any value already set.
+ *
+ *  @discussion addHeader will append the value to any header already set.  If you want to overwrite
+ *  that value, then use setHeader instead.
+ */
+-(void) setHeader:(NSString*)key withValue:(NSString*)value;
 
 /*!
  *  @abstract Sets the authorization header after prefixing it with a given auth type
