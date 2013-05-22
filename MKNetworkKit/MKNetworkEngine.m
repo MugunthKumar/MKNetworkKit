@@ -147,6 +147,20 @@ static NSOperationQueue *_sharedNetworkQueue;
 
 -(void) dealloc {
   
+#if TARGET_OS_IPHONE
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < 60000
+  dispatch_release(_backgroundCacheQueue);
+  dispatch_release(_operationQueue);
+#endif
+  
+#else
+  
+#if MAC_OS_X_VERSION_MIN_REQUIRED < 1080
+  dispatch_release(_backgroundCacheQueue);
+  dispatch_release(_operationQueue);
+#endif
+#endif
+  
   [[NSNotificationCenter defaultCenter] removeObserver:self name:kReachabilityChangedNotification object:nil];
 #if TARGET_OS_IPHONE
   [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
