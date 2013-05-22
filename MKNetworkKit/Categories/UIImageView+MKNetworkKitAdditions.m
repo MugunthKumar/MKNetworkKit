@@ -71,7 +71,7 @@ const float kFreshLoadAnimationDuration = 0.35f;
   return [self setImageFromURL:url placeHolderImage:image usingEngine:DefaultEngine animation:yesOrNo];
 }
 
--(MKNetworkOperation*) setImageFromURL:(NSURL*) url placeHolderImage:(UIImage*) image usingEngine:(MKNetworkEngine*) imageCacheEngine animation:(BOOL) yesOrNo {
+-(MKNetworkOperation*) setImageFromURL:(NSURL*) url placeHolderImage:(UIImage*) image usingEngine:(MKNetworkEngine*) imageCacheEngine animation:(BOOL) animation {
   
   if(image) self.image = image;
   [self.imageFetchOperation cancel];
@@ -82,12 +82,16 @@ const float kFreshLoadAnimationDuration = 0.35f;
                                                        size:self.frame.size
                                           completionHandler:^(UIImage *fetchedImage, NSURL *url, BOOL isInCache) {
                                             
+                                            if(animation) {
                                             [UIView transitionWithView:self.superview
                                                               duration:isInCache?kFromCacheAnimationDuration:kFreshLoadAnimationDuration
                                                                options:UIViewAnimationOptionTransitionCrossDissolve | UIViewAnimationOptionAllowUserInteraction
                                                             animations:^{
                                                                  self.image = fetchedImage;
                                                                } completion:nil];
+                                            } else {
+                                              self.image = fetchedImage;                                              
+                                            }
                                             
                                           } errorHandler:^(MKNetworkOperation *completedOperation, NSError *error) {
                                             
