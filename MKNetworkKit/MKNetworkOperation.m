@@ -1053,8 +1053,7 @@ OSStatus extractIdentityAndTrust(CFDataRef inPKCS12Data,        // 5
         SecTrustEvaluate(self.serverTrust, &result);
         
         if(result == kSecTrustResultProceed ||
-           result == kSecTrustResultUnspecified || //The cert is valid, but user has not explicitly accepted/denied. Ok to proceed (Ch 15: iOS PTL :Pg 269)
-           result == kSecTrustResultRecoverableTrustFailure //The cert is invalid, but is invalid because of name mismatch. Ok to proceed (Ch 15: iOS PTL :Pg 269)
+           result == kSecTrustResultUnspecified //The cert is valid, but user has not explicitly accepted/denied. Ok to proceed (Ch 15: iOS PTL :Pg 269)
            ) {
           
           [challenge.sender useCredential:[NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust] forAuthenticationChallenge:challenge];
