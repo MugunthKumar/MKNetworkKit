@@ -444,6 +444,43 @@ OSStatus extractIdentityAndTrust(CFDataRef inPKCS12Data,
   return theCopy;
 }
 
+- (instancetype)copyForRetry
+{
+    MKNetworkOperation *theCopy = [[[self class] alloc] init];
+    
+    [theCopy setConnection:nil];
+    [theCopy setResponse:nil];
+    [theCopy setState:MKNetworkOperationStateReady];
+    [theCopy setIsCancelled:NO];
+    [theCopy setDownloadedDataSize:0];
+    [theCopy setStartPosition:0];
+
+    theCopy.postDataEncoding = _postDataEncoding;
+    [theCopy setStringEncoding:self.stringEncoding];
+    [theCopy setUniqueId:[self.uniqueId copy]];
+    [theCopy setRequest:[self.request copy]];
+    [theCopy setFieldsToBePosted:[self.fieldsToBePosted copy]];
+    [theCopy setFilesToBePosted:[self.filesToBePosted copy]];
+    [theCopy setDataToBePosted:[self.dataToBePosted copy]];
+    [theCopy setUsername:[self.username copy]];
+    [theCopy setPassword:[self.password copy]];
+    [theCopy setClientCertificate:[self.clientCertificate copy]];
+    [theCopy setClientCertificatePassword:[self.clientCertificatePassword copy]];
+    [theCopy setResponseBlocks:[self.responseBlocks copy]];
+    [theCopy setErrorBlocks:[self.errorBlocks copy]];
+    [theCopy setErrorBlocksType2:[self.errorBlocksType2 copy]];
+    [theCopy setMutableData:[self.mutableData copy]];
+    [theCopy setNotModifiedHandlers:[self.notModifiedHandlers copy]];
+    [theCopy setUploadProgressChangedHandlers:[self.uploadProgressChangedHandlers copy]];
+    [theCopy setDownloadProgressChangedHandlers:[self.downloadProgressChangedHandlers copy]];
+    [theCopy setDownloadStreams:[self.downloadStreams copy]];
+    [theCopy setCachedResponse:[self.cachedResponse copy]];
+    [theCopy setCacheHandlingBlock:self.cacheHandlingBlock];
+    [theCopy setCredentialPersistence:self.credentialPersistence];
+    
+    return theCopy;
+}
+
 -(void) dealloc {
   
   [_connection cancel];
