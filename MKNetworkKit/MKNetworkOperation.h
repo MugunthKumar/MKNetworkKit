@@ -70,7 +70,7 @@ typedef enum {
  *  Printing a MKNetworkOperation prints out a cURL command that can be copied and pasted directly on terminal
  *  Freezable operations are serialized when network connectivity is lost and performed when connection is restored
  */
-@interface MKNetworkOperation : NSOperation {
+@interface MKNetworkOperation : NSOperation <NSURLConnectionDataDelegate> {
   
 @private
   int _state;
