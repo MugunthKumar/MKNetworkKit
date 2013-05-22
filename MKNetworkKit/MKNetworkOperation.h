@@ -242,6 +242,16 @@ typedef enum {
 @property (nonatomic, assign) BOOL shouldContinueWithInvalidCertificate;
 
 /*!
+ *  @abstract Boolean variable that states whether the request should automatically include an Accept-Language header.
+ *  @property shouldSendAcceptLanguageHeader
+ *
+ *  @discussion
+ *	If set to YES, then MKNetworkKit will generate an Accept-Language header using [NSLocale preferredLanguages] + "en-us".
+ *  This is set by MKNetworkEngine when it creates the MKNetworkOperation instance, so it gets its default from there.
+ */
+@property (nonatomic, assign) BOOL shouldSendAcceptLanguageHeader;
+
+/*!
  *  @abstract Cache headers of the response
  *  @property cacheHeaders
  *  

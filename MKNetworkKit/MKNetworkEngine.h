@@ -389,4 +389,13 @@
  */
 -(BOOL) isReachable;
 
+/*!
+ *  @abstract Boolean variable that states whether the request should automatically include an Accept-Language header.
+ *  @property shouldSendAcceptLanguageHeader
+ *
+ *  @discussion
+ *	The default value is YES. MKNetworkKit will generate an Accept-Language header using [NSLocale preferredLanguages] + "en-US".
+ */
+@property (nonatomic, assign) BOOL shouldSendAcceptLanguageHeader;
+
 @end
