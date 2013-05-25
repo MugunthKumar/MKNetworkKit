@@ -80,6 +80,21 @@
 - (id) initWithHostName:(NSString*) hostName apiPath:(NSString*) apiPath customHeaderFields:(NSDictionary*) headers;
 
 /*!
+ *  @abstract Initializes your network engine with a hostname, port, path, and headers.
+ *
+ *  @discussion
+ *	Creates an engine for a given host name
+ *  The hostname parameter is optional
+ *  The port parameter can be 0, which means to use the appropriate default port (80 or 443 for HTTP or HTTPS respectively).
+ *  The apiPath paramter is optional
+ *  The apiPath is prefixed to every call to operationWithPath: You can use this method if your server's API location is not at the root (/)
+ *  The hostname, if not null, initializes a Reachability notifier.
+ *  Network reachability notifications are automatically taken care of by MKNetworkEngine
+ *
+ */
+- (id) initWithHostName:(NSString*) hostName portNumber:(int)portNumber apiPath:(NSString*) apiPath customHeaderFields:(NSDictionary*) headers;
+
+/*!
  *  @abstract Creates a simple GET Operation with a request URL
  *  
  *  @discussion
