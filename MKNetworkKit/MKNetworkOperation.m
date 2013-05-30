@@ -1384,8 +1384,10 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
     CGImageSourceRef source = CGImageSourceCreateWithData((__bridge CFDataRef)([self responseData]), NULL);
     CGImageRef cgImage = CGImageSourceCreateImageAtIndex(source, 0, (__bridge CFDictionaryRef)(@{(id)kCGImageSourceShouldCache:@(YES)}));
     UIImage *decompressedImage = [UIImage imageWithCGImage:cgImage];
-    CFRelease(source);
-    CGImageRelease(cgImage);
+    if(source)
+      CFRelease(source);
+    if(cgImage)
+      CGImageRelease(cgImage);
 
     dispatch_async(dispatch_get_main_queue(), ^{
       imageDecompressionHandler(decompressedImage);
