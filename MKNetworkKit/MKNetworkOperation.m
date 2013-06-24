@@ -25,6 +25,8 @@
 
 #import "MKNetworkKit.h"
 
+#import <ImageIO/ImageIO.h>
+
 #ifdef __OBJC_GC__
 #error MKNetworkKit does not support Objective-C Garbage Collection
 #endif
@@ -442,41 +444,41 @@ OSStatus extractIdentityAndTrust(CFDataRef inPKCS12Data,
   return theCopy;
 }
 
-- (id)mutableCopyWithZone:(NSZone *)zone
+- (instancetype)copyForRetry
 {
-  MKNetworkOperation *theCopy = [[[self class] allocWithZone:zone] init];  // use designated initializer
-  
-  theCopy.postDataEncoding = _postDataEncoding;
-  [theCopy setStringEncoding:self.stringEncoding];
-  [theCopy setUniqueId:[self.uniqueId copy]];
-  
-  [theCopy setConnection:[self.connection mutableCopy]];
-  [theCopy setRequest:[self.request mutableCopy]];
-  [theCopy setResponse:[self.response mutableCopy]];
-  [theCopy setFieldsToBePosted:[self.fieldsToBePosted mutableCopy]];
-  [theCopy setFilesToBePosted:[self.filesToBePosted mutableCopy]];
-  [theCopy setDataToBePosted:[self.dataToBePosted mutableCopy]];
-  [theCopy setUsername:[self.username copy]];
-  [theCopy setPassword:[self.password copy]];
-  [theCopy setClientCertificate:[self.clientCertificate copy]];
-  [theCopy setClientCertificatePassword:[self.clientCertificatePassword copy]];
-  [theCopy setResponseBlocks:[self.responseBlocks mutableCopy]];
-  [theCopy setErrorBlocks:[self.errorBlocks mutableCopy]];
-  [theCopy setErrorBlocksType2:[self.errorBlocksType2 mutableCopy]];
-  [theCopy setState:self.state];
-  [theCopy setIsCancelled:self.isCancelled];
-  [theCopy setMutableData:[self.mutableData mutableCopy]];
-  [theCopy setDownloadedDataSize:self.downloadedDataSize];
-  [theCopy setNotModifiedHandlers:[self.notModifiedHandlers mutableCopy]];
-  [theCopy setUploadProgressChangedHandlers:[self.uploadProgressChangedHandlers mutableCopy]];
-  [theCopy setDownloadProgressChangedHandlers:[self.downloadProgressChangedHandlers mutableCopy]];
-  [theCopy setDownloadStreams:[self.downloadStreams mutableCopy]];
-  [theCopy setCachedResponse:[self.cachedResponse mutableCopy]];
-  [theCopy setCacheHandlingBlock:self.cacheHandlingBlock];
-  [theCopy setStartPosition:self.startPosition];
-  [theCopy setCredentialPersistence:self.credentialPersistence];
-  
-  return theCopy;
+    MKNetworkOperation *theCopy = [[[self class] alloc] init];
+    
+    [theCopy setConnection:nil];
+    [theCopy setResponse:nil];
+    [theCopy setState:MKNetworkOperationStateReady];
+    [theCopy setIsCancelled:NO];
+    [theCopy setDownloadedDataSize:0];
+    [theCopy setStartPosition:0];
+
+    theCopy.postDataEncoding = _postDataEncoding;
+    [theCopy setStringEncoding:self.stringEncoding];
+    [theCopy setUniqueId:[self.uniqueId copy]];
+    [theCopy setRequest:[self.request copy]];
+    [theCopy setFieldsToBePosted:[self.fieldsToBePosted copy]];
+    [theCopy setFilesToBePosted:[self.filesToBePosted copy]];
+    [theCopy setDataToBePosted:[self.dataToBePosted copy]];
+    [theCopy setUsername:[self.username copy]];
+    [theCopy setPassword:[self.password copy]];
+    [theCopy setClientCertificate:[self.clientCertificate copy]];
+    [theCopy setClientCertificatePassword:[self.clientCertificatePassword copy]];
+    [theCopy setResponseBlocks:[self.responseBlocks copy]];
+    [theCopy setErrorBlocks:[self.errorBlocks copy]];
+    [theCopy setErrorBlocksType2:[self.errorBlocksType2 copy]];
+    [theCopy setMutableData:[self.mutableData copy]];
+    [theCopy setNotModifiedHandlers:[self.notModifiedHandlers copy]];
+    [theCopy setUploadProgressChangedHandlers:[self.uploadProgressChangedHandlers copy]];
+    [theCopy setDownloadProgressChangedHandlers:[self.downloadProgressChangedHandlers copy]];
+    [theCopy setDownloadStreams:[self.downloadStreams copy]];
+    [theCopy setCachedResponse:[self.cachedResponse copy]];
+    [theCopy setCacheHandlingBlock:self.cacheHandlingBlock];
+    [theCopy setCredentialPersistence:self.credentialPersistence];
+    
+    return theCopy;
 }
 
 -(void) dealloc {
@@ -623,10 +625,6 @@ OSStatus extractIdentityAndTrust(CFDataRef inPKCS12Data,
     
     [self.request setHTTPMethod:method];
     
-    [self.request setValue:[NSString stringWithFormat:@"%@, en-us",
-                            [[NSLocale preferredLanguages] componentsJoinedByString:@", "]
-                            ] forHTTPHeaderField:@"Accept-Language"];
-    
     if (([method isEqualToString:@"POST"] ||
          [method isEqualToString:@"PUT"]) && (params && [params count] > 0)) {
       
@@ -649,6 +647,16 @@ OSStatus extractIdentityAndTrust(CFDataRef inPKCS12Data,
   [headersDictionary enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
     [self.request addValue:obj forHTTPHeaderField:key];
   }];
+}
+
+-(void) addHeader:(NSString*)key withValue:(NSString*)value {
+  
+  [self.request addValue:value forHTTPHeaderField:key];
+}
+
+-(void) setHeader:(NSString*)key withValue:(NSString*)value {
+  
+  [self.request setValue:value forHTTPHeaderField:key];
 }
 
 -(void) setAuthorizationHeaderValue:(NSString*) token forAuthType:(NSString*) authType {
@@ -1088,8 +1096,7 @@ OSStatus extractIdentityAndTrust(CFDataRef inPKCS12Data,        // 5
         SecTrustEvaluate(self.serverTrust, &result);
         
         if(result == kSecTrustResultProceed ||
-           result == kSecTrustResultUnspecified || //The cert is valid, but user has not explicitly accepted/denied. Ok to proceed (Ch 15: iOS PTL :Pg 269)
-           result == kSecTrustResultRecoverableTrustFailure //The cert is invalid, but is invalid because of name mismatch. Ok to proceed (Ch 15: iOS PTL :Pg 269)
+           result == kSecTrustResultUnspecified //The cert is valid, but user has not explicitly accepted/denied. Ok to proceed (Ch 15: iOS PTL :Pg 269)
            ) {
           
           [challenge.sender useCredential:[NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust] forAuthenticationChallenge:challenge];
@@ -1274,15 +1281,26 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
              willSendRequest: (NSURLRequest *)inRequest
             redirectResponse: (NSURLResponse *)inRedirectResponse;
 {
+  NSMutableURLRequest *r = [self.request mutableCopy];
   if (inRedirectResponse) {
-    NSMutableURLRequest *r = [self.request mutableCopy];
     [r setURL: [inRequest URL]];
-    
-    return r;
   } else {
-    return inRequest;
+    // Note that we need to configure the Accept-Language header this late in processing
+    // because NSURLRequest adds a default Accept-Language header late in the day, so we
+    // have to undo that here.
+    // For discussion see:
+    // http://lists.apple.com/archives/macnetworkprog/2009/Sep/msg00022.html
+    // http://stackoverflow.com/questions/5695914/nsurlrequest-where-an-app-can-find-the-default-headers-for-http-request
+    NSString* accept_language = self.shouldSendAcceptLanguageHeader ? [self languagesFromLocale] : nil;
+    [r setValue:accept_language forHTTPHeaderField:@"Accept-Language"];
   }
+  return r;
 }
+
+- (NSString*)languagesFromLocale {
+    return [NSString stringWithFormat:@"%@, en-us", [[NSLocale preferredLanguages] componentsJoinedByString:@", "]];
+}
+
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
   
   if([self isCancelled])
@@ -1361,46 +1379,16 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
 
 -(void) decompressedResponseImageOfSize:(CGSize) size completionHandler:(void (^)(UIImage *decompressedImage)) imageDecompressionHandler {
   
-  static float scale = 1.0f;
-  static dispatch_once_t onceToken;
-  dispatch_once(&onceToken, ^{
-    scale = [[UIScreen mainScreen] scale];
-  });
-  
   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-    
-    __block CGSize targetSize = CGSizeMake(size.width * scale, size.height * scale);
-    UIImage *image = [self responseImage];
-    CGImageRef imageRef = image.CGImage;
-    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-    CGImageAlphaInfo alphaInfo = CGImageGetAlphaInfo(imageRef);
 
-    size_t imageWidth = (size_t)targetSize.width;
-    size_t imageHeight = (size_t)targetSize.height;
-    CGContextRef context = CGBitmapContextCreate(NULL,
-                                                 imageWidth,
-                                                 imageHeight,
-                                                 8,
-                                                 // Just always return width * 4 will be enough
-                                                 imageWidth * 4,
-                                                 // System only supports RGB, set explicitly
-                                                 colorSpace,
-                                                 // Makes system don't need to do extra conversion when displayed.
-                                                 alphaInfo | kCGBitmapByteOrder32Little);
-    CGColorSpaceRelease(colorSpace);
-    if (!context) {
-      DLog(@"Image decompression failed. Context is nil. Could happen if your image view size is CGSizeZero");
-      return;
-    }
-    
-    
-    CGRect rect = (CGRect){CGPointZero, {imageWidth, imageHeight}};
-    CGContextDrawImage(context, rect, imageRef);
-    CGImageRef decompressedImageRef = CGBitmapContextCreateImage(context);
-    CGContextRelease(context);
-        
-    UIImage *decompressedImage = [[UIImage alloc] initWithCGImage:decompressedImageRef scale:scale orientation:image.imageOrientation];
-    CGImageRelease(decompressedImageRef);
+    CGImageSourceRef source = CGImageSourceCreateWithData((__bridge CFDataRef)([self responseData]), NULL);
+    CGImageRef cgImage = CGImageSourceCreateImageAtIndex(source, 0, (__bridge CFDictionaryRef)(@{(id)kCGImageSourceShouldCache:@(YES)}));
+    UIImage *decompressedImage = [UIImage imageWithCGImage:cgImage];
+    if(source)
+      CFRelease(source);
+    if(cgImage)
+      CGImageRelease(cgImage);
+
     dispatch_async(dispatch_get_main_queue(), ^{
       imageDecompressionHandler(decompressedImage);
     });

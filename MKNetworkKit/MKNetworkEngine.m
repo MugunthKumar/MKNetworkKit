@@ -59,13 +59,6 @@
 @property (assign, nonatomic) dispatch_queue_t operationQueue;
 #endif
 
--(void) saveCache;
--(void) saveCacheData:(NSData*) data forKey:(NSString*) cacheDataKey;
-
--(void) freezeOperations;
--(void) checkAndRestoreFrozenOperations;
-
--(BOOL) isCacheEnabled;
 @end
 
 static NSOperationQueue *_sharedNetworkQueue;
@@ -104,8 +97,13 @@ static NSOperationQueue *_sharedNetworkQueue;
 
 - (id) initWithHostName:(NSString*) hostName apiPath:(NSString*) apiPath customHeaderFields:(NSDictionary*) headers {
   
+  return [self initWithHostName:hostName portNumber:0 apiPath:apiPath customHeaderFields:headers];
+}
+
+- (id) initWithHostName:(NSString*) hostName portNumber:(int)portNumber apiPath:(NSString*) apiPath customHeaderFields:(NSDictionary*) headers {
   if((self = [super init])) {
     
+    self.portNumber = portNumber;
     self.apiPath = apiPath;
     self.backgroundCacheQueue = dispatch_queue_create("com.mknetworkkit.cachequeue", DISPATCH_QUEUE_SERIAL);
     self.operationQueue = dispatch_queue_create("com.mknetworkkit.operationqueue", DISPATCH_QUEUE_SERIAL);
@@ -138,6 +136,7 @@ static NSOperationQueue *_sharedNetworkQueue;
     }
     
     self.customOperationSubclass = [MKNetworkOperation class];
+    self.shouldSendAcceptLanguageHeader = YES;
   }
   
   return self;
@@ -152,6 +151,20 @@ static NSOperationQueue *_sharedNetworkQueue;
 #pragma mark Memory Mangement
 
 -(void) dealloc {
+  
+#if TARGET_OS_IPHONE
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < 60000
+  dispatch_release(_backgroundCacheQueue);
+  dispatch_release(_operationQueue);
+#endif
+  
+#else
+  
+#if MAC_OS_X_VERSION_MIN_REQUIRED < 1080
+  dispatch_release(_backgroundCacheQueue);
+  dispatch_release(_operationQueue);
+#endif
+#endif
   
   [[NSNotificationCenter defaultCenter] removeObserver:self name:kReachabilityChangedNotification object:nil];
 #if TARGET_OS_IPHONE
@@ -246,15 +259,20 @@ static NSOperationQueue *_sharedNetworkQueue;
 
 +(void) cancelOperationsContainingURLString:(NSString*) string {
   
-  NSArray *runningOperations = _sharedNetworkQueue.operations;
-  [runningOperations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-    
-    MKNetworkOperation *thisOperation = obj;
-    if([[thisOperation.readonlyRequest.URL absoluteString] rangeOfString:string].location != NSNotFound) {
-    
-      [thisOperation cancel];
-    }
+  [self cancelOperationsMatchingBlock:^BOOL (MKNetworkOperation* op) {
+    return [[op.readonlyRequest.URL absoluteString] rangeOfString:string].location != NSNotFound;
   }];
+}
+
++(void) cancelOperationsMatchingBlock:(BOOL (^)(MKNetworkOperation* op))block {
+    
+    NSArray *runningOperations = _sharedNetworkQueue.operations;
+    [runningOperations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        
+        MKNetworkOperation *thisOperation = obj;
+        if (block(thisOperation))
+            [thisOperation cancel];
+    }];
 }
 
 -(void) cancelAllOperations {
@@ -379,6 +397,7 @@ static NSOperationQueue *_sharedNetworkQueue;
                                    httpMethod:(NSString*)method {
   
   MKNetworkOperation *operation = [[self.customOperationSubclass alloc] initWithURLString:urlString params:body httpMethod:method];
+  operation.shouldSendAcceptLanguageHeader = self.shouldSendAcceptLanguageHeader;
   
   [self prepareHeaders:operation];
   return operation;
@@ -417,15 +436,20 @@ static NSOperationQueue *_sharedNetworkQueue;
   if(operation == nil) return;
   
   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    
+    
+     __weak id weakSelf = self;
+    
+    
     [operation setCacheHandler:^(MKNetworkOperation* completedCacheableOperation) {
       
       // if this is not called, the request would have been a non cacheable request
       //completedCacheableOperation.cacheHeaders;
       NSString *uniqueId = [completedCacheableOperation uniqueIdentifier];
-      [self saveCacheData:[completedCacheableOperation responseData]
+      [weakSelf saveCacheData:[completedCacheableOperation responseData]
                    forKey:uniqueId];
       
-      (self.cacheInvalidationParams)[uniqueId] = completedCacheableOperation.cacheHeaders;
+      ([weakSelf cacheInvalidationParams])[uniqueId] = completedCacheableOperation.cacheHeaders;
     }];
     
     __block double expiryTimeInSeconds = 0.0f;

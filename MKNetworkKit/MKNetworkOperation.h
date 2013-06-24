@@ -70,7 +70,7 @@ typedef enum {
  *  Printing a MKNetworkOperation prints out a cURL command that can be copied and pasted directly on terminal
  *  Freezable operations are serialized when network connectivity is lost and performed when connection is restored
  */
-@interface MKNetworkOperation : NSOperation {
+@interface MKNetworkOperation : NSOperation <NSURLConnectionDataDelegate> {
   
 @private
   int _state;
@@ -242,6 +242,16 @@ typedef enum {
 @property (nonatomic, assign) BOOL shouldContinueWithInvalidCertificate;
 
 /*!
+ *  @abstract Boolean variable that states whether the request should automatically include an Accept-Language header.
+ *  @property shouldSendAcceptLanguageHeader
+ *
+ *  @discussion
+ *	If set to YES, then MKNetworkKit will generate an Accept-Language header using [NSLocale preferredLanguages] + "en-us".
+ *  This is set by MKNetworkEngine when it creates the MKNetworkOperation instance, so it gets its default from there.
+ */
+@property (nonatomic, assign) BOOL shouldSendAcceptLanguageHeader;
+
+/*!
  *  @abstract Cache headers of the response
  *  @property cacheHeaders
  *  
@@ -355,6 +365,13 @@ typedef enum {
 -(void) addParams:(NSDictionary*) paramsDictionary;
 
 /*!
+ *  @abstract Add additional header
+ *
+ *  @discussion Add a single additional header.  See addHeaders for a full discussion.
+ */
+-(void) addHeader:(NSString*)key withValue:(NSString*)value;
+
+/*!
  *  @abstract Add additional header parameters
  *  
  *  @discussion
@@ -363,6 +380,14 @@ typedef enum {
  *  On specific cases where you need to set a new header parameter for just a single API call, you can use this
  */
 -(void) addHeaders:(NSDictionary*) headersDictionary;
+
+/*!
+ *  @abstract Set a header, overwriting any value already set.
+ *
+ *  @discussion addHeader will append the value to any header already set.  If you want to overwrite
+ *  that value, then use setHeader instead.
+ */
+-(void) setHeader:(NSString*)key withValue:(NSString*)value;
 
 /*!
  *  @abstract Sets the authorization header after prefixing it with a given auth type
@@ -643,6 +668,14 @@ typedef enum {
  *
  */
 -(void) operationFailedWithError:(NSError*) error;
+
+/*!
+ *  @abstract Copy this MKNetworkOperation, with the intention of retrying the call.
+ *
+ *  @discussion This means that the request parameters and callbacks are all preserved, but anything related
+ *  to an ongoing request is discarded, so that a new request with the same configuration can be made.
+ */
+-(instancetype) copyForRetry;
 
 // internal methods called by MKNetworkEngine only.
 // Don't touch
