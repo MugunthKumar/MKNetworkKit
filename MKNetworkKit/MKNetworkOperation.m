@@ -89,7 +89,7 @@ OSStatus extractIdentityAndTrust(CFDataRef inPKCS12Data,
 
 @property (strong, nonatomic) NSError *error;
 
-- (id)initWithURLString:(NSString *)aURLString
+- (instancetype)initWithURLString:(NSString *)aURLString
                  params:(NSDictionary *)body
              httpMethod:(NSString *)method;
 
@@ -376,7 +376,7 @@ OSStatus extractIdentityAndTrust(CFDataRef inPKCS12Data,
   [encoder encodeInteger:self.credentialPersistence forKey:@"credentialPersistence"];
 }
 
-- (id)initWithCoder:(NSCoder *)decoder
+- (instancetype)initWithCoder:(NSCoder *)decoder
 {
   self = [super init];
   if (self) {
@@ -407,7 +407,7 @@ OSStatus extractIdentityAndTrust(CFDataRef inPKCS12Data,
   return self;
 }
 
-- (id)copyWithZone:(NSZone *)zone
+- (instancetype)copyWithZone:(NSZone *)zone
 {
   MKNetworkOperation *theCopy = [[[self class] allocWithZone:zone] init];  // use designated initializer
   
@@ -445,7 +445,7 @@ OSStatus extractIdentityAndTrust(CFDataRef inPKCS12Data,
 }
 
 
-- (id)mutableCopyWithZone:(NSZone *)zone
+- (instancetype)mutableCopyWithZone:(NSZone *)zone
 {
   MKNetworkOperation *theCopy = [[[self class] allocWithZone:zone] init];  // use designated initializer
   
@@ -497,22 +497,22 @@ OSStatus extractIdentityAndTrust(CFDataRef inPKCS12Data,
     [theCopy setStringEncoding:self.stringEncoding];
     [theCopy setUniqueId:[self.uniqueId copy]];
     [theCopy setRequest:[self.request copy]];
-    [theCopy setFieldsToBePosted:[self.fieldsToBePosted copy]];
-    [theCopy setFilesToBePosted:[self.filesToBePosted copy]];
-    [theCopy setDataToBePosted:[self.dataToBePosted copy]];
+    [theCopy setFieldsToBePosted:[self.fieldsToBePosted mutableCopy]];
+    [theCopy setFilesToBePosted:[self.filesToBePosted mutableCopy]];
+    [theCopy setDataToBePosted:[self.dataToBePosted mutableCopy]];
     [theCopy setUsername:[self.username copy]];
     [theCopy setPassword:[self.password copy]];
     [theCopy setClientCertificate:[self.clientCertificate copy]];
     [theCopy setClientCertificatePassword:[self.clientCertificatePassword copy]];
-    [theCopy setResponseBlocks:[self.responseBlocks copy]];
-    [theCopy setErrorBlocks:[self.errorBlocks copy]];
-    [theCopy setErrorBlocksType2:[self.errorBlocksType2 copy]];
-    [theCopy setMutableData:[self.mutableData copy]];
-    [theCopy setNotModifiedHandlers:[self.notModifiedHandlers copy]];
-    [theCopy setUploadProgressChangedHandlers:[self.uploadProgressChangedHandlers copy]];
-    [theCopy setDownloadProgressChangedHandlers:[self.downloadProgressChangedHandlers copy]];
-    [theCopy setDownloadStreams:[self.downloadStreams copy]];
-    [theCopy setCachedResponse:[self.cachedResponse copy]];
+    [theCopy setResponseBlocks:[self.responseBlocks mutableCopy]];
+    [theCopy setErrorBlocks:[self.errorBlocks mutableCopy]];
+    [theCopy setErrorBlocksType2:[self.errorBlocksType2 mutableCopy]];
+    [theCopy setMutableData:[self.mutableData mutableCopy]];
+    [theCopy setNotModifiedHandlers:[self.notModifiedHandlers mutableCopy]];
+    [theCopy setUploadProgressChangedHandlers:[self.uploadProgressChangedHandlers mutableCopy]];
+    [theCopy setDownloadProgressChangedHandlers:[self.downloadProgressChangedHandlers mutableCopy]];
+    [theCopy setDownloadStreams:[self.downloadStreams mutableCopy]];
+    [theCopy setCachedResponse:[self.cachedResponse mutableCopy]];
     [theCopy setCacheHandlingBlock:self.cacheHandlingBlock];
     [theCopy setCredentialPersistence:self.credentialPersistence];
     
@@ -1138,21 +1138,7 @@ OSStatus extractIdentityAndTrust(CFDataRef inPKCS12Data,        // 5
            ) {
           
           [challenge.sender useCredential:[NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust] forAuthenticationChallenge:challenge];
-        }
-        else if(result == kSecTrustResultConfirm) {
-          
-          if(self.shouldContinueWithInvalidCertificate) {
-            
-            // Cert not trusted, but user is OK with that
-            DLog(@"Certificate is not trusted, but self.shouldContinueWithInvalidCertificate is YES");
-            [challenge.sender useCredential:[NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust] forAuthenticationChallenge:challenge];
-          } else {
-            
-            DLog(@"Certificate is not trusted, continuing without credentials. Might result in 401 Unauthorized");
-            [challenge.sender continueWithoutCredentialForAuthenticationChallenge:challenge];
-          }
-        }
-        else {
+        } else {
           
           // invalid or revoked certificate
           if(self.shouldContinueWithInvalidCertificate) {

@@ -686,7 +686,7 @@ typedef enum {
 -(void) updateOperationBasedOnPreviousHeaders:(NSMutableDictionary*) headers;
 -(NSString*) uniqueIdentifier;
 
-- (id)initWithURLString:(NSString *)aURLString
+- (instancetype)initWithURLString:(NSString *)aURLString
                  params:(NSDictionary *)params
              httpMethod:(NSString *)method;
 @end
