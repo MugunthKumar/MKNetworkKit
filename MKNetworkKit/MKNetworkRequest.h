@@ -1,0 +1,104 @@
+//
+//  MKNetworkRequest.h
+//  MKNetworkKit
+//
+//  Created by Mugunth Kumar (@mugunthkumar) on 23/06/14.
+//  Copyright (C) 2011-2020 by Steinlogic Consulting and Training Pte Ltd
+
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to deal
+//  in the Software without restriction, including without limitation the rights
+//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//  copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
+//
+//  The above copyright notice and this permission notice shall be included in
+//  all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//  THE SOFTWARE.
+
+
+#import <Foundation/Foundation.h>
+
+typedef enum {
+  
+  MKNKParameterEncodingURL = 0, // default
+  MKNKParameterEncodingJSON,
+  MKNKParameterEncodingPlist
+} MKNKParameterEncoding;
+
+
+typedef enum {
+  
+  MKNKRequestStateStarted = 0, // default
+  MKNKRequestStateResponseAvailableFromCache,
+  MKNKRequestStateCompleted,
+  MKNKRequestStateCancelled,
+  MKNKRequestStateError
+} MKNKRequestState;
+
+@interface MKNetworkRequest : NSObject {
+  
+  MKNKRequestState _state;
+}
+
+@property (readonly) NSMutableURLRequest *request;
+@property (readonly) NSHTTPURLResponse *response;
+
+@property MKNKParameterEncoding parameterEncoding;
+@property (readonly) MKNKRequestState state;
+
+// if the resource require authentication
+@property NSString *username;
+@property NSString *password;
+
+@property NSString *clientCertificate;
+@property NSString *clientCertificatePassword;
+
+@property BOOL doNotCache;
+@property BOOL alwaysCache;
+
+@property (readonly) BOOL isCachedResponse;
+
+@property (readonly) NSData *data;
+@property (readonly) NSError *error;
+@property (readonly) NSURLSessionTask *task;
+
+@property (readonly) id responseAsJSON;
+
+-(void) responseAsJSONWithCompletionHandler:(void (^)(id jsonObject)) jsonDecompressionHandler;
+-(void) decompressedResponseImageOfSize:(CGSize) size completionHandler:(void (^)(UIImage *decompressedImage)) imageDecompressionHandler;
+
+#if TARGET_OS_IPHONE
+@property (readonly) UIImage *responseAsImage;
+#elif TARGET_OS_MAC
+@property (readonly) NSImage *responseAsImage;
+#endif
+
+@property (readonly) NSString *responseAsString;
+
+@property (readonly) NSString *uniqueIdentifier;
+
+@property (readonly) BOOL cacheable;
+
+- (instancetype)initWithURLString:(NSString *)aURLString
+                           params:(NSDictionary *)params
+                         bodyData:(NSData *)bodyData
+                       httpMethod:(NSString *)method;
+
+typedef void (^MKNKHandler)(MKNetworkRequest* completedRequest);
+typedef void (^MKNKHandler)(MKNetworkRequest* completedRequest);
+
+-(void) addParameters:(NSDictionary*) paramsDictionary;
+-(void) addHeaders:(NSDictionary*) headersDictionary;
+
+-(void) addCompletionHandler:(MKNKHandler) completionHandler;
+
+-(void) cancel;
+@end
