@@ -73,7 +73,7 @@ const float kFreshLoadAnimationDuration = 0.25f;
   self.imageFetchRequest = [imageHost requestWithURLString:imageUrlString];
   [self.imageFetchRequest addCompletionHandler:^(MKNetworkRequest *completedRequest) {
     
-    if(completedRequest.state != MKNKRequestStateError) {
+    if(completedRequest.state == MKNKRequestStateCompleted) {
       
       CGFloat animationDuration = completedRequest.isCachedResponse?kFromCacheAnimationDuration:kFreshLoadAnimationDuration;
       
@@ -92,6 +92,8 @@ const float kFreshLoadAnimationDuration = 0.25f;
                                         }
                                         
                                       }];
+    } else {
+      NSLog(@"Request: %@ failed with error: %@", completedRequest, completedRequest.error);
     }
   }];
   

@@ -334,7 +334,7 @@ static NSUInteger numberOfRunningOperations;
 #pragma mark Response formatting helpers
 
 #if TARGET_OS_IPHONE
--(UIImage*) responseImage {
+-(UIImage*) responseAsImage {
   
   static CGFloat scale = 2.0f;
   static dispatch_once_t onceToken;
@@ -363,7 +363,7 @@ static NSUInteger numberOfRunningOperations;
 }
 
 #elif TARGET_OS_MAC
--(NSImage*) responseImage {
+-(NSImage*) responseAsImage {
   
   return [[NSImage alloc] initWithData:self.data];
 }
