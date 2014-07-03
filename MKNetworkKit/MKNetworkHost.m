@@ -96,48 +96,50 @@
   self.responseCache = [[MKCache alloc] initWithCacheDirectory:cacheDirectoryPath inMemoryCost:inMemoryCost];
 }
 
--(void) enqueueOperation:(MKNetworkRequest*) operation forceReload:(BOOL) forceReload ignoreCache:(BOOL) ignoreCache {
-  
-  NSHTTPURLResponse *cachedResponse = self.responseCache[operation.uniqueIdentifier];
-  NSData *cachedData = self.dataCache[operation.uniqueIdentifier];
-  
-  if(cachedData) {
-    operation.data = cachedData;
-    operation.response = cachedResponse;
-    operation.state = MKNKRequestStateResponseAvailableFromCache;
-  }
+-(void) startRequest:(MKNetworkRequest*) request forceReload:(BOOL) forceReload ignoreCache:(BOOL) ignoreCache {
   
   NSURLSessionDataTask *task = [self.defaultSession
-                                dataTaskWithRequest:operation.request
+                                dataTaskWithRequest:request.request
                                 completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
                                   
-                                  operation.response = (NSHTTPURLResponse*) response;
-                                  operation.data = data;
-                                  operation.error = error;
+                                  request.response = (NSHTTPURLResponse*) response;
+                                  request.data = data;
+                                  request.error = error;
                                   
                                   if(!error) {
                                     
-                                    if(operation.cacheable) {
-                                    self.dataCache[operation.uniqueIdentifier] = data;
-                                    self.responseCache[operation.uniqueIdentifier] = [NSKeyedArchiver archivedDataWithRootObject:response];
+                                    if(request.cacheable) {
+                                      self.dataCache[request.uniqueIdentifier] = data;
+                                      self.responseCache[request.uniqueIdentifier] = [NSKeyedArchiver archivedDataWithRootObject:response];
                                     }
                                     
-                                    operation.state = MKNKRequestStateCompleted;
+                                    request.state = MKNKRequestStateCompleted;
                                   } else {
-                                    operation.state = MKNKRequestStateError;
+                                    request.state = MKNKRequestStateError;
                                   }
                                 }];
   
-  operation.task = task;
-  operation.state = MKNKRequestStateStarted;
+  request.task = task;
+  request.state = MKNKRequestStateStarted;
+  
+  if(request.cacheable) {
+    NSHTTPURLResponse *cachedResponse = self.responseCache[request.uniqueIdentifier];
+    NSData *cachedData = self.dataCache[request.uniqueIdentifier];
+    
+    if(cachedData) {
+      request.data = cachedData;
+      request.response = cachedResponse;
+      request.state = MKNKRequestStateResponseAvailableFromCache;
+    }
+  }  
 }
 
 -(MKNetworkRequest*) requestWithURLString:(NSString*) urlString {
   
   return [[MKNetworkRequest alloc] initWithURLString:urlString
-                                                     params:nil
-                                                   bodyData:nil
-                                                 httpMethod:@"GET"];
+                                              params:nil
+                                            bodyData:nil
+                                          httpMethod:@"GET"];
 }
 
 -(MKNetworkRequest*) requestWithPath:(NSString*) path {
@@ -188,10 +190,10 @@
   }
   
   MKNetworkRequest *request = [[MKNetworkRequest alloc] initWithURLString:urlString
-                                              params:params
-                                            bodyData:bodyData
-                                          httpMethod:httpMethod.uppercaseString];
-
+                                                                   params:params
+                                                                 bodyData:bodyData
+                                                               httpMethod:httpMethod.uppercaseString];
+  
   request.parameterEncoding = self.defaultParameterEncoding;
   [request addHeaders:self.defaultHeaders];
   [self prepareRequest:request]; // subclasses can over ride and add their own parameters and headers after this
@@ -200,6 +202,6 @@
 
 -(void) prepareRequest: (MKNetworkRequest*) request {
   
- // to be overridden by subclasses to tweak request creation
+  // to be overridden by subclasses to tweak request creation
 }
 @end

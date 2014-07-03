@@ -68,7 +68,7 @@ const float kFreshLoadAnimationDuration = 0.25f;
   if(placeHolderImage)
     self.image = placeHolderImage;
   
-  [self.imageFetchRequest cancel];
+  [self.imageFetchRequest cancel];  
   
   self.imageFetchRequest = [imageHost requestWithURLString:imageUrlString];
   [self.imageFetchRequest addCompletionHandler:^(MKNetworkRequest *completedRequest) {
@@ -93,11 +93,12 @@ const float kFreshLoadAnimationDuration = 0.25f;
                                         
                                       }];
     } else {
-      NSLog(@"Request: %@ failed with error: %@", completedRequest, completedRequest.error);
+      if(completedRequest.state == MKNKRequestStateError)
+        NSLog(@"Request: %@ failed with error: %@", completedRequest, completedRequest.error);
     }
   }];
   
-  [imageHost enqueueOperation:self.imageFetchRequest forceReload:NO ignoreCache:NO];
+  [imageHost startRequest:self.imageFetchRequest forceReload:NO ignoreCache:NO];
   
   return self.imageFetchRequest;
 }

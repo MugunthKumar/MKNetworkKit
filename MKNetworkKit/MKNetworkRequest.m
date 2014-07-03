@@ -30,7 +30,7 @@
 @import CoreImage;
 @import ImageIO;
 
-static NSUInteger numberOfRunningOperations;
+static NSInteger numberOfRunningOperations;
 
 @interface MKNetworkRequest (/*Private Methods*/)
 
@@ -299,6 +299,10 @@ static NSUInteger numberOfRunningOperations;
     numberOfRunningOperations --;
     if(numberOfRunningOperations == 0)
       [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+    if(numberOfRunningOperations < 0) {
+      NSLog(@"Number of operations is below zero. Something wrong at %@ [%d]", self, self.state); // FIX ME
+    }
+    
   });
 #endif
 }
@@ -310,8 +314,10 @@ static NSUInteger numberOfRunningOperations;
 
 -(void) cancel {
   
-  [self.task cancel];
-  self.state = MKNKRequestStateCancelled;
+  if(self.state == MKNKRequestStateStarted) {
+    [self.task cancel];
+    self.state = MKNKRequestStateCancelled;
+  }
 }
 
 -(void) setState:(MKNKRequestState)state {

@@ -89,5 +89,5 @@
  * Reload with cache even if cache is not stale
  */
 
--(void) enqueueOperation:(MKNetworkRequest*) operation forceReload:(BOOL) forceReload ignoreCache:(BOOL) ignoreCache;
+-(void) startRequest:(MKNetworkRequest*) request forceReload:(BOOL) forceReload ignoreCache:(BOOL) ignoreCache;
 @end
