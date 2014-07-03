@@ -36,6 +36,8 @@
 
 +(void) addMappableKeysAndClassesFromDictionary:(NSDictionary*) dictionary;
 
+-(NSDictionary*) equivalentKeys;
+
 @property(nonatomic, assign) BOOL isDetailedInfoAvailable;
 
 @end

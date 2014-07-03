@@ -41,6 +41,11 @@ static NSMutableDictionary *knownClasses;
   }
 }
 
+-(NSDictionary*) equivalentKeys {
+  
+  return @{};
+}
+
 +(void) addMappableKeysAndClassesFromDictionary:(NSDictionary*) dictionary {
   
   [dictionary enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
@@ -207,11 +212,17 @@ static NSMutableDictionary *knownClasses;
 
 -(void) setValue:(id)value forKey:(NSString *)key {
   
+  NSDictionary *equivalentKeys = [self equivalentKeys];
+
   if([knownClasses.allKeys containsObject:key]){
     
     Class classToUse = NSClassFromString(knownClasses[key]);
     id transformedValue = [MKObject map:value usingClass:classToUse];
     [super setValue:transformedValue forKey:key];
+  } else if([equivalentKeys.allKeys containsObject:key]) {
+    
+    NSString *replacementKey = equivalentKeys[key];
+    [super setValue:value forKey:replacementKey];
   } else [super setValue:value forKey:key];
 }
 
