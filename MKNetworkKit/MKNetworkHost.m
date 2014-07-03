@@ -186,11 +186,20 @@
     else if (path != nil)
       [urlString appendFormat:@"/%@", path];
   }
-
-  return [[MKNetworkRequest alloc] initWithURLString:urlString
+  
+  MKNetworkRequest *request = [[MKNetworkRequest alloc] initWithURLString:urlString
                                               params:params
                                             bodyData:bodyData
                                           httpMethod:httpMethod.uppercaseString];
+
+  request.parameterEncoding = self.defaultParameterEncoding;
+  [request addHeaders:self.defaultHeaders];
+  [self prepareRequest:request]; // subclasses can over ride and add their own parameters and headers after this
+  return request;
 }
 
+-(void) prepareRequest: (MKNetworkRequest*) request {
+  
+ // to be overridden by subclasses to tweak request creation
+}
 @end

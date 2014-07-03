@@ -27,13 +27,15 @@
 
 @interface MKObject : NSObject <NSCopying, NSMutableCopying>
 
-+ (id)map:(id)data usingClass:(Class) class;
++ (id)map:(id)data usingClass:(Class) klass;
 
 - (id)initWithDictionary:(NSDictionary *)jsonObject;
 - (NSMutableDictionary *)requestDictionary;
 - (NSMutableDictionary *)requestDictionarySmall;
-
 - (NSString *)jsonString;
+
++(void) addMappableKeysAndClassesFromDictionary:(NSDictionary*) dictionary;
+
 @property(nonatomic, assign) BOOL isDetailedInfoAvailable;
 
 @end

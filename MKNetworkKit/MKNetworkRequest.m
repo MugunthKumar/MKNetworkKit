@@ -34,7 +34,7 @@ static NSUInteger numberOfRunningOperations;
 
 @interface MKNetworkRequest (/*Private Methods*/)
 
-@property NSURL *url;
+@property NSString *urlString;
 @property NSData *bodyData;
 @property NSString *httpMethod;
 
@@ -63,23 +63,11 @@ static NSUInteger numberOfRunningOperations;
   
   if(self = [super init]) {
     
-    if (([httpMethod.uppercaseString isEqual:@"GET"] ||
-         [httpMethod.uppercaseString isEqual:@"DELETE"] ||
-         [httpMethod.uppercaseString isEqual:@"HEAD"]) &&
-        (params && params.count > 0)) {
-      
-      self.url = [NSURL URLWithString:[NSString stringWithFormat:@"%@?%@", aURLString,
-                                       [params urlEncodedKeyValueString]]];
-      self.parameters = [NSMutableDictionary dictionary];
-    } else {
-      self.url = [NSURL URLWithString:aURLString];
+    self.urlString = aURLString;
+    if(params) {
       self.parameters = params.mutableCopy;
-    }
-    
-    if(self.url == nil) {
-      
-      NSLog(@"Unable to create request %@ %@ with parameters %@", httpMethod, aURLString, params);
-      return nil;
+    } else {
+      self.parameters = [NSMutableDictionary dictionary];
     }
     
     self.bodyData = bodyData;
@@ -100,7 +88,25 @@ static NSUInteger numberOfRunningOperations;
 
 -(NSMutableURLRequest*) request {
   
-  NSMutableURLRequest *createdRequest = [NSMutableURLRequest requestWithURL:self.url];
+  NSURL *url = nil;
+  if (([self.httpMethod.uppercaseString isEqual:@"GET"] ||
+       [self.httpMethod.uppercaseString isEqual:@"DELETE"] ||
+       [self.httpMethod.uppercaseString isEqual:@"HEAD"]) &&
+      (self.parameters.count > 0)) {
+    
+    url = [NSURL URLWithString:[NSString stringWithFormat:@"%@?%@", self.urlString,
+                                [self.parameters urlEncodedKeyValueString]]];
+  } else {
+    url = [NSURL URLWithString:self.urlString];
+  }
+  
+  if(url == nil) {
+    
+    NSLog(@"Unable to create request %@ %@ with parameters %@", self.httpMethod, self.urlString, self.parameters);
+    return nil;
+  }
+  
+  NSMutableURLRequest *createdRequest = [NSMutableURLRequest requestWithURL:url];
   [createdRequest setAllHTTPHeaderFields:self.headers];
   [createdRequest setHTTPMethod:self.httpMethod];
   
@@ -131,10 +137,17 @@ static NSUInteger numberOfRunningOperations;
     }
   }
   
-  if(!self.bodyData)
+  
+  if (!([self.httpMethod.uppercaseString isEqual:@"GET"] ||
+        [self.httpMethod.uppercaseString isEqual:@"DELETE"] ||
+        [self.httpMethod.uppercaseString isEqual:@"HEAD"])) {
+    
     [createdRequest setHTTPBody:[bodyStringFromParameters dataUsingEncoding:NSUTF8StringEncoding]];
-  else
+  }
+  
+  if(self.bodyData) {
     [createdRequest setHTTPBody:self.bodyData];
+  }
   
   return createdRequest;
 }
@@ -144,7 +157,7 @@ static NSUInteger numberOfRunningOperations;
 
 -(BOOL) cacheable {
   
-  NSString *requestMethod = self.request.HTTPMethod.uppercaseString;
+  NSString *requestMethod = self.httpMethod.uppercaseString;
   if(![requestMethod isEqual:@"GET"]) return NO;
   
   if(self.doNotCache) return NO;
@@ -160,7 +173,7 @@ static NSUInteger numberOfRunningOperations;
 
 -(NSString*) uniqueIdentifier {
   
-  NSMutableString *str = [NSMutableString stringWithFormat:@"%@ %@", self.request.HTTPMethod, self.request.URL.absoluteString];
+  NSMutableString *str = [NSMutableString stringWithFormat:@"%@ %@", self.httpMethod.uppercaseString, self.request.URL.absoluteString];
   
   if(self.username || self.password) {
     
@@ -226,7 +239,7 @@ static NSUInteger numberOfRunningOperations;
   //     }];
   //  }
   
-  [displayString appendFormat:@" \'%@\'",  self.url.absoluteString];
+  [displayString appendFormat:@" \'%@\'",  request.URL.absoluteString];
   
   if ([request.HTTPMethod isEqualToString:@"POST"] ||
       [request.HTTPMethod isEqualToString:@"PUT"] ||

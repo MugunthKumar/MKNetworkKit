@@ -49,6 +49,9 @@
 @property NSUInteger portNumber;
 @property NSDictionary *defaultHeaders;
 @property BOOL secureHost;
+@property MKNKParameterEncoding defaultParameterEncoding;
+
+-(void) prepareRequest: (MKNetworkRequest*) request;
 
 -(MKNetworkRequest*) requestWithURLString:(NSString*) urlString;
 

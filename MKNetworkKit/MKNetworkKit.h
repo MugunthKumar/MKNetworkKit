@@ -12,6 +12,7 @@
 #import "MKNetworkHost.h"
 #import "MKNetworkRequest.h"
 #import "UIImageView+MKNKAdditions.h"
+#import "MKObject.h"
 
 #ifdef __OBJC_GC__
 #error MKNetworkKit does not support Objective-C Garbage Collection

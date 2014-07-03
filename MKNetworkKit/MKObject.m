@@ -26,10 +26,33 @@
 #import "MKObject.h"
 #import <objc/runtime.h>
 
+static NSMutableDictionary *knownClasses;
+
 @implementation MKObject
 
 #pragma--
 #pragma Runtime stuff
+
++(void) initialize {
+  
+  if (self == [MKObject self]) {
+
+    knownClasses = [NSMutableDictionary dictionary];
+  }
+}
+
++(void) addMappableKeysAndClassesFromDictionary:(NSDictionary*) dictionary {
+  
+  [dictionary enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+
+    Class class = NSClassFromString(obj);
+
+    if(class)
+      knownClasses[key] = obj;
+    else
+      NSLog(@"Class not found %@", obj);
+  }];
+}
 
 + (id)map:(id)data usingClass:(Class) class {
 
@@ -45,7 +68,9 @@
   } else {
     return [[class alloc] initWithDictionary:data];
   }
-} - (NSDictionary *)objectAsDictionary {
+}
+
+- (NSDictionary *)objectAsDictionary {
 
   NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithCapacity:0];
 
@@ -180,6 +205,16 @@
   return self;
 }
 
+-(void) setValue:(id)value forKey:(NSString *)key {
+  
+  if([knownClasses.allKeys containsObject:key]){
+    
+    Class classToUse = NSClassFromString(knownClasses[key]);
+    id transformedValue = [MKObject map:value usingClass:classToUse];
+    [super setValue:transformedValue forKey:key];
+  } else [super setValue:value forKey:key];
+}
+
 - (id)valueForUndefinedKey:(NSString *)key {
   // subclass implementation should provide correct key value mappings for
   // custom keys
@@ -192,7 +227,7 @@
   // subclass implementation should set the correct key value mappings for
   // custom keys
   NSLog(@"Undefined Key: %@  of type %@ in class: %@", key,
-        NSStringFromClass([key class]), NSStringFromClass([self class]));
+        NSStringFromClass([value class]), NSStringFromClass([self class]));
 }
 
 #pragma--
