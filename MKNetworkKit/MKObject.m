@@ -36,7 +36,7 @@ static NSMutableDictionary *knownClasses;
 +(void) initialize {
   
   if (self == [MKObject self]) {
-
+    
     knownClasses = [NSMutableDictionary dictionary];
   }
 }
@@ -49,9 +49,9 @@ static NSMutableDictionary *knownClasses;
 +(void) addMappableKeysAndClassesFromDictionary:(NSDictionary*) dictionary {
   
   [dictionary enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-
+    
     Class class = NSClassFromString(obj);
-
+    
     if(class)
       knownClasses[key] = obj;
     else
@@ -60,15 +60,15 @@ static NSMutableDictionary *knownClasses;
 }
 
 + (id)map:(id)data usingClass:(Class) class {
-
+  
   if ([data isKindOfClass:[NSArray class]]) {
     NSMutableArray *returnArray = [NSMutableArray array];
     [data enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-
-        id mappedObject = [[class alloc] initWithDictionary:obj];
-        [returnArray addObject:mappedObject];
+      
+      id mappedObject = [[class alloc] initWithDictionary:obj];
+      [returnArray addObject:mappedObject];
     }];
-
+    
     return returnArray;
   } else {
     return [[class alloc] initWithDictionary:data];
@@ -76,11 +76,11 @@ static NSMutableDictionary *knownClasses;
 }
 
 - (NSDictionary *)objectAsDictionary {
-
+  
   NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithCapacity:0];
-
+  
   unsigned int outCount, i;
-
+  
   objc_property_t *properties = class_copyPropertyList([self class], &outCount);
   for (i = 0; i < outCount; i++) {
     objc_property_t property = properties[i];
@@ -88,53 +88,53 @@ static NSMutableDictionary *knownClasses;
     if (propName) {
       NSString *propertyName = @(propName);
       NSValue *value = [self valueForKey:propertyName];
-
+      
       if (value && (id)value != [NSNull null]) {
-
+        
         // NSString, NSNumber, NSArray, NSDictionary
         if ([value isKindOfClass:[NSString class]] ||
             [value isKindOfClass:[NSNumber class]]) {
-
+          
           [dict setValue:value forKey:propertyName];
         } else if ([value isKindOfClass:[NSArray class]]) {
-
+          
           NSMutableArray *array = [NSMutableArray array];
           NSArray *toMapArray = (NSArray *)value;
           [toMapArray
-              enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-
-                  if ([obj isKindOfClass:[NSString class]] ||
-                      [obj isKindOfClass:[NSNumber class]]) {
-                    [array addObject:obj];
-                  } else if ([obj isKindOfClass:[MKObject class]]) {
-                    [array addObject:[(MKObject *)obj objectAsDictionary]];
-                  } else {
-                    NSLog(@"Property %@ is of type %@ which is unknown",
-                          propertyName, NSStringFromClass([value class]));
-                  }
-              }];
+           enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+             
+             if ([obj isKindOfClass:[NSString class]] ||
+                 [obj isKindOfClass:[NSNumber class]]) {
+               [array addObject:obj];
+             } else if ([obj isKindOfClass:[MKObject class]]) {
+               [array addObject:[(MKObject *)obj objectAsDictionary]];
+             } else {
+               NSLog(@"Property %@ is of type %@ which is unknown",
+                     propertyName, NSStringFromClass([value class]));
+             }
+           }];
           [dict setValue:array forKey:propertyName];
-
+          
         } else if ([value isKindOfClass:[NSDictionary class]]) {
-
+          
           NSMutableDictionary *mappedDict = [NSMutableDictionary dictionary];
           NSMutableDictionary *toMapDict = (NSMutableDictionary *)value;
           [toMapDict
-              enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-
-                  if ([value isKindOfClass:[NSString class]] ||
-                      [value isKindOfClass:[NSNumber class]]) {
-                    [toMapDict setValue:obj forKey:key];
-                  } else if ([obj isKindOfClass:[MKObject class]]) {
-                    [toMapDict setValue:[(MKObject *)value objectAsDictionary]
-                                 forKey:key];
-                  } else {
-
-                    NSLog(@"Property %@ is of type %@ which is unknown",
-                          propertyName, NSStringFromClass([value class]));
-                  }
-              }];
-
+           enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+             
+             if ([value isKindOfClass:[NSString class]] ||
+                 [value isKindOfClass:[NSNumber class]]) {
+               [toMapDict setValue:obj forKey:key];
+             } else if ([obj isKindOfClass:[MKObject class]]) {
+               [toMapDict setValue:[(MKObject *)value objectAsDictionary]
+                            forKey:key];
+             } else {
+               
+               NSLog(@"Property %@ is of type %@ which is unknown",
+                     propertyName, NSStringFromClass([value class]));
+             }
+           }];
+          
           [dict setValue:mappedDict forKey:propertyName];
         } else {
           if ([value respondsToSelector:@selector(objectAsDictionary)]) {
@@ -149,49 +149,49 @@ static NSMutableDictionary *knownClasses;
     }
   }
   free(properties);
-
+  
   return dict;
 }
 
 - (id)transformedJSONObjectForJSONObject:(id)jsonObject {
-
+  
   if ([jsonObject isKindOfClass:[NSDictionary class]]) {
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
     [jsonObject enumerateKeysAndObjectsUsingBlock:^(id key, id obj,
                                                     BOOL *stop) {
-
-        if ([obj isKindOfClass:[NSDictionary class]]) {
-          obj = [self transformedJSONObjectForJSONObject:obj];
-        }
-
-        if ([obj isKindOfClass:[NSArray class]]) {
-          obj = [self transformedJSONObjectForJSONObject:obj];
-        }
-
-        NSString *camelCaseKey = [key
-            stringByReplacingCharactersInRange:NSMakeRange(0, 1)
-                                    withString:[[key substringToIndex:
-                                                         1] lowercaseString]];
-        [dict setObject:obj forKey:camelCaseKey];
+      
+      if ([obj isKindOfClass:[NSDictionary class]]) {
+        obj = [self transformedJSONObjectForJSONObject:obj];
+      }
+      
+      if ([obj isKindOfClass:[NSArray class]]) {
+        obj = [self transformedJSONObjectForJSONObject:obj];
+      }
+      
+      NSString *camelCaseKey = [key
+                                stringByReplacingCharactersInRange:NSMakeRange(0, 1)
+                                withString:[[key substringToIndex:
+                                             1] lowercaseString]];
+      [dict setObject:obj forKey:camelCaseKey];
     }];
-
+    
     return [dict copy];
   } else if ([jsonObject isKindOfClass:[NSArray class]]) {
-
+    
     NSMutableArray *array = [NSMutableArray array];
     [jsonObject
-        enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-
-            if ([obj isKindOfClass:[NSDictionary class]]) {
-              obj = [self transformedJSONObjectForJSONObject:obj];
-            }
-
-            if ([obj isKindOfClass:[NSArray class]]) {
-              obj = [self transformedJSONObjectForJSONObject:obj];
-            }
-
-            [array addObject:obj];
-        }];
+     enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+       
+       if ([obj isKindOfClass:[NSDictionary class]]) {
+         obj = [self transformedJSONObjectForJSONObject:obj];
+       }
+       
+       if ([obj isKindOfClass:[NSArray class]]) {
+         obj = [self transformedJSONObjectForJSONObject:obj];
+       }
+       
+       [array addObject:obj];
+     }];
     return array;
   } else
     return nil;
@@ -212,17 +212,11 @@ static NSMutableDictionary *knownClasses;
 
 -(void) setValue:(id)value forKey:(NSString *)key {
   
-  NSDictionary *equivalentKeys = [self equivalentKeys];
-
   if([knownClasses.allKeys containsObject:key]){
     
     Class classToUse = NSClassFromString(knownClasses[key]);
     id transformedValue = [MKObject map:value usingClass:classToUse];
     [super setValue:transformedValue forKey:key];
-  } else if([equivalentKeys.allKeys containsObject:key]) {
-    
-    NSString *replacementKey = equivalentKeys[key];
-    [super setValue:value forKey:replacementKey];
   } else [super setValue:value forKey:key];
 }
 
@@ -237,8 +231,16 @@ static NSMutableDictionary *knownClasses;
 - (void)setValue:(id)value forUndefinedKey:(NSString *)key {
   // subclass implementation should set the correct key value mappings for
   // custom keys
-  NSLog(@"Undefined Key: %@  of type %@ in class: %@", key,
-        NSStringFromClass([value class]), NSStringFromClass([self class]));
+  NSDictionary *equivalentKeys = [self equivalentKeys];
+  
+  if([equivalentKeys.allKeys containsObject:key]) {
+    
+    NSString *replacementKey = equivalentKeys[key];
+    [self setValue:value forKey:replacementKey]; // attempt again
+  } else {
+    NSLog(@"Undefined Key: %@  of type %@ in class: %@", key,
+          NSStringFromClass([value class]), NSStringFromClass([self class]));
+  }
 }
 
 #pragma--
@@ -258,23 +260,23 @@ static NSMutableDictionary *knownClasses;
 - (NSString *)jsonString {
   NSError *error = nil;
   NSData *jsonData =
-      [NSJSONSerialization dataWithJSONObject:[self objectAsDictionary]
-                                      options:0
-                                        error:&error];
+  [NSJSONSerialization dataWithJSONObject:[self objectAsDictionary]
+                                  options:0
+                                    error:&error];
   return [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
 }
 
 - (NSString *)prettyJsonString {
   NSError *error = nil;
   NSData *jsonData =
-      [NSJSONSerialization dataWithJSONObject:[self objectAsDictionary]
-                                      options:NSJSONWritingPrettyPrinted
-                                        error:&error];
+  [NSJSONSerialization dataWithJSONObject:[self objectAsDictionary]
+                                  options:NSJSONWritingPrettyPrinted
+                                    error:&error];
   return [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
 }
 
 - (NSString *)description {
-
+  
   return [self prettyJsonString];
 }
 
