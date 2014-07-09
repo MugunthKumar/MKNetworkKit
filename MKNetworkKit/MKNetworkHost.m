@@ -136,6 +136,7 @@
                                     request.state = MKNKRequestStateCompleted;
                                   } else {
                                     request.state = MKNKRequestStateError;
+                                    NSLog(@"%@", request);
                                   }
                                 }];
   
