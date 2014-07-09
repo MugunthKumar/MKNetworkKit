@@ -72,7 +72,7 @@ typedef enum {
 
 @property (readonly) id responseAsJSON;
 
--(void) decompressedResponseImageOfSize:(CGSize) size completionHandler:(void (^)(UIImage *decompressedImage)) imageDecompressionHandler;
+-(UIImage*) decompressedResponseImageOfSize:(CGSize) size;
 
 #if TARGET_OS_IPHONE
 @property (readonly) UIImage *responseAsImage;

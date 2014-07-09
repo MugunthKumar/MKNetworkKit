@@ -39,7 +39,7 @@ static NSInteger numberOfRunningOperations;
 @property NSString *httpMethod;
 
 @property (readwrite) NSHTTPURLResponse *response;
-@property (readwrite) NSData *data;
+@property (readwrite) NSData *responseData;
 @property (readwrite) NSError *error;
 @property (readwrite) NSURLSessionTask *task;
 
@@ -346,11 +346,7 @@ static NSInteger numberOfRunningOperations;
     }
       
       break;
-  }
-  
-  if(state == MKNKRequestStateError) {
-    NSLog(@"Request failed with %@", self.error);
-  }
+  }  
 }
 
 #pragma mark -
@@ -364,25 +360,20 @@ static NSInteger numberOfRunningOperations;
   dispatch_once(&onceToken, ^{
     scale = [UIScreen mainScreen].scale;
   });
-  return [UIImage imageWithData:self.data scale:scale];
+  return [UIImage imageWithData:self.responseData scale:scale];
 }
 
--(void) decompressedResponseImageOfSize:(CGSize) size completionHandler:(void (^)(UIImage *decompressedImage)) imageDecompressionHandler {
-  
-  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-    
-    CGImageSourceRef source = CGImageSourceCreateWithData((__bridge CFDataRef)(self.data), NULL);
-    CGImageRef cgImage = CGImageSourceCreateImageAtIndex(source, 0, (__bridge CFDictionaryRef)(@{(id)kCGImageSourceShouldCache:@(YES)}));
-    UIImage *decompressedImage = [UIImage imageWithCGImage:cgImage];
-    if(source)
-      CFRelease(source);
-    if(cgImage)
-      CGImageRelease(cgImage);
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-      imageDecompressionHandler(decompressedImage);
-    });
-  });
+-(UIImage*) decompressedResponseImageOfSize:(CGSize) size {
+
+  CGImageSourceRef source = CGImageSourceCreateWithData((__bridge CFDataRef)(self.responseData), NULL);
+  CGImageRef cgImage = CGImageSourceCreateImageAtIndex(source, 0, (__bridge CFDictionaryRef)(@{(id)kCGImageSourceShouldCache:@(YES)}));
+  UIImage *decompressedImage = [UIImage imageWithCGImage:cgImage];
+  if(source)
+    CFRelease(source);
+  if(cgImage)
+    CGImageRelease(cgImage);
+
+  return decompressedImage;
 }
 
 #elif TARGET_OS_MAC
@@ -399,16 +390,16 @@ static NSInteger numberOfRunningOperations;
 
 -(id) responseAsJSON {
   
-  if(self.data == nil) return nil;
+  if(self.responseData == nil) return nil;
   NSError *error = nil;
-  id returnValue = [NSJSONSerialization JSONObjectWithData:self.data options:0 error:&error];
+  id returnValue = [NSJSONSerialization JSONObjectWithData:self.responseData options:0 error:&error];
   if(!returnValue) NSLog(@"JSON Parsing Error: %@", error);
   return returnValue;
 }
 
 -(NSString*) responseAsString {
   
-  return [[NSString alloc] initWithData:self.data encoding:NSUTF8StringEncoding];
+  return [[NSString alloc] initWithData:self.responseData encoding:NSUTF8StringEncoding];
 }
 
 @end

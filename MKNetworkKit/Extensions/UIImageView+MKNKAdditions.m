@@ -39,10 +39,7 @@ const float kFreshLoadAnimationDuration = 0.25f;
     
     [request addCompletionHandler:^(MKNetworkRequest *completedRequest) {
       
-      [completedRequest decompressedResponseImageOfSize:size
-                                      completionHandler:^(UIImage *decompressedImage) {
-                                        
-                                      }];
+      [completedRequest decompressedResponseImageOfSize:size];
     }];
   }
   return request;
@@ -73,25 +70,26 @@ const float kFreshLoadAnimationDuration = 0.25f;
   self.imageFetchRequest = [imageHost requestWithURLString:imageUrlString];
   [self.imageFetchRequest addCompletionHandler:^(MKNetworkRequest *completedRequest) {
     
-    if(completedRequest.state == MKNKRequestStateCompleted) {
+    if(completedRequest.state == MKNKRequestStateCompleted || completedRequest.state == MKNKRequestStateResponseAvailableFromCache) {
       
       CGFloat animationDuration = completedRequest.isCachedResponse?kFromCacheAnimationDuration:kFreshLoadAnimationDuration;
       
-      [completedRequest decompressedResponseImageOfSize:self.frame.size
-                                      completionHandler:^(UIImage *decompressedImage) {
-                                        
-                                        if(animated) {
-                                          [UIView transitionWithView:self.superview
-                                                            duration:animationDuration
-                                                             options:UIViewAnimationOptionTransitionCrossDissolve | UIViewAnimationOptionAllowUserInteraction
-                                                          animations:^{
-                                                            self.image = decompressedImage;
-                                                          } completion:nil];
-                                        } else {
-                                          self.image = decompressedImage;
-                                        }
-                                        
-                                      }];
+      UIImage *decompressedImage = [completedRequest decompressedResponseImageOfSize:self.frame.size];
+      
+      dispatch_async(dispatch_get_main_queue(), ^{
+        
+        if(animated) {
+          [UIView transitionWithView:self.superview
+                            duration:animationDuration
+                             options:UIViewAnimationOptionTransitionCrossDissolve | UIViewAnimationOptionAllowUserInteraction
+                          animations:^{
+                            self.image = decompressedImage;
+                          } completion:nil];
+        } else {
+          self.image = decompressedImage;
+        }
+
+      });
     } else {
       if(completedRequest.state == MKNKRequestStateError)
         NSLog(@"Request: %@ failed with error: %@", completedRequest, completedRequest.error);

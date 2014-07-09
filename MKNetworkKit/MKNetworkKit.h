@@ -11,8 +11,18 @@
 
 #import "MKNetworkHost.h"
 #import "MKNetworkRequest.h"
-#import "UIImageView+MKNKAdditions.h"
 #import "MKObject.h"
+
+#if TARGET_OS_IPHONE
+#import "UIImageView+MKNKAdditions.h"
+#elif TARGET_OS_MAC
+#endif
+
+#if TARGET_OS_IPHONE
+#import "UIAlertView+MKNKAdditions.h"
+#elif TARGET_OS_MAC
+#import "NSAlertView+MKNKAdditions.h"
+#endif
 
 #ifdef __OBJC_GC__
 #error MKNetworkKit does not support Objective-C Garbage Collection
