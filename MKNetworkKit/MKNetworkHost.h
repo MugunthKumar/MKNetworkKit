@@ -52,6 +52,7 @@
 @property MKNKParameterEncoding defaultParameterEncoding;
 
 -(void) prepareRequest: (MKNetworkRequest*) request;
+-(NSError*) errorForRequest: (MKNetworkRequest*) request;
 
 -(MKNetworkRequest*) requestWithURLString:(NSString*) urlString;
 

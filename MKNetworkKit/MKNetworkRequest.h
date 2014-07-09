@@ -66,13 +66,12 @@ typedef enum {
 
 @property (readonly) BOOL isCachedResponse;
 
-@property (readonly) NSData *data;
+@property (readonly) NSData *responseData;
 @property (readonly) NSError *error;
 @property (readonly) NSURLSessionTask *task;
 
 @property (readonly) id responseAsJSON;
 
--(void) responseAsJSONWithCompletionHandler:(void (^)(id jsonObject)) jsonDecompressionHandler;
 -(void) decompressedResponseImageOfSize:(CGSize) size completionHandler:(void (^)(UIImage *decompressedImage)) imageDecompressionHandler;
 
 #if TARGET_OS_IPHONE

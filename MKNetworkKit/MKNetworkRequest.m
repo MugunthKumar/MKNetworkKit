@@ -347,6 +347,10 @@ static NSInteger numberOfRunningOperations;
       
       break;
   }
+  
+  if(state == MKNKRequestStateError) {
+    NSLog(@"Request failed with %@", self.error);
+  }
 }
 
 #pragma mark -
@@ -400,37 +404,6 @@ static NSInteger numberOfRunningOperations;
   id returnValue = [NSJSONSerialization JSONObjectWithData:self.data options:0 error:&error];
   if(!returnValue) NSLog(@"JSON Parsing Error: %@", error);
   return returnValue;
-}
-
--(void) responseAsJSONWithCompletionHandler:(void (^)(id jsonObject)) jsonDecompressionHandler {
-  
-  [self responseAsJSONWithOptions:0 completionHandler:jsonDecompressionHandler];
-}
-
--(void) responseAsJSONWithOptions:(NSJSONReadingOptions) options completionHandler:(void (^)(id jsonObject)) jsonDecompressionHandler {
-  
-  if(self.data == nil) {
-    
-    jsonDecompressionHandler(nil);
-    return;
-  }
-  
-  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-    
-    NSError *error = nil;
-    id returnValue = [NSJSONSerialization JSONObjectWithData:self.data options:options error:&error];
-    if(!returnValue) {
-      
-      NSLog(@"JSON Parsing Error: %@", error);
-      jsonDecompressionHandler(nil);
-      return;
-    }
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-      
-      jsonDecompressionHandler(returnValue);
-    });
-  });
 }
 
 -(NSString*) responseAsString {

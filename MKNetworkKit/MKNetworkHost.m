@@ -29,7 +29,7 @@
 
 @interface MKNetworkRequest (/*Private Methods*/)
 @property (readwrite) NSHTTPURLResponse *response;
-@property (readwrite) NSData *data;
+@property (readwrite) NSData *responseData;
 @property (readwrite) NSError *error;
 @property (readwrite) MKNKRequestState state;
 @property (readwrite) NSURLSessionTask *task;
@@ -102,11 +102,31 @@
                                 dataTaskWithRequest:request.request
                                 completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
                                   
-                                  request.response = (NSHTTPURLResponse*) response;
-                                  request.data = data;
-                                  request.error = error;
+                                  if(!response) return; // cancelled operation
                                   
-                                  if(!error) {
+                                  request.response = (NSHTTPURLResponse*) response;
+
+                                  if(request.response.statusCode >= 200 && request.response.statusCode < 300) {
+                                    
+                                    request.responseData = data;
+                                    request.error = error;
+                                  } else {
+                                    request.responseData = data;
+                                    NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
+                                    if(response) userInfo[@"response"] = response;
+                                    if(error) userInfo[@"error"] = error;
+                                    
+                                    NSError *httpError = [NSError errorWithDomain:@"com.mknetworkkit.httperrordomain"
+                                                                             code:request.response.statusCode
+                                                                         userInfo:userInfo];
+                                    request.error = httpError;
+                                    
+                                    // if subclass of host overrides errorForRequest: they can provide more insightful error objects by parsing the response body.
+                                    // the super class implementation just returns the same error object set in previous line
+                                    request.error = [self errorForRequest:request];
+                                  }
+                                  
+                                  if(!request.error) {
                                     
                                     if(request.cacheable) {
                                       self.dataCache[request.uniqueIdentifier] = data;
@@ -127,7 +147,7 @@
     NSData *cachedData = self.dataCache[request.uniqueIdentifier];
     
     if(cachedData) {
-      request.data = cachedData;
+      request.responseData = cachedData;
       request.response = cachedResponse;
       request.state = MKNKRequestStateResponseAvailableFromCache;
     }
@@ -203,5 +223,10 @@
 -(void) prepareRequest: (MKNetworkRequest*) request {
   
   // to be overridden by subclasses to tweak request creation
+}
+
+-(NSError*) errorForRequest: (MKNetworkRequest*) request {
+  
+  return request.error;
 }
 @end
