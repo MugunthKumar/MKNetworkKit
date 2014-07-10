@@ -33,7 +33,7 @@
 @property (readwrite) NSError *error;
 @property (readwrite) MKNKRequestState state;
 @property (readwrite) NSURLSessionTask *task;
--(void) setAsError;
+-(void) setProgressValue:(CGFloat) updatedValue;
 @end
 
 @interface MKNetworkHost (/*Private Methods*/) <NSURLSessionDelegate>
@@ -48,6 +48,7 @@
 @property MKCache *dataCache;
 @property MKCache *responseCache;
 
+@property NSMutableArray *runningDataTasks;
 @end
 
 @implementation MKNetworkHost
@@ -72,6 +73,8 @@
     self.backgroundSession = [NSURLSession sessionWithConfiguration:self.backgroundConfiguration
                                                            delegate:self
                                                       delegateQueue:[[NSOperationQueue alloc] init]];
+    
+    self.runningDataTasks = [NSMutableArray array];
     
   }
   
@@ -123,7 +126,7 @@
                                     
                                     // if subclass of host overrides errorForRequest: they can provide more insightful error objects by parsing the response body.
                                     // the super class implementation just returns the same error object set in previous line
-                                    request.error = [self errorForRequest:request];
+                                    request.error = [self errorForCompletedRequest:request];
                                   }
                                   
                                   if(!request.error) {
@@ -133,14 +136,17 @@
                                       self.responseCache[request.uniqueIdentifier] = [NSKeyedArchiver archivedDataWithRootObject:response];
                                     }
                                     
+                                    [self.runningDataTasks removeObject:request];
                                     request.state = MKNKRequestStateCompleted;
                                   } else {
+                                    [self.runningDataTasks removeObject:request];
                                     request.state = MKNKRequestStateError;
                                     NSLog(@"%@", request);
                                   }
                                 }];
   
   request.task = task;
+  [self.runningDataTasks addObject:request];
   request.state = MKNKRequestStateStarted;
   
   if(request.cacheable) {
@@ -226,8 +232,40 @@
   // to be overridden by subclasses to tweak request creation
 }
 
--(NSError*) errorForRequest: (MKNetworkRequest*) request {
+-(NSError*) errorForCompletedRequest: (MKNetworkRequest*) completedRequest {
   
-  return request.error;
+  // to be overridden by subclasses to tweak error objects by parsing the response body
+  return completedRequest.error;
 }
+
+#pragma mark -
+#pragma mark NSURLSession delegates
+
+- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask
+didReceiveResponse:(NSURLResponse *)response
+ completionHandler:(void (^)(NSURLSessionResponseDisposition disposition))completionHandler {
+  
+  [self.runningDataTasks enumerateObjectsUsingBlock:^(MKNetworkRequest *request, NSUInteger idx, BOOL *stop) {
+    
+    if([request.task isEqual:dataTask]) {
+      [request setProgressValue:0.0f];
+      *stop = YES;
+    }
+  }];
+}
+
+- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask
+    didReceiveData:(NSData *)data {
+  
+  float progress = (float)(((float)[data length]) / ((float)dataTask.response.expectedContentLength));
+  [self.runningDataTasks enumerateObjectsUsingBlock:^(MKNetworkRequest *request, NSUInteger idx, BOOL *stop) {
+    
+    if([request.task isEqual:dataTask]) {
+      [request setProgressValue:progress];
+      *stop = YES;
+    }
+  }];
+}
+
+
 @end

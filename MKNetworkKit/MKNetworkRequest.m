@@ -42,6 +42,7 @@ static NSInteger numberOfRunningOperations;
 @property (readwrite) NSData *responseData;
 @property (readwrite) NSError *error;
 @property (readwrite) NSURLSessionTask *task;
+@property (readwrite) CGFloat progress;
 
 @property NSMutableDictionary *parameters;
 @property NSMutableDictionary *headers;
@@ -191,6 +192,16 @@ static NSInteger numberOfRunningOperations;
 -(void) addCompletionHandler:(MKNKHandler) completionHandler {
   
   [self.completionHandlers addObject:completionHandler];
+}
+
+-(void) addUploadProgressChangedHandler:(MKNKHandler) uploadProgressChangedHandler {
+  
+  [self.uploadProgressChangedHandlers addObject:uploadProgressChangedHandler];
+}
+
+-(void) addDownloadProgressChangedHandler:(MKNKHandler) downloadProgressChangedHandler {
+  
+  [self.downloadProgressChangedHandlers addObject:downloadProgressChangedHandler];
 }
 
 -(void) addParameters:(NSDictionary*) paramsDictionary {
@@ -400,6 +411,17 @@ static NSInteger numberOfRunningOperations;
 -(NSString*) responseAsString {
   
   return [[NSString alloc] initWithData:self.responseData encoding:NSUTF8StringEncoding];
+}
+
+-(void) setProgressValue:(CGFloat) updatedValue {
+  
+  self.progress = updatedValue;
+
+  [self.downloadProgressChangedHandlers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+    
+    MKNKHandler handler = obj;
+    handler(self);
+  }];
 }
 
 @end

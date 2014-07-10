@@ -69,7 +69,7 @@ typedef enum {
 @property (readonly) NSData *responseData;
 @property (readonly) NSError *error;
 @property (readonly) NSURLSessionTask *task;
-
+@property (readonly) CGFloat progress;
 @property (readonly) id responseAsJSON;
 
 -(UIImage*) decompressedResponseImageOfSize:(CGSize) size;
@@ -98,6 +98,7 @@ typedef void (^MKNKHandler)(MKNetworkRequest* completedRequest);
 -(void) addHeaders:(NSDictionary*) headersDictionary;
 
 -(void) addCompletionHandler:(MKNKHandler) completionHandler;
-
+-(void) addUploadProgressChangedHandler:(MKNKHandler) uploadProgressChangedHandler;
+-(void) addDownloadProgressChangedHandler:(MKNKHandler) downloadProgressChangedHandler;
 -(void) cancel;
 @end
