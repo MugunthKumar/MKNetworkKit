@@ -165,7 +165,7 @@
                                     
                                     if(request.cacheable) {
                                       self.dataCache[@(request.hash)] = data;
-                                      self.responseCache[@(request.hash)] = [NSKeyedArchiver archivedDataWithRootObject:response];
+                                      self.responseCache[@(request.hash)] = response;
                                     }
                                     
                                     dispatch_sync(self.runningTasksSynchronizingQueue, ^{

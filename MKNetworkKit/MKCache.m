@@ -53,7 +53,14 @@ NSUInteger const kMKCacheDefaultCost = 10;
       }
     }
     
-    NSData *dataToBeWritten = self.inMemoryCache[key];
+    NSData *dataToBeWritten = nil;
+    id objToBeWritten = self.inMemoryCache[key];
+    if(![objToBeWritten isKindOfClass:[NSData class]]) {
+      dataToBeWritten = [NSKeyedArchiver archivedDataWithRootObject:objToBeWritten];
+    } else {
+      dataToBeWritten = objToBeWritten;
+    }
+    
     [dataToBeWritten writeToFile:filePath atomically:YES];
   }];
   
@@ -148,7 +155,7 @@ NSUInteger const kMKCacheDefaultCost = 10;
 #endif
 }
 
--(id) objectForKeyedSubscript:(id <NSCopying>) key {
+-(id <NSCoding>) objectForKeyedSubscript:(id <NSCopying>) key {
   
   NSData *cachedData = self.inMemoryCache[key];
   if(cachedData) return cachedData;
@@ -160,7 +167,7 @@ NSUInteger const kMKCacheDefaultCost = 10;
   
   if([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
     
-    cachedData = [NSData dataWithContentsOfFile:filePath];
+    cachedData = [NSKeyedUnarchiver unarchiveObjectWithData:[NSData dataWithContentsOfFile:filePath]];
     self.inMemoryCache[key] = cachedData;
     return cachedData;
   }
@@ -168,7 +175,7 @@ NSUInteger const kMKCacheDefaultCost = 10;
   return nil;
 }
 
-- (void)setObject:(id) obj forKeyedSubscript:(id <NSCopying>) key {
+- (void)setObject:(id <NSCoding>) obj forKeyedSubscript:(id <NSCopying>) key {
   
   dispatch_async(self.queue, ^{
     
@@ -186,7 +193,7 @@ NSUInteger const kMKCacheDefaultCost = 10;
     if(self.recentlyUsedKeys.count > self.cacheMemoryCost) {
       
       id<NSCopying> lastUsedKey = self.recentlyUsedKeys.lastObject;
-      id objectThatNeedsToBeWrittenToDisk = self.inMemoryCache[lastUsedKey];
+      id objectThatNeedsToBeWrittenToDisk = [NSKeyedArchiver archivedDataWithRootObject:self.inMemoryCache[lastUsedKey]];
       [self.inMemoryCache removeObjectForKey:lastUsedKey];
       
       NSString *stringKey = [NSString stringWithFormat:@"%@", lastUsedKey];

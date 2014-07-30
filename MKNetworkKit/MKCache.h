@@ -33,5 +33,5 @@
 @property NSUInteger cacheMemoryCost;
 
 - (id) objectForKeyedSubscript:(id<NSCopying>) key;
-- (void)setObject:(id)obj forKeyedSubscript:(id<NSCopying>) key;
+- (void)setObject:(id<NSCoding>)obj forKeyedSubscript:(id<NSCopying>) key;
 @end
