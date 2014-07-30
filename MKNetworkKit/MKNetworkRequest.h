@@ -38,6 +38,7 @@ typedef enum {
   
   MKNKRequestStateStarted = 0, // default
   MKNKRequestStateResponseAvailableFromCache,
+  MKNKRequestStateStaleResponseAvailableFromCache,
   MKNKRequestStateCompleted,
   MKNKRequestStateCancelled,
   MKNKRequestStateError
@@ -65,6 +66,7 @@ typedef enum {
 @property BOOL alwaysCache;
 
 @property (readonly) BOOL isCachedResponse;
+@property (readonly) BOOL responseAvailable;
 
 @property (readonly) NSData *responseData;
 @property (readonly) NSError *error;
@@ -81,8 +83,6 @@ typedef enum {
 #endif
 
 @property (readonly) NSString *responseAsString;
-
-@property (readonly) NSString *uniqueIdentifier;
 
 @property (readonly) BOOL cacheable;
 

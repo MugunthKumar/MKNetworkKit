@@ -51,6 +51,8 @@
 @property BOOL secureHost;
 @property MKNKParameterEncoding defaultParameterEncoding;
 
+// You can override this method to tweak request creation
+// But ensure that you call super
 -(void) prepareRequest: (MKNetworkRequest*) request;
 -(NSError*) errorForCompletedRequest: (MKNetworkRequest*) completedRequest;
 

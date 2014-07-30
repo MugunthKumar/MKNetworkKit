@@ -27,6 +27,12 @@
 
 #import "MKCache.h"
 
+#import "NSDate+RFC1123.h"
+
+#import "NSMutableDictionary+MKNKAdditions.h"
+
+#import "NSHTTPURLResponse+MKNKAdditions.h"
+
 @interface MKNetworkRequest (/*Private Methods*/)
 @property (readwrite) NSHTTPURLResponse *response;
 @property (readwrite) NSData *responseData;
@@ -48,6 +54,7 @@
 @property MKCache *dataCache;
 @property MKCache *responseCache;
 
+@property dispatch_queue_t runningTasksSynchronizingQueue;
 @property NSMutableArray *runningDataTasks;
 @end
 
@@ -74,8 +81,10 @@
                                                            delegate:self
                                                       delegateQueue:[[NSOperationQueue alloc] init]];
     
-    self.runningDataTasks = [NSMutableArray array];
-    
+    self.runningTasksSynchronizingQueue = dispatch_queue_create("com.mknetworkkit.cachequeue", DISPATCH_QUEUE_SERIAL);
+    dispatch_async(self.runningTasksSynchronizingQueue, ^{
+      self.runningDataTasks = [NSMutableArray array];
+    });
   }
   
   return self;
@@ -101,6 +110,29 @@
 
 -(void) startRequest:(MKNetworkRequest*) request forceReload:(BOOL) forceReload ignoreCache:(BOOL) ignoreCache {
   
+  NSHTTPURLResponse *cachedResponse = self.responseCache[@(request.hash)];
+  NSTimeInterval expiryTimeFromNow = [cachedResponse.cacheExpiryDate timeIntervalSinceNow];
+  
+  if(request.cacheable && !ignoreCache) {
+    
+    NSData *cachedData = self.dataCache[@(request.hash)];
+    
+    if(cachedData) {
+      request.responseData = cachedData;
+      request.response = cachedResponse;
+      
+      if(expiryTimeFromNow > 0 && !forceReload) {
+        
+        request.state = MKNKRequestStateCompleted;
+        return; // don't make another request
+      } else {
+        
+        request.state = expiryTimeFromNow > 0 ? MKNKRequestStateResponseAvailableFromCache :
+        MKNKRequestStateStaleResponseAvailableFromCache;
+      }
+    }
+  }
+  
   NSURLSessionDataTask *task = [self.defaultSession
                                 dataTaskWithRequest:request.request
                                 completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
@@ -108,7 +140,7 @@
                                   if(!response) return; // cancelled operation
                                   
                                   request.response = (NSHTTPURLResponse*) response;
-
+                                  
                                   if(request.response.statusCode >= 200 && request.response.statusCode < 300) {
                                     
                                     request.responseData = data;
@@ -132,33 +164,31 @@
                                   if(!request.error) {
                                     
                                     if(request.cacheable) {
-                                      self.dataCache[request.uniqueIdentifier] = data;
-                                      self.responseCache[request.uniqueIdentifier] = [NSKeyedArchiver archivedDataWithRootObject:response];
+                                      self.dataCache[@(request.hash)] = data;
+                                      self.responseCache[@(request.hash)] = [NSKeyedArchiver archivedDataWithRootObject:response];
                                     }
                                     
-                                    [self.runningDataTasks removeObject:request];
+                                    dispatch_sync(self.runningTasksSynchronizingQueue, ^{
+                                      [self.runningDataTasks removeObject:request];
+                                    });
                                     request.state = MKNKRequestStateCompleted;
                                   } else {
-                                    [self.runningDataTasks removeObject:request];
+                                    
+                                    dispatch_sync(self.runningTasksSynchronizingQueue, ^{
+                                      [self.runningDataTasks removeObject:request];
+                                    });
                                     request.state = MKNKRequestStateError;
                                     NSLog(@"%@", request);
                                   }
                                 }];
   
   request.task = task;
-  [self.runningDataTasks addObject:request];
-  request.state = MKNKRequestStateStarted;
   
-  if(request.cacheable) {
-    NSHTTPURLResponse *cachedResponse = self.responseCache[request.uniqueIdentifier];
-    NSData *cachedData = self.dataCache[request.uniqueIdentifier];
-    
-    if(cachedData) {
-      request.responseData = cachedData;
-      request.response = cachedResponse;
-      request.state = MKNKRequestStateResponseAvailableFromCache;
-    }
-  }  
+  dispatch_sync(self.runningTasksSynchronizingQueue, ^{
+    [self.runningDataTasks addObject:request];
+  });
+  
+  request.state = MKNKRequestStateStarted;
 }
 
 -(MKNetworkRequest*) requestWithURLString:(NSString*) urlString {
@@ -227,9 +257,18 @@
   return request;
 }
 
+// You can override this method to tweak request creation
+// But ensure that you call super
 -(void) prepareRequest: (MKNetworkRequest*) request {
   
-  // to be overridden by subclasses to tweak request creation
+  if(!request.cacheable) return;
+  NSHTTPURLResponse *cachedResponse = self.responseCache[@(request.hash)];
+  
+  NSString *lastModified = [cachedResponse.allHeaderFields objectForCaseInsensitiveKey:@"Last-Modified"];
+  NSString *eTag = [cachedResponse.allHeaderFields objectForCaseInsensitiveKey:@"ETag"];
+  
+  if(lastModified) [request addHeaders:@{@"IF-MODIFIED-SINCE" : lastModified}];
+  if(eTag) [request addHeaders:@{@"IF-NONE-MATCH" : eTag}];
 }
 
 -(NSError*) errorForCompletedRequest: (MKNetworkRequest*) completedRequest {

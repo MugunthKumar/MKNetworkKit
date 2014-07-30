@@ -70,7 +70,7 @@ const float kFreshLoadAnimationDuration = 0.25f;
   self.imageFetchRequest = [imageHost requestWithURLString:imageUrlString];
   [self.imageFetchRequest addCompletionHandler:^(MKNetworkRequest *completedRequest) {
     
-    if(completedRequest.state == MKNKRequestStateCompleted || completedRequest.state == MKNKRequestStateResponseAvailableFromCache) {
+    if(completedRequest.responseAvailable) {
       
       CGFloat animationDuration = completedRequest.isCachedResponse?kFromCacheAnimationDuration:kFreshLoadAnimationDuration;
       

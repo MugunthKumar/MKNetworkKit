@@ -25,6 +25,10 @@
 
 #import "MKCache.h"
 
+NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
+NSString *const kMKCacheDefaultPathExtension = @".mkcache";
+NSUInteger const kMKCacheDefaultCost = 10;
+
 @interface MKCache (/*Private Methods*/)
 @property NSMutableDictionary *inMemoryCache;
 @property NSMutableArray *recentlyUsedKeys;
@@ -37,8 +41,9 @@
   
   [self.inMemoryCache enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
 
-    NSString *filePath = [[self.directoryPath stringByAppendingPathComponent:key]
-                          stringByAppendingPathExtension:MKCACHE_DEFAULT_PATH_EXTENSION];
+    NSString *stringKey = [NSString stringWithFormat:@"%@", key];
+    NSString *filePath = [[self.directoryPath stringByAppendingPathComponent:stringKey]
+                          stringByAppendingPathExtension:kMKCacheDefaultPathExtension];
     
     if([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
       
@@ -59,12 +64,12 @@
 -(NSString*) defaultCacheDirectoryPath {
   
   NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-  return [paths.firstObject stringByAppendingPathComponent:MKCACHE_DEFAULT_DIRNAME];
+  return [paths.firstObject stringByAppendingPathComponent:kMKCacheDefaultDirectoryName];
 }
 
 -(instancetype) init {
   
-  return [self initWithCacheDirectory:[self defaultCacheDirectoryPath] inMemoryCost:MKCACHE_DEFAULT_COST];
+  return [self initWithCacheDirectory:[self defaultCacheDirectoryPath] inMemoryCost:kMKCacheDefaultCost];
 }
 
 -(instancetype) initWithCacheDirectory:(NSString*) cacheDirectory inMemoryCost:(NSUInteger) inMemoryCost {
@@ -72,7 +77,7 @@
   if(self = [super init]) {
     
     self.directoryPath = cacheDirectory ? cacheDirectory : [self defaultCacheDirectoryPath];
-    self.cacheMemoryCost = inMemoryCost ? inMemoryCost : MKCACHE_DEFAULT_COST;
+    self.cacheMemoryCost = inMemoryCost ? inMemoryCost : kMKCacheDefaultCost;
     
     self.inMemoryCache = [NSMutableDictionary dictionaryWithCapacity:self.cacheMemoryCost];
     self.recentlyUsedKeys = [NSMutableArray arrayWithCapacity:self.cacheMemoryCost];
@@ -143,12 +148,15 @@
 #endif
 }
 
--(id) objectForKeyedSubscript:(NSString*) key {
+-(id) objectForKeyedSubscript:(id <NSCopying>) key {
   
   NSData *cachedData = self.inMemoryCache[key];
   if(cachedData) return cachedData;
   
-  NSString *filePath = [[self.directoryPath stringByAppendingPathComponent:key] stringByAppendingPathExtension:MKCACHE_DEFAULT_PATH_EXTENSION];
+  NSString *stringKey = [NSString stringWithFormat:@"%@", key];
+
+  NSString *filePath = [[self.directoryPath stringByAppendingPathComponent:stringKey]
+                        stringByAppendingPathExtension:kMKCacheDefaultPathExtension];
   
   if([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
     
@@ -160,7 +168,7 @@
   return nil;
 }
 
-- (void)setObject:(id) obj forKeyedSubscript:(NSString*) key {
+- (void)setObject:(id) obj forKeyedSubscript:(id <NSCopying>) key {
   
   dispatch_async(self.queue, ^{
     
@@ -177,10 +185,13 @@
     
     if(self.recentlyUsedKeys.count > self.cacheMemoryCost) {
       
-      NSString* lastUsedKey = self.recentlyUsedKeys.lastObject;
+      id<NSCopying> lastUsedKey = self.recentlyUsedKeys.lastObject;
       id objectThatNeedsToBeWrittenToDisk = self.inMemoryCache[lastUsedKey];
       [self.inMemoryCache removeObjectForKey:lastUsedKey];
-      NSString *filePath = [[self.directoryPath stringByAppendingPathComponent:lastUsedKey] stringByAppendingPathExtension:MKCACHE_DEFAULT_PATH_EXTENSION];
+      
+      NSString *stringKey = [NSString stringWithFormat:@"%@", lastUsedKey];
+
+      NSString *filePath = [[self.directoryPath stringByAppendingPathComponent:stringKey] stringByAppendingPathExtension:kMKCacheDefaultPathExtension];
       
       if([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
         

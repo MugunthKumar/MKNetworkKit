@@ -25,7 +25,7 @@
 
 #import "MKNetworkRequest.h"
 
-#import "NSDictionary+MKNKRequestEncoding.h"
+#import "NSDictionary+MKNKAdditions.h"
 
 @import CoreImage;
 @import ImageIO;
@@ -90,9 +90,9 @@ static NSInteger numberOfRunningOperations;
 -(NSMutableURLRequest*) request {
   
   NSURL *url = nil;
-  if (([self.httpMethod.uppercaseString isEqual:@"GET"] ||
-       [self.httpMethod.uppercaseString isEqual:@"DELETE"] ||
-       [self.httpMethod.uppercaseString isEqual:@"HEAD"]) &&
+  if (([self.httpMethod.uppercaseString isEqualToString:@"GET"] ||
+       [self.httpMethod.uppercaseString isEqualToString:@"DELETE"] ||
+       [self.httpMethod.uppercaseString isEqualToString:@"HEAD"]) &&
       (self.parameters.count > 0)) {
     
     url = [NSURL URLWithString:[NSString stringWithFormat:@"%@?%@", self.urlString,
@@ -139,9 +139,9 @@ static NSInteger numberOfRunningOperations;
   }
   
   
-  if (!([self.httpMethod.uppercaseString isEqual:@"GET"] ||
-        [self.httpMethod.uppercaseString isEqual:@"DELETE"] ||
-        [self.httpMethod.uppercaseString isEqual:@"HEAD"])) {
+  if (!([self.httpMethod.uppercaseString isEqualToString:@"GET"] ||
+        [self.httpMethod.uppercaseString isEqualToString:@"DELETE"] ||
+        [self.httpMethod.uppercaseString isEqualToString:@"HEAD"])) {
     
     [createdRequest setHTTPBody:[bodyStringFromParameters dataUsingEncoding:NSUTF8StringEncoding]];
   }
@@ -159,31 +159,55 @@ static NSInteger numberOfRunningOperations;
 -(BOOL) cacheable {
   
   NSString *requestMethod = self.httpMethod.uppercaseString;
-  if(![requestMethod isEqual:@"GET"]) return NO;
+  if(![requestMethod isEqualToString:@"GET"]) return NO;
   
   if(self.doNotCache) return NO;
   
   if(self.username != nil || self.password != nil ||
      self.clientCertificate != nil || self.clientCertificatePassword != nil ||
-     [self.request.URL.scheme.lowercaseString isEqual:@"https"]) {
+     [self.request.URL.scheme.lowercaseString isEqualToString:@"https"]) {
     return self.alwaysCache;
   } else {
     return YES;
   }
 }
 
--(NSString*) uniqueIdentifier {
+-(BOOL) isEqualToRequest:(MKNetworkRequest*) request {
   
-  NSMutableString *str = [NSMutableString stringWithFormat:@"%@ %@", self.httpMethod.uppercaseString, self.request.URL.absoluteString];
+  return [self hash] == [request hash];
+}
+
+- (BOOL)isEqual:(id)object {
   
-  if(self.username || self.password) {
+  if (self == object) return YES;
+  if (![object isKindOfClass:[MKNetworkRequest class]]) return NO;
+  return [self isEqualToRequest:(MKNetworkRequest*) object];
+}
+
+/*
+ In case of requests,
+ we assume that only two GET/DELETE/PUT/OPTIONS/HEAD requests
+ POST and PATCH methods are not idempotent. So we return random numbers as hash
+ */
+
+-(NSUInteger) hash {
+  
+  if(!([self.httpMethod.uppercaseString isEqualToString:@"POST"] ||
+       [self.httpMethod.uppercaseString isEqualToString:@"PATCH"])) {
     
-    [str appendFormat:@" [%@:%@]",
-     self.username ? self.username : @"",
-     self.password ? self.password : @""];
+    NSMutableString *str = [NSMutableString stringWithFormat:@"%@ %@",
+                            self.httpMethod.uppercaseString,
+                            self.request.URL.absoluteString];
+    
+    if(self.username) [str appendString:self.username];
+    if(self.password) [str appendString:self.password];
+    if(self.clientCertificate) [str appendString:self.clientCertificate];
+    if(self.clientCertificatePassword) [str appendString:self.clientCertificatePassword];
+    
+    return [str hash];
+  } else {
+    return arc4random();
   }
-  
-  return str;
 }
 
 #pragma mark -
@@ -320,7 +344,15 @@ static NSInteger numberOfRunningOperations;
 
 -(BOOL) isCachedResponse {
   
-  return self.state == MKNKRequestStateResponseAvailableFromCache;
+  return self.state == MKNKRequestStateResponseAvailableFromCache ||
+  self.state == MKNKRequestStateStaleResponseAvailableFromCache;
+}
+
+-(BOOL) responseAvailable {
+  
+  return self.state == MKNKRequestStateResponseAvailableFromCache ||
+  self.state == MKNKRequestStateStaleResponseAvailableFromCache ||
+  self.state == MKNKRequestStateCompleted;
 }
 
 -(void) cancel {
@@ -347,6 +379,7 @@ static NSInteger numberOfRunningOperations;
     case MKNKRequestStateError:
       [self decrementRunningOperations];
       
+    case MKNKRequestStateStaleResponseAvailableFromCache:
     case MKNKRequestStateResponseAvailableFromCache: {
       
       [self.completionHandlers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
@@ -357,7 +390,7 @@ static NSInteger numberOfRunningOperations;
     }
       
       break;
-  }  
+  }
 }
 
 #pragma mark -
@@ -375,7 +408,7 @@ static NSInteger numberOfRunningOperations;
 }
 
 -(UIImage*) decompressedResponseImageOfSize:(CGSize) size {
-
+  
   CGImageSourceRef source = CGImageSourceCreateWithData((__bridge CFDataRef)(self.responseData), NULL);
   CGImageRef cgImage = CGImageSourceCreateImageAtIndex(source, 0, (__bridge CFDictionaryRef)(@{(id)kCGImageSourceShouldCache:@(YES)}));
   UIImage *decompressedImage = [UIImage imageWithCGImage:cgImage];
@@ -383,7 +416,7 @@ static NSInteger numberOfRunningOperations;
     CFRelease(source);
   if(cgImage)
     CGImageRelease(cgImage);
-
+  
   return decompressedImage;
 }
 
@@ -416,7 +449,7 @@ static NSInteger numberOfRunningOperations;
 -(void) setProgressValue:(CGFloat) updatedValue {
   
   self.progress = updatedValue;
-
+  
   [self.downloadProgressChangedHandlers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
     
     MKNKHandler handler = obj;

@@ -1,8 +1,8 @@
 //
-//  MKCache.h
+//  NSMutableDictionary+MKNKAdditions.h
 //  MKNetworkKit
 //
-//  Created by Mugunth Kumar (@mugunthkumar) on 23/06/14.
+//  Created by Mugunth Kumar (@mugunthkumar) on 30/07/14.
 //  Copyright (C) 2011-2020 by Steinlogic Consulting and Training Pte Ltd
 
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,13 +25,12 @@
 
 #import <Foundation/Foundation.h>
 
-@interface MKCache : NSObject
+#import "NSDictionary+MKNKAdditions.h"
 
--(instancetype) initWithCacheDirectory:(NSString*) cacheDirectory inMemoryCost:(NSUInteger) inMemoryCost;
+// Do not use this class for any other purpose.
+// For the most pary use case insensitive dictionary key matching only when you cannot control
+// the creation of dictionary keys In our case, we use this for matching HTTP headers
 
-@property NSString *directoryPath;
-@property NSUInteger cacheMemoryCost;
-
-- (id) objectForKeyedSubscript:(id<NSCopying>) key;
-- (void)setObject:(id)obj forKeyedSubscript:(id<NSCopying>) key;
+@interface NSMutableDictionary (MKNKAdditions)
+-(void) setObject:(id) obj forCaseInsensitiveKey:(id)aKey;
 @end

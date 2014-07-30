@@ -1,5 +1,5 @@
 //
-//  NSDictionary+MKNKRequestEncoding.m
+//  NSDictionary+MKNKAdditions.m
 //  MKNetworkKitDemo
 //
 //  Created by Mugunth Kumar (@mugunthkumar) on 11/11/11.
@@ -25,7 +25,20 @@
 
 #import "NSString+MKNKAdditions.h"
 
-@implementation NSDictionary (MKNKRequestEncoding)
+@implementation NSDictionary (MKNKAdditions)
+// Do not use this method for any other purpose.
+// For the most pary use case insensitive dictionary key matching only when you cannot control
+// the creation of dictionary keys In our case, we use this for matching HTTP headers
+
+-(id) objectForCaseInsensitiveKey:(id)aKey {
+  
+  for (NSString *key in self.allKeys) {
+    if ([key compare:aKey options:NSCaseInsensitiveSearch] == NSOrderedSame) {
+      return [self objectForKey:key];
+    }
+  }
+  return  nil;
+}
 
 -(NSString*) urlEncodedKeyValueString {
   

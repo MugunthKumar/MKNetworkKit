@@ -1,8 +1,8 @@
 //
-//  NSDictionary+MKNKRequestEncoding.h
+//  NSMutableDictionary+MKNKAdditions.h
 //  MKNetworkKit
 //
-//  Created by Mugunth Kumar (@mugunthkumar) on 11/11/11.
+//  Created by Mugunth Kumar (@mugunthkumar) on 30/07/14.
 //  Copyright (C) 2011-2020 by Steinlogic Consulting and Training Pte Ltd
 
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,9 +23,23 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-@interface NSDictionary (MKNKRequestEncoding)
+#import "NSMutableDictionary+MKNKAdditions.h"
 
--(NSString*) urlEncodedKeyValueString;
--(NSString*) jsonEncodedKeyValueString;
--(NSString*) plistEncodedKeyValueString;
+// Do not use this class for any other purpose.
+// For the most pary use case insensitive dictionary key matching only when you cannot control
+// the creation of dictionary keys In our case, we use this for matching HTTP headers
+
+@implementation NSMutableDictionary (MKNKAdditions)
+
+-(void) setObject:(id) obj forCaseInsensitiveKey:(id)aKey {
+  
+  for (NSString *key in self.allKeys) {
+    if ([key compare:aKey options:NSCaseInsensitiveSearch] == NSOrderedSame) {
+      [self setObject:obj forKey:key];
+      return;
+    }
+  }
+  [self setObject:obj forKey:aKey];
+}
+
 @end
