@@ -67,10 +67,7 @@
     self.defaultConfiguration = [NSURLSessionConfiguration defaultSessionConfiguration];
     self.secureConfiguration = [NSURLSessionConfiguration ephemeralSessionConfiguration];
     
-    self.backgroundConfiguration = [NSURLSessionConfiguration backgroundSessionConfiguration:
-                                    [[NSBundle mainBundle] bundleIdentifier]];
-    
-#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 80000
+#ifdef __IPHONE_8_0
     self.backgroundConfiguration = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:
                                     [[NSBundle mainBundle] bundleIdentifier]];
 #else
