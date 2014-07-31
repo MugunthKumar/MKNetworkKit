@@ -33,6 +33,9 @@
 
 #import "NSHTTPURLResponse+MKNKAdditions.h"
 
+NSUInteger const kMKNKDefaultCacheDuration = 60; // 60 seconds
+NSUInteger const kMKNKDefaultImageCacheDuration = 3600*24*7; // 7 days
+
 @interface MKNetworkRequest (/*Private Methods*/)
 @property (readwrite) NSHTTPURLResponse *response;
 @property (readwrite) NSData *responseData;
@@ -117,7 +120,19 @@
 -(void) startRequest:(MKNetworkRequest*) request forceReload:(BOOL) forceReload ignoreCache:(BOOL) ignoreCache {
   
   NSHTTPURLResponse *cachedResponse = self.responseCache[@(request.hash)];
-  NSTimeInterval expiryTimeFromNow = [cachedResponse.cacheExpiryDate timeIntervalSinceNow];
+  NSDate *cacheExpiryDate = cachedResponse.cacheExpiryDate;
+  NSTimeInterval expiryTimeFromNow = [cacheExpiryDate timeIntervalSinceNow];
+  
+  if(cachedResponse.isContentTypeImage && !cacheExpiryDate) {
+    
+    expiryTimeFromNow =
+    cachedResponse.hasRequiredRevalidationHeaders ? kMKNKDefaultCacheDuration : kMKNKDefaultImageCacheDuration;
+  }
+  
+  if(cachedResponse.hasDoNotCacheDirective) {
+    
+    expiryTimeFromNow = kMKNKDefaultCacheDuration;
+  }
   
   if(request.cacheable && !ignoreCache) {
     
@@ -129,7 +144,7 @@
       
       if(expiryTimeFromNow > 0 && !forceReload) {
         
-        request.state = MKNKRequestStateCompleted;
+        request.state = MKNKRequestStateResponseAvailableFromCache;
         return; // don't make another request
       } else {
         
