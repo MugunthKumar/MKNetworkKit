@@ -35,6 +35,7 @@
 
 NSUInteger const kMKNKDefaultCacheDuration = 60; // 60 seconds
 NSUInteger const kMKNKDefaultImageCacheDuration = 3600*24*7; // 7 days
+NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
 
 @interface MKNetworkRequest (/*Private Methods*/)
 @property (readwrite) NSHTTPURLResponse *response;
@@ -108,13 +109,16 @@ NSUInteger const kMKNKDefaultImageCacheDuration = 3600*24*7; // 7 days
 
 -(void) enableCache {
   
-  [self enableCacheWithDirectory:nil inMemoryCost:0];
+  [self enableCacheWithDirectory:kMKCacheDefaultDirectoryName inMemoryCost:0];
 }
 
 -(void) enableCacheWithDirectory:(NSString*) cacheDirectoryPath inMemoryCost:(NSUInteger) inMemoryCost {
   
-  self.dataCache = [[MKCache alloc] initWithCacheDirectory:cacheDirectoryPath inMemoryCost:inMemoryCost];
-  self.responseCache = [[MKCache alloc] initWithCacheDirectory:cacheDirectoryPath inMemoryCost:inMemoryCost];
+  self.dataCache = [[MKCache alloc] initWithCacheDirectory:[NSString stringWithFormat:@"%@/data", cacheDirectoryPath]
+                                              inMemoryCost:inMemoryCost];
+  
+  self.responseCache = [[MKCache alloc] initWithCacheDirectory:[NSString stringWithFormat:@"%@/responses", cacheDirectoryPath]
+                                                  inMemoryCost:inMemoryCost];
 }
 
 -(void) startRequest:(MKNetworkRequest*) request forceReload:(BOOL) forceReload ignoreCache:(BOOL) ignoreCache {
