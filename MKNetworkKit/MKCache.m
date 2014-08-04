@@ -25,8 +25,7 @@
 
 #import "MKCache.h"
 
-NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
-NSString *const kMKCacheDefaultPathExtension = @".mkcache";
+NSString *const kMKCacheDefaultPathExtension = @"mkcache";
 NSUInteger const kMKCacheDefaultCost = 10;
 
 @interface MKCache (/*Private Methods*/)
@@ -40,7 +39,7 @@ NSUInteger const kMKCacheDefaultCost = 10;
 -(void) flush {
   
   [self.inMemoryCache enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-
+    
     NSString *stringKey = [NSString stringWithFormat:@"%@", key];
     NSString *filePath = [[self.directoryPath stringByAppendingPathComponent:stringKey]
                           stringByAppendingPathExtension:kMKCacheDefaultPathExtension];
@@ -48,19 +47,14 @@ NSUInteger const kMKCacheDefaultCost = 10;
     if([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
       
       NSError *error = nil;
-      if([[NSFileManager defaultManager] removeItemAtPath:filePath error:&error]) {
+      if(![[NSFileManager defaultManager] removeItemAtPath:filePath error:&error]) {
         NSLog(@"%@", error);
       }
     }
     
     NSData *dataToBeWritten = nil;
     id objToBeWritten = self.inMemoryCache[key];
-    if(![objToBeWritten isKindOfClass:[NSData class]]) {
-      dataToBeWritten = [NSKeyedArchiver archivedDataWithRootObject:objToBeWritten];
-    } else {
-      dataToBeWritten = objToBeWritten;
-    }
-    
+    dataToBeWritten = [NSKeyedArchiver archivedDataWithRootObject:objToBeWritten];
     [dataToBeWritten writeToFile:filePath atomically:YES];
   }];
   
@@ -68,22 +62,22 @@ NSUInteger const kMKCacheDefaultCost = 10;
   [self.recentlyUsedKeys removeAllObjects];
 }
 
--(NSString*) defaultCacheDirectoryPath {
-  
-  NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-  return [paths.firstObject stringByAppendingPathComponent:kMKCacheDefaultDirectoryName];
-}
-
 -(instancetype) init {
   
-  return [self initWithCacheDirectory:[self defaultCacheDirectoryPath] inMemoryCost:kMKCacheDefaultCost];
+  @throw [NSException exceptionWithName:NSInternalInconsistencyException
+                                 reason:@"MKCache should be initialized with the designated initializer initWithCacheDirectory:inMemoryCost:"
+                               userInfo:nil];
+  return nil;
 }
 
 -(instancetype) initWithCacheDirectory:(NSString*) cacheDirectory inMemoryCost:(NSUInteger) inMemoryCost {
   
+  NSParameterAssert(cacheDirectory != nil);
+  
   if(self = [super init]) {
     
-    self.directoryPath = cacheDirectory ? cacheDirectory : [self defaultCacheDirectoryPath];
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+    self.directoryPath = [paths.firstObject stringByAppendingPathComponent:cacheDirectory];
     self.cacheMemoryCost = inMemoryCost ? inMemoryCost : kMKCacheDefaultCost;
     
     self.inMemoryCache = [NSMutableDictionary dictionaryWithCapacity:self.cacheMemoryCost];
@@ -94,7 +88,7 @@ NSUInteger const kMKCacheDefaultCost = 10;
     
     if(!isDirectory) {
       NSError *error = nil;
-      if([[NSFileManager defaultManager] removeItemAtPath:self.directoryPath error:&error]) {
+      if(![[NSFileManager defaultManager] removeItemAtPath:self.directoryPath error:&error]) {
         NSLog(@"%@", error);
       }
       directoryExists = NO;
@@ -103,10 +97,10 @@ NSUInteger const kMKCacheDefaultCost = 10;
     if(!directoryExists)
     {
       NSError *error = nil;
-      if([[NSFileManager defaultManager] createDirectoryAtPath:cacheDirectory
-                                withIntermediateDirectories:YES
-                                                 attributes:nil
-                                                         error:&error]) {
+      if(![[NSFileManager defaultManager] createDirectoryAtPath:self.directoryPath
+                                    withIntermediateDirectories:YES
+                                                     attributes:nil
+                                                          error:&error]) {
         NSLog(@"%@", error);
       }
     }
@@ -161,7 +155,7 @@ NSUInteger const kMKCacheDefaultCost = 10;
   if(cachedData) return cachedData;
   
   NSString *stringKey = [NSString stringWithFormat:@"%@", key];
-
+  
   NSString *filePath = [[self.directoryPath stringByAppendingPathComponent:stringKey]
                         stringByAppendingPathExtension:kMKCacheDefaultPathExtension];
   
@@ -197,7 +191,7 @@ NSUInteger const kMKCacheDefaultCost = 10;
       [self.inMemoryCache removeObjectForKey:lastUsedKey];
       
       NSString *stringKey = [NSString stringWithFormat:@"%@", lastUsedKey];
-
+      
       NSString *filePath = [[self.directoryPath stringByAppendingPathComponent:stringKey] stringByAppendingPathExtension:kMKCacheDefaultPathExtension];
       
       if([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
