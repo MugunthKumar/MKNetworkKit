@@ -65,9 +65,12 @@ typedef enum {
 @property BOOL doNotCache;
 @property BOOL alwaysCache;
 
+@property NSString *httpMethod;
+
 @property (readonly) BOOL isCachedResponse;
 @property (readonly) BOOL responseAvailable;
 
+@property (readonly) NSData *multipartFormData;
 @property (readonly) NSData *responseData;
 @property (readonly) NSError *error;
 @property (readonly) NSURLSessionTask *task;
@@ -96,6 +99,10 @@ typedef void (^MKNKHandler)(MKNetworkRequest* completedRequest);
 
 -(void) addParameters:(NSDictionary*) paramsDictionary;
 -(void) addHeaders:(NSDictionary*) headersDictionary;
+-(void) setAuthorizationHeaderValue:(NSString*) token forAuthType:(NSString*) authType;
+
+-(void) attachFile:(NSString*) filePath forKey:(NSString*) key mimeType:(NSString*) mimeType;
+-(void) attachData:(NSData*) data forKey:(NSString*) key mimeType:(NSString*) mimeType suggestedFileName:(NSString*) fileName;
 
 -(void) addCompletionHandler:(MKNKHandler) completionHandler;
 -(void) addUploadProgressChangedHandler:(MKNKHandler) uploadProgressChangedHandler;

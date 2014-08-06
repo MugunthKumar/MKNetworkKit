@@ -31,12 +31,12 @@
 @import ImageIO;
 
 static NSInteger numberOfRunningOperations;
+static NSString * kBoundary = @"0xKhTmLbOuNdArY";
 
 @interface MKNetworkRequest (/*Private Methods*/)
 
 @property NSString *urlString;
 @property NSData *bodyData;
-@property NSString *httpMethod;
 
 @property (readwrite) NSHTTPURLResponse *response;
 @property (readwrite) NSData *responseData;
@@ -46,6 +46,9 @@ static NSInteger numberOfRunningOperations;
 
 @property NSMutableDictionary *parameters;
 @property NSMutableDictionary *headers;
+
+@property NSMutableArray *attachedFiles;
+@property NSMutableArray *attachedData;
 
 @property NSMutableArray *completionHandlers;
 @property NSMutableArray *uploadProgressChangedHandlers;
@@ -79,6 +82,9 @@ static NSInteger numberOfRunningOperations;
     self.completionHandlers = [NSMutableArray array];
     self.uploadProgressChangedHandlers = [NSMutableArray array];
     self.downloadProgressChangedHandlers = [NSMutableArray array];
+    
+    self.attachedData = [NSMutableArray array];
+    self.attachedFiles = [NSMutableArray array];
   }
   
   return self;
@@ -150,8 +156,84 @@ static NSInteger numberOfRunningOperations;
     [createdRequest setHTTPBody:self.bodyData];
   }
   
+  if(self.attachedFiles.count > 0 || self.attachedData.count > 0) {
+    
+    NSString *charset = (__bridge NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(NSUTF8StringEncoding));
+    
+    [createdRequest setValue:
+     [NSString stringWithFormat:
+      @"multipart/form-data; charset=%@; boundary=%@",
+      charset, kBoundary]
+          forHTTPHeaderField:@"Content-Type"];
+
+    // HEAVY OPERATION!
+
+    [createdRequest setValue:
+     [NSString stringWithFormat:@"%lu", (unsigned long) [self.multipartFormData length]]
+          forHTTPHeaderField:@"Content-Length"];
+
+  }
+
   return createdRequest;
 }
+
+#pragma mark -
+#pragma mark Multipart form data
+
+-(NSData*) multipartFormData {
+  
+  if(self.attachedData.count == 0 && self.attachedFiles.count == 0) {
+    
+    return nil;
+  }
+  
+  NSMutableData *formData = [NSMutableData data];
+  
+  [self.parameters enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+    
+    NSString *thisFieldString = [NSString stringWithFormat:
+                                 @"--%@\r\nContent-Disposition: form-data; name=\"%@\"\r\n\r\n%@",
+                                 kBoundary, key, obj];
+    
+    [formData appendData:[thisFieldString dataUsingEncoding:NSUTF8StringEncoding]];
+    [formData appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+  }];
+  
+  [self.attachedFiles enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+    
+    NSDictionary *thisFile = (NSDictionary*) obj;
+    NSString *thisFieldString = [NSString stringWithFormat:
+                                 @"--%@\r\nContent-Disposition: form-data; name=\"%@\"; filename=\"%@\"\r\nContent-Type: %@\r\nContent-Transfer-Encoding: binary\r\n\r\n",
+                                 kBoundary,
+                                 thisFile[@"name"],
+                                 [thisFile[@"filepath"] lastPathComponent],
+                                 thisFile[@"mimetype"]];
+    
+    [formData appendData:[thisFieldString dataUsingEncoding:NSUTF8StringEncoding]];
+    [formData appendData: [NSData dataWithContentsOfFile:thisFile[@"filepath"]]];
+    [formData appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+  }];
+  
+  [self.attachedData enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+    
+    NSDictionary *thisDataObject = (NSDictionary*) obj;
+    NSString *thisFieldString = [NSString stringWithFormat:
+                                 @"--%@\r\nContent-Disposition: form-data; name=\"%@\"; filename=\"%@\"\r\nContent-Type: %@\r\nContent-Transfer-Encoding: binary\r\n\r\n",
+                                 kBoundary,
+                                 thisDataObject[@"name"],
+                                 thisDataObject[@"filename"],
+                                 thisDataObject[@"mimetype"]];
+    
+    [formData appendData:[thisFieldString dataUsingEncoding:NSUTF8StringEncoding]];
+    [formData appendData:thisDataObject[@"data"]];
+    [formData appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+  }];
+  
+  [formData appendData: [[NSString stringWithFormat:@"--%@--\r\n", kBoundary] dataUsingEncoding:NSUTF8StringEncoding]];
+  
+  return formData;
+}
+
 
 #pragma mark -
 #pragma mark Network response caching related helper methods
@@ -238,9 +320,30 @@ static NSInteger numberOfRunningOperations;
   [self.headers addEntriesFromDictionary:headersDictionary];
 }
 
--(void) setAuthorizationHeaderValue:(NSString*) token forAuthType:(NSString*) authType {
+-(void) attachFile:(NSString*) filePath forKey:(NSString*) key mimeType:(NSString*) mimeType {
   
-  self.headers[@"Authorization"] = [NSString stringWithFormat:@"%@ %@", authType, token];
+  NSDictionary *dict = @{@"filepath": filePath,
+                         @"name": key,
+                         @"mimetype": mimeType};
+  
+  [self.attachedFiles addObject:dict];
+}
+
+-(void) attachData:(NSData*) data forKey:(NSString*) key mimeType:(NSString*) mimeType suggestedFileName:(NSString*) fileName {
+  
+  if(!fileName) fileName = key;
+  
+  NSDictionary *dict = @{@"data": data,
+                         @"name": key,
+                         @"mimetype": mimeType,
+                         @"filename": fileName};
+  
+  [self.attachedData addObject:dict];
+}
+
+-(void) setAuthorizationHeaderValue:(NSString*) value forAuthType:(NSString*) authType {
+  
+  self.headers[@"Authorization"] = [NSString stringWithFormat:@"%@ %@", authType, value];
 }
 
 #pragma mark -
@@ -443,7 +546,12 @@ static NSInteger numberOfRunningOperations;
 
 -(NSString*) responseAsString {
   
-  return [[NSString alloc] initWithData:self.responseData encoding:NSUTF8StringEncoding];
+  NSString *string = [[NSString alloc] initWithData:self.responseData encoding:NSUTF8StringEncoding];
+  if(self.responseData.length > 0 && !string) {
+    string = [[NSString alloc] initWithData:self.responseData encoding:NSASCIIStringEncoding];
+  }
+  
+  return string;
 }
 
 -(void) setProgressValue:(CGFloat) updatedValue {

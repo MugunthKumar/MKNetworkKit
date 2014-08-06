@@ -93,4 +93,8 @@
  */
 
 -(void) startRequest:(MKNetworkRequest*) request forceReload:(BOOL) forceReload ignoreCache:(BOOL) ignoreCache;
+
+-(void) startUploadRequest:(MKNetworkRequest*) request;
+-(void) startDownloadRequest:(MKNetworkRequest*) request;
+
 @end

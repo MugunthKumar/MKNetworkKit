@@ -116,6 +116,26 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
                                                   inMemoryCost:inMemoryCost];
 }
 
+-(void) startUploadRequest:(MKNetworkRequest*) request {
+  
+  NSURLSessionUploadTask *uploadTask = [self.defaultSession uploadTaskWithRequest:request.request
+                                                                         fromData:request.multipartFormData
+                                                                completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+                                                                  
+                                                                  request.responseData = data;
+                                                                  request.response = (NSHTTPURLResponse*) response;
+                                                                  request.error = error;
+                                                                  NSLog(@"%@", request.responseAsJSON);
+                                                                  request.state = MKNKRequestStateCompleted;
+                                                                }];
+  
+  [uploadTask resume];
+}
+
+-(void) startDownloadRequest:(MKNetworkRequest*) request {
+  
+}
+
 -(void) startRequest:(MKNetworkRequest*) request forceReload:(BOOL) forceReload ignoreCache:(BOOL) ignoreCache {
   
   NSHTTPURLResponse *cachedResponse = self.responseCache[@(request.hash)];
@@ -306,6 +326,15 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
 
 #pragma mark -
 #pragma mark NSURLSession delegates
+
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task
+   didSendBodyData:(int64_t)bytesSent
+    totalBytesSent:(int64_t)totalBytesSent
+totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
+  
+  NSLog(@"Upload progress for %lu: %f", (unsigned long)task.taskIdentifier,
+        ((double)totalBytesSent/(double)totalBytesExpectedToSend));
+}
 
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask
 didReceiveResponse:(NSURLResponse *)response
