@@ -157,7 +157,14 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
                                 dataTaskWithRequest:request.request
                                 completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
                                   
-                                  if(!response) return; // cancelled operation
+                                  if(!response) {
+                                    
+                                    request.response = (NSHTTPURLResponse*) response;
+                                    request.error = error;
+                                    request.responseData = data;
+                                    request.state = MKNKRequestStateError;
+                                    return;
+                                  }
                                   
                                   request.response = (NSHTTPURLResponse*) response;
                                   
