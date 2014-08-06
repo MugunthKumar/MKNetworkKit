@@ -125,7 +125,6 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
                                                                   request.responseData = data;
                                                                   request.response = (NSHTTPURLResponse*) response;
                                                                   request.error = error;
-                                                                  NSLog(@"%@", request.responseAsJSON);
                                                                   request.state = MKNKRequestStateCompleted;
                                                                 }];
   
