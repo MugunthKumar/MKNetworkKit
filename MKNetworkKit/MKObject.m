@@ -41,6 +41,10 @@ static NSMutableDictionary *knownClasses;
   }
 }
 
+-(void) mappingDidComplete {
+  
+}
+
 -(NSDictionary*) equivalentKeys {
   
   return @{};

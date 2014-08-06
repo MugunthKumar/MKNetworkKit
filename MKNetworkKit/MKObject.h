@@ -38,6 +38,8 @@
 
 -(NSDictionary*) equivalentKeys;
 
+-(void) mappingDidComplete;
+
 @property(nonatomic, assign) BOOL isDetailedInfoAvailable;
 
 @end
