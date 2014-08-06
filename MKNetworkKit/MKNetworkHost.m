@@ -128,6 +128,8 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
                                                                   request.state = MKNKRequestStateCompleted;
                                                                 }];
   
+  request.state = MKNKRequestStateStarted;
+  request.task = uploadTask;
   [uploadTask resume];
 }
 
