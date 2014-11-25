@@ -8,6 +8,8 @@
 
 //  No obvious license attached
 
+#import <Foundation/Foundation.h>
+
 @interface NSDate (RFC1123)
 /**
  Convert a RFC1123 'Full-Date' string

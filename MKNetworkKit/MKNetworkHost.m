@@ -43,7 +43,7 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
 @property (readwrite) NSError *error;
 @property (readwrite) MKNKRequestState state;
 @property (readwrite) NSURLSessionTask *task;
--(void) setProgressValue:(CGFloat) updatedValue;
+-(void) setProgressValue:(double) updatedValue;
 @end
 
 @interface MKNetworkHost (/*Private Methods*/) <NSURLSessionDelegate>

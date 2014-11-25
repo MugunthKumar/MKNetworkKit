@@ -26,6 +26,10 @@
 
 #import <Foundation/Foundation.h>
 
+#if TARGET_OS_IPHONE
+@import UIKit;
+#endif
+
 typedef enum {
   
   MKNKParameterEncodingURL = 0, // default
@@ -74,14 +78,13 @@ typedef enum {
 @property (readonly) NSData *responseData;
 @property (readonly) NSError *error;
 @property (readonly) NSURLSessionTask *task;
-@property (readonly) CGFloat progress;
+@property (readonly) double progress;
 @property (readonly) id responseAsJSON;
 
--(UIImage*) decompressedResponseImageOfSize:(CGSize) size;
-
 #if TARGET_OS_IPHONE
+-(UIImage*) decompressedResponseImageOfSize:(CGSize) size;
 @property (readonly) UIImage *responseAsImage;
-#elif TARGET_OS_MAC
+#else
 @property (readonly) NSImage *responseAsImage;
 #endif
 

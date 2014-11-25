@@ -25,6 +25,8 @@
 
 #import "MKCache.h"
 
+@import UIKit;
+
 NSString *const kMKCacheDefaultPathExtension = @"mkcache";
 NSUInteger const kMKCacheDefaultCost = 10;
 
