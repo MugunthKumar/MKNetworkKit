@@ -42,7 +42,7 @@ static NSString * kBoundary = @"0xKhTmLbOuNdArY";
 @property (readwrite) NSData *responseData;
 @property (readwrite) NSError *error;
 @property (readwrite) NSURLSessionTask *task;
-@property (readwrite) CGFloat progress;
+@property (readwrite) double progress;
 
 @property NSMutableDictionary *parameters;
 @property NSMutableDictionary *headers;
