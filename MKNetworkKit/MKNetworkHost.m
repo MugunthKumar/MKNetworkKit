@@ -71,8 +71,14 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
     self.defaultConfiguration = [NSURLSessionConfiguration defaultSessionConfiguration];
     self.secureConfiguration = [NSURLSessionConfiguration ephemeralSessionConfiguration];
     
+#if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED >= 80000) || (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED >= 1100)
+    self.backgroundConfiguration =
+    [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:
+     [[NSBundle mainBundle] bundleIdentifier]];
+#else
     self.backgroundConfiguration = [NSURLSessionConfiguration backgroundSessionConfiguration:
                                     [[NSBundle mainBundle] bundleIdentifier]];
+#endif
     
     self.defaultSession = [NSURLSession sessionWithConfiguration:self.defaultConfiguration
                                                         delegate:self
