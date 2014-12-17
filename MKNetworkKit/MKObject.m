@@ -26,8 +26,6 @@
 #import "MKObject.h"
 #import <objc/runtime.h>
 
-static NSMutableDictionary *knownClasses;
-
 @implementation MKObject
 
 #pragma--
@@ -37,7 +35,6 @@ static NSMutableDictionary *knownClasses;
   
   if (self == [MKObject self]) {
     
-    knownClasses = [NSMutableDictionary dictionary];
   }
 }
 
@@ -45,22 +42,14 @@ static NSMutableDictionary *knownClasses;
   
 }
 
--(NSDictionary*) equivalentKeys {
+-(NSDictionary*) classesForMapping {
   
   return @{};
 }
 
-+(void) addMappableKeysAndClassesFromDictionary:(NSDictionary*) dictionary {
+-(NSDictionary*) equivalentKeys {
   
-  [dictionary enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-    
-    Class class = NSClassFromString(obj);
-    
-    if(class)
-      knownClasses[key] = obj;
-    else
-      NSLog(@"Class not found %@", obj);
-  }];
+  return @{};
 }
 
 + (id)map:(id)data usingClass:(Class) class {
@@ -210,40 +199,76 @@ static NSMutableDictionary *knownClasses;
   if ((self = [self init])) {
     jsonObject = [self transformedJSONObjectForJSONObject:jsonObject];
     [self setValuesForKeysWithDictionary:jsonObject];
+    [self mappingDidComplete];
   }
   return self;
 }
 
 -(void) setValue:(id)value forKey:(NSString *)key {
   
-  if([knownClasses.allKeys containsObject:key]){
-    
-    Class classToUse = NSClassFromString(knownClasses[key]);
-    id transformedValue = [MKObject map:value usingClass:classToUse];
-    [super setValue:transformedValue forKey:key];
-  } else [super setValue:value forKey:key];
+  NSDictionary *equivalentKeys = [self equivalentKeys];
+  if([equivalentKeys.allKeys containsObject:key]) {
+  
+    key = equivalentKeys[key];
+  }
+  
+  NSDictionary *classesForMapping = [self classesForMapping];
+  
+  if([classesForMapping.allKeys containsObject:key]) {
+
+    Class classToUse = NSClassFromString(classesForMapping[key]);
+    if(classToUse) {
+      value = [MKObject map:value usingClass:classToUse];
+    }
+  }
+  
+  [super setValue:value forKey:key];
 }
 
 - (id)valueForUndefinedKey:(NSString *)key {
-  // subclass implementation should provide correct key value mappings for
-  // custom keys
-  NSLog(@"Undefined Key: %@  of type %@ in class: %@", key,
-        NSStringFromClass([key class]), NSStringFromClass([self class]));
-  return nil;
+
+  NSDictionary *equivalentKeys = [self equivalentKeys];
+
+  if([equivalentKeys.allKeys containsObject:key]) {
+    
+    id replacementKey = equivalentKeys[key];
+    return [self valueForKey:replacementKey];
+  } else {
+    
+    return nil;
+  }
 }
 
 - (void)setValue:(id)value forUndefinedKey:(NSString *)key {
-  // subclass implementation should set the correct key value mappings for
-  // custom keys
+
   NSDictionary *equivalentKeys = [self equivalentKeys];
   
   if([equivalentKeys.allKeys containsObject:key]) {
     
-    NSString *replacementKey = equivalentKeys[key];
+    id replacementKey = equivalentKeys[key];
     [self setValue:value forKey:replacementKey]; // attempt again
   } else {
-    NSLog(@"Undefined Key: %@  of type %@ in class: %@", key,
-          NSStringFromClass([value class]), NSStringFromClass([self class]));
+    
+    __block BOOL matched = NO;
+    [equivalentKeys.allKeys enumerateObjectsUsingBlock:^(NSString* equivalentKey, NSUInteger idx, BOOL *stop) {
+      
+      NSMutableArray *keyPaths = [[equivalentKey componentsSeparatedByString:@"."] mutableCopy];
+      if([keyPaths.firstObject isEqualToString:key]) {
+        
+        [keyPaths removeObjectAtIndex:0];
+        NSString *innerKey = [keyPaths componentsJoinedByString:@"."];
+        id innerValue = [value valueForKeyPath:innerKey];
+        
+        NSString *replacementKey = equivalentKeys[equivalentKey];
+        [self setValue:innerValue forKey:replacementKey];
+        matched = YES;
+      }
+    }];
+    
+    if(!matched) {
+      NSLog(@"Undefined Key: %@  of type %@ in class: %@", key,
+            NSStringFromClass([value class]), NSStringFromClass([self class]));
+    }
   }
 }
 

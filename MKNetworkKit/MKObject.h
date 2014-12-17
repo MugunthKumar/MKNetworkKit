@@ -34,8 +34,7 @@
 - (NSMutableDictionary *)requestDictionarySmall;
 - (NSString *)jsonString;
 
-+(void) addMappableKeysAndClassesFromDictionary:(NSDictionary*) dictionary;
-
+-(NSDictionary*) classesForMapping;
 -(NSDictionary*) equivalentKeys;
 
 -(void) mappingDidComplete;
