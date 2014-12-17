@@ -66,6 +66,9 @@ typedef enum {
 @property NSString *clientCertificate;
 @property NSString *clientCertificatePassword;
 
+@property (readonly) BOOL requiresAuthentication;
+@property (readonly) BOOL isSSL;
+
 @property BOOL doNotCache;
 @property BOOL alwaysCache;
 

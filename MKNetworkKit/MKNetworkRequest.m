@@ -118,7 +118,7 @@ static NSString * kBoundary = @"0xKhTmLbOuNdArY";
   [createdRequest setHTTPMethod:self.httpMethod];
   
   NSString *bodyStringFromParameters = nil;
-  NSString *charset = (__bridge NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(self.parameterEncoding));
+  NSString *charset = (__bridge NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(NSUTF8StringEncoding));
   
   switch (self.parameterEncoding) {
       
@@ -238,6 +238,19 @@ static NSString * kBoundary = @"0xKhTmLbOuNdArY";
 #pragma mark -
 #pragma mark Network response caching related helper methods
 
+-(BOOL) isSSL {
+  
+  return [self.request.URL.scheme.lowercaseString isEqualToString:@"https"];
+}
+
+-(BOOL) requiresAuthentication {
+  
+  return (self.username != nil ||
+          self.password != nil ||
+          self.clientCertificate != nil ||
+          self.clientCertificatePassword != nil);
+}
+
 -(BOOL) cacheable {
   
   NSString *requestMethod = self.httpMethod.uppercaseString;
@@ -245,9 +258,7 @@ static NSString * kBoundary = @"0xKhTmLbOuNdArY";
   
   if(self.doNotCache) return NO;
   
-  if(self.username != nil || self.password != nil ||
-     self.clientCertificate != nil || self.clientCertificatePassword != nil ||
-     [self.request.URL.scheme.lowercaseString isEqualToString:@"https"]) {
+  if(self.requiresAuthentication || self.isSSL) {
     return self.alwaysCache;
   } else {
     return YES;

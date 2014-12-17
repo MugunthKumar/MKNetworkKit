@@ -134,9 +134,8 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
                                                                   request.state = MKNKRequestStateCompleted;
                                                                 }];
   
-  request.state = MKNKRequestStateStarted;
   request.task = uploadTask;
-  [uploadTask resume];
+  request.state = MKNKRequestStateStarted;
 }
 
 -(void) startDownloadRequest:(MKNetworkRequest*) request {
@@ -145,22 +144,22 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
 
 -(void) startRequest:(MKNetworkRequest*) request forceReload:(BOOL) forceReload ignoreCache:(BOOL) ignoreCache {
   
-  NSHTTPURLResponse *cachedResponse = self.responseCache[@(request.hash)];
-  NSDate *cacheExpiryDate = cachedResponse.cacheExpiryDate;
-  NSTimeInterval expiryTimeFromNow = [cacheExpiryDate timeIntervalSinceNow];
-  
-  if(cachedResponse.isContentTypeImage && !cacheExpiryDate) {
-    
-    expiryTimeFromNow =
-    cachedResponse.hasRequiredRevalidationHeaders ? kMKNKDefaultCacheDuration : kMKNKDefaultImageCacheDuration;
-  }
-  
-  if(cachedResponse.hasDoNotCacheDirective) {
-    
-    expiryTimeFromNow = kMKNKDefaultCacheDuration;
-  }
-  
   if(request.cacheable && !ignoreCache) {
+    
+    NSHTTPURLResponse *cachedResponse = self.responseCache[@(request.hash)];
+    NSDate *cacheExpiryDate = cachedResponse.cacheExpiryDate;
+    NSTimeInterval expiryTimeFromNow = [cacheExpiryDate timeIntervalSinceNow];
+    
+    if(cachedResponse.isContentTypeImage && !cacheExpiryDate) {
+      
+      expiryTimeFromNow =
+      cachedResponse.hasRequiredRevalidationHeaders ? kMKNKDefaultCacheDuration : kMKNKDefaultImageCacheDuration;
+    }
+    
+    if(cachedResponse.hasDoNotCacheDirective) {
+      
+      expiryTimeFromNow = kMKNKDefaultCacheDuration;
+    }
     
     NSData *cachedData = self.dataCache[@(request.hash)];
     
@@ -180,7 +179,16 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
     }
   }
   
-  NSURLSessionDataTask *task = [self.defaultSession
+  
+  NSURLSession *sessionToUse = self.defaultSession;
+  
+  if(request.isSSL || request.requiresAuthentication) {
+    
+    sessionToUse = self.secureSession;
+  }
+  
+  
+  NSURLSessionDataTask *task = [sessionToUse
                                 dataTaskWithRequest:request.request
                                 completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
                                   
@@ -332,25 +340,47 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
 }
 
 #pragma mark -
-#pragma mark NSURLSession delegates
+#pragma mark NSURLSession Authentication delegates
 
-- (void)URLSession:(NSURLSession *)session didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition, NSURLCredential *))completionHandler{
+- (void)URLSession:(NSURLSession *)session
+              task:(NSURLSessionTask *)task
+didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
+ completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential *credential))completionHandler {
+  
   if([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]){
     if([challenge.protectionSpace.host isEqualToString:self.hostName]){
       NSURLCredential *credential = [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust];
       completionHandler(NSURLSessionAuthChallengeUseCredential,credential);
     }
   }
+  
+  __block MKNetworkRequest *matchingRequest = nil;
+  [self.runningDataTasks enumerateObjectsUsingBlock:^(MKNetworkRequest *request, NSUInteger idx, BOOL *stop) {
+    
+    if([request.task isEqual:task]) {
+      matchingRequest = request;
+      *stop = YES;
+    }
+  }];
+  
+  if([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodHTTPBasic] ||
+     [challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodHTTPDigest]){
+    
+    if([challenge previousFailureCount] == 3) {
+      completionHandler(NSURLSessionAuthChallengeRejectProtectionSpace, nil);
+    } else {
+      NSURLCredential *credential = [NSURLCredential credentialWithUser:matchingRequest.username password:matchingRequest.password persistence:NSURLCredentialPersistenceForSession];
+      if(credential) {
+        completionHandler(NSURLSessionAuthChallengeUseCredential, credential);
+      } else {
+        completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge, nil);
+      }
+    }
+  }
 }
 
-- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task
-   didSendBodyData:(int64_t)bytesSent
-    totalBytesSent:(int64_t)totalBytesSent
-totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
-  
-  NSLog(@"Upload progress for %lu: %f", (unsigned long)task.taskIdentifier,
-        ((double)totalBytesSent/(double)totalBytesExpectedToSend));
-}
+#pragma mark -
+#pragma mark NSURLSession Progress notification delegates
 
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask
 didReceiveResponse:(NSURLResponse *)response
@@ -363,6 +393,16 @@ didReceiveResponse:(NSURLResponse *)response
       *stop = YES;
     }
   }];
+  
+  completionHandler(NSURLSessionResponseAllow);
+}
+
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task
+   didSendBodyData:(int64_t)bytesSent
+    totalBytesSent:(int64_t)totalBytesSent
+totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
+  
+  //NSLog(@"Upload progress for %lu: %f", (unsigned long)task.taskIdentifier, ((double)totalBytesSent/(double)totalBytesExpectedToSend));
 }
 
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask
@@ -377,6 +417,5 @@ didReceiveResponse:(NSURLResponse *)response
     }
   }];
 }
-
 
 @end
