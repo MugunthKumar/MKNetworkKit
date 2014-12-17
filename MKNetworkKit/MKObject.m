@@ -40,6 +40,29 @@
 
 -(void) mappingDidComplete {
   
+  NSDictionary *classMap = @{
+                             @"__NSCFNumber" : @"NSNumber",
+                             @"__NSCFString" : @"NSString",
+                             @"__NSArrayI" : @"NSArray",
+                             @"__NSArrayM" : @"NSMutableArray",
+                             @"__NSDictionaryI" : @"NSDictionary",
+                             @"__NSDictionaryM" : @"NSMutableDictionary",
+                             };
+  
+  if(self.unmappedEntries.count == 0) return;
+  NSMutableString *string = [NSMutableString string];
+  [string appendFormat:@"\n--------------------------\nMissing property declarations in class '%@'\n", NSStringFromClass([self class])];
+  
+    [self.unmappedEntries enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL *stop) {
+      
+      NSString *type = NSStringFromClass([value class]);
+      type = classMap[type] ? classMap[type] : type;
+      [string appendFormat:@"@property %@ *%@;\n", type, key];
+  }];
+  
+  [string appendString:@"--------------------------\n"];
+  
+  NSLog(@"%@", string);
 }
 
 -(NSDictionary*) classesForMapping {
@@ -102,6 +125,7 @@
              } else if ([obj isKindOfClass:[MKObject class]]) {
                [array addObject:[(MKObject *)obj objectAsDictionary]];
              } else {
+               
                NSLog(@"Property %@ is of type %@ which is unknown",
                      propertyName, NSStringFromClass([value class]));
              }
@@ -196,7 +220,9 @@
 - (id)initWithDictionary:(NSDictionary *)jsonObject {
   if (jsonObject == nil)
     return nil;
+  
   if ((self = [self init])) {
+    self.unmappedEntries = [NSMutableDictionary dictionary];
     jsonObject = [self transformedJSONObjectForJSONObject:jsonObject];
     [self setValuesForKeysWithDictionary:jsonObject];
     [self mappingDidComplete];
@@ -266,8 +292,8 @@
     }];
     
     if(!matched) {
-      NSLog(@"Undefined Key: %@  of type %@ in class: %@", key,
-            NSStringFromClass([value class]), NSStringFromClass([self class]));
+      
+      self.unmappedEntries[key] = value;
     }
   }
 }

@@ -29,16 +29,16 @@
 
 + (id)map:(id)data usingClass:(Class) klass;
 
+@property NSMutableDictionary *unmappedEntries;
 - (id)initWithDictionary:(NSDictionary *)jsonObject;
-- (NSMutableDictionary *)requestDictionary;
-- (NSMutableDictionary *)requestDictionarySmall;
 - (NSString *)jsonString;
-
 -(NSDictionary*) classesForMapping;
 -(NSDictionary*) equivalentKeys;
 
 -(void) mappingDidComplete;
 
-@property(nonatomic, assign) BOOL isDetailedInfoAvailable;
+- (NSMutableDictionary *)requestDictionary;
+- (NSMutableDictionary *)requestDictionarySmall;
+
 
 @end
