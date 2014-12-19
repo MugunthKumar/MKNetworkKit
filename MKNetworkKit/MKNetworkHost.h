@@ -92,6 +92,7 @@
  * Reload with cache even if cache is not stale
  */
 
+-(void) startRequest:(MKNetworkRequest*) request;
 -(void) startRequest:(MKNetworkRequest*) request forceReload:(BOOL) forceReload ignoreCache:(BOOL) ignoreCache;
 
 -(void) startUploadRequest:(MKNetworkRequest*) request;

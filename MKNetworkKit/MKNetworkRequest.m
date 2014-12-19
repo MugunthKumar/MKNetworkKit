@@ -380,15 +380,11 @@ static NSString * kBoundary = @"0xKhTmLbOuNdArY";
   
   __block NSMutableString *displayString = [NSMutableString stringWithFormat:@"curl -X %@", request.HTTPMethod];
   
-  // FIX ME
-  //  if([self.filesToBePosted count] == 0 && [self.dataToBePosted count] == 0) {
-  //    [[self.request allHTTPHeaderFields] enumerateKeysAndObjectsUsingBlock:^(id key, id val, BOOL *stop)
-  //     {
-  //       [displayString appendFormat:@" -H \'%@: %@\'", key, val];
-  //     }];
-  //  }
-  
   [displayString appendFormat:@" \'%@\'",  request.URL.absoluteString];
+  
+  [request.allHTTPHeaderFields enumerateKeysAndObjectsUsingBlock:^(id key, id val, BOOL *stop) {
+    [displayString appendFormat:@" -H \'%@: %@\'", key, val];
+  }];
   
   if ([request.HTTPMethod isEqualToString:@"POST"] ||
       [request.HTTPMethod isEqualToString:@"PUT"] ||

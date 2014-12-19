@@ -142,6 +142,11 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
   
 }
 
+-(void) startRequest:(MKNetworkRequest*) request {
+  
+  [self startRequest:request forceReload:YES ignoreCache:YES];
+}
+
 -(void) startRequest:(MKNetworkRequest*) request forceReload:(BOOL) forceReload ignoreCache:(BOOL) ignoreCache {
   
   if(request.cacheable && !ignoreCache) {
@@ -187,7 +192,7 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
     sessionToUse = self.secureSession;
   }
   
-  
+  [self prepareRequest:request];
   NSURLSessionDataTask *task = [sessionToUse
                                 dataTaskWithRequest:request.request
                                 completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
@@ -315,7 +320,6 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
   
   request.parameterEncoding = self.defaultParameterEncoding;
   [request addHeaders:self.defaultHeaders];
-  [self prepareRequest:request]; // subclasses can over ride and add their own parameters and headers after this
   return request;
 }
 
@@ -369,7 +373,9 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
     if([challenge previousFailureCount] == 3) {
       completionHandler(NSURLSessionAuthChallengeRejectProtectionSpace, nil);
     } else {
-      NSURLCredential *credential = [NSURLCredential credentialWithUser:matchingRequest.username password:matchingRequest.password persistence:NSURLCredentialPersistenceForSession];
+      NSURLCredential *credential = [NSURLCredential credentialWithUser:matchingRequest.username
+                                                               password:matchingRequest.password
+                                                            persistence:NSURLCredentialPersistenceNone];
       if(credential) {
         completionHandler(NSURLSessionAuthChallengeUseCredential, credential);
       } else {
