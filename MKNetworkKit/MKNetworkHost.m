@@ -39,6 +39,7 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
 
 @interface MKNetworkRequest (/*Private Methods*/)
 @property (readwrite) NSHTTPURLResponse *response;
+@property (readwrite) NSURL *downloadedURL;
 @property (readwrite) NSData *responseData;
 @property (readwrite) NSError *error;
 @property (readwrite) MKNKRequestState state;
@@ -124,22 +125,15 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
 
 -(void) startUploadRequest:(MKNetworkRequest*) request {
   
-  NSURLSessionUploadTask *uploadTask = [self.defaultSession uploadTaskWithRequest:request.request
-                                                                         fromData:request.multipartFormData
-                                                                completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-                                                                  
-                                                                  request.responseData = data;
-                                                                  request.response = (NSHTTPURLResponse*) response;
-                                                                  request.error = error;
-                                                                  request.state = MKNKRequestStateCompleted;
-                                                                }];
-  
-  request.task = uploadTask;
+  request.task = [self.defaultSession uploadTaskWithRequest:request.request
+                                                   fromData:request.multipartFormData];
   request.state = MKNKRequestStateStarted;
 }
 
 -(void) startDownloadRequest:(MKNetworkRequest*) request {
   
+  request.task = [self.defaultSession downloadTaskWithRequest:request.request];
+  request.state = MKNKRequestStateStarted;
 }
 
 -(void) startRequest:(MKNetworkRequest*) request {
@@ -386,21 +380,22 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
 }
 
 #pragma mark -
-#pragma mark NSURLSession Progress notification delegates
+#pragma mark NSURLSession (Download/Upload) Progress notification delegates
 
-- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask
-didReceiveResponse:(NSURLResponse *)response
- completionHandler:(void (^)(NSURLSessionResponseDisposition disposition))completionHandler {
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task
+didCompleteWithError:(NSError *)error {
   
   [self.runningDataTasks enumerateObjectsUsingBlock:^(MKNetworkRequest *request, NSUInteger idx, BOOL *stop) {
     
-    if([request.task isEqual:dataTask]) {
-      [request setProgressValue:0.0f];
+    if([request.task isEqual:task]) {
+      
+      request.responseData = nil; //FIX ME
+      request.response = (NSHTTPURLResponse*) task.response;
+      request.error = error;
+      request.state = MKNKRequestStateCompleted;
       *stop = YES;
     }
   }];
-  
-  completionHandler(NSURLSessionResponseAllow);
 }
 
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task
@@ -408,16 +403,38 @@ didReceiveResponse:(NSURLResponse *)response
     totalBytesSent:(int64_t)totalBytesSent
 totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
   
-  //NSLog(@"Upload progress for %lu: %f", (unsigned long)task.taskIdentifier, ((double)totalBytesSent/(double)totalBytesExpectedToSend));
-}
-
-- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask
-    didReceiveData:(NSData *)data {
-  
-  float progress = (float)(((float)[data length]) / ((float)dataTask.response.expectedContentLength));
+  float progress = (float)(((float)totalBytesSent) / ((float)totalBytesExpectedToSend));
   [self.runningDataTasks enumerateObjectsUsingBlock:^(MKNetworkRequest *request, NSUInteger idx, BOOL *stop) {
     
-    if([request.task isEqual:dataTask]) {
+    if([request.task isEqual:task]) {
+      [request setProgressValue:progress];
+      *stop = YES;
+    }
+  }];
+}
+
+- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask
+didFinishDownloadingToURL:(NSURL *)location {
+  
+  [self.runningDataTasks enumerateObjectsUsingBlock:^(MKNetworkRequest *request, NSUInteger idx, BOOL *stop) {
+    
+    if([request.task isEqual:downloadTask]) {
+      request.downloadedURL = location;
+      request.state = MKNKRequestStateCompleted;
+      *stop = YES;
+    }
+  }];
+}
+
+- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask
+      didWriteData:(int64_t)bytesWritten
+ totalBytesWritten:(int64_t)totalBytesWritten
+totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite {
+  
+  float progress = (float)(((float)totalBytesWritten) / ((float)totalBytesExpectedToWrite));
+  [self.runningDataTasks enumerateObjectsUsingBlock:^(MKNetworkRequest *request, NSUInteger idx, BOOL *stop) {
+    
+    if([request.task isEqual:downloadTask]) {
       [request setProgressValue:progress];
       *stop = YES;
     }

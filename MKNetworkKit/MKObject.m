@@ -43,6 +43,7 @@
   NSDictionary *classMap = @{
                              @"__NSCFNumber" : @"NSNumber",
                              @"__NSCFString" : @"NSString",
+                             @"__NSCFBoolean" : @"BOOL",
                              @"__NSArrayI" : @"NSArray",
                              @"__NSArrayM" : @"NSMutableArray",
                              @"__NSDictionaryI" : @"NSDictionary",

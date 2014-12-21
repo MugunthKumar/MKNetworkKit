@@ -78,6 +78,7 @@ typedef enum {
 @property (readonly) BOOL responseAvailable;
 
 @property (readonly) NSData *multipartFormData;
+@property (readonly) NSURL *downloadedURL;
 @property (readonly) NSData *responseData;
 @property (readonly) NSError *error;
 @property (readonly) NSURLSessionTask *task;
