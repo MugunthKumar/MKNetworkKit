@@ -82,7 +82,7 @@ typedef enum {
 @property (readonly) NSData *responseData;
 @property (readonly) NSError *error;
 @property (readonly) NSURLSessionTask *task;
-@property (readonly) double progress;
+@property (readonly) CGFloat progress;
 @property (readonly) id responseAsJSON;
 
 #if TARGET_OS_IPHONE

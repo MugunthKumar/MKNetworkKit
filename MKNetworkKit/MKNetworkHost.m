@@ -60,7 +60,7 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
 @property MKCache *responseCache;
 
 @property dispatch_queue_t runningTasksSynchronizingQueue;
-@property NSMutableArray *runningDataTasks;
+@property NSMutableArray *activeTasks;
 @end
 
 @implementation MKNetworkHost
@@ -95,7 +95,7 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
     
     self.runningTasksSynchronizingQueue = dispatch_queue_create("com.mknetworkkit.cachequeue", DISPATCH_QUEUE_SERIAL);
     dispatch_async(self.runningTasksSynchronizingQueue, ^{
-      self.runningDataTasks = [NSMutableArray array];
+      self.activeTasks = [NSMutableArray array];
     });
   }
   
@@ -127,12 +127,18 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
   
   request.task = [self.defaultSession uploadTaskWithRequest:request.request
                                                    fromData:request.multipartFormData];
+  dispatch_sync(self.runningTasksSynchronizingQueue, ^{
+    [self.activeTasks addObject:request];
+  });
   request.state = MKNKRequestStateStarted;
 }
 
 -(void) startDownloadRequest:(MKNetworkRequest*) request {
   
   request.task = [self.defaultSession downloadTaskWithRequest:request.request];
+  dispatch_sync(self.runningTasksSynchronizingQueue, ^{
+    [self.activeTasks addObject:request];
+  });
   request.state = MKNKRequestStateStarted;
 }
 
@@ -230,13 +236,13 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
                                     }
                                     
                                     dispatch_sync(self.runningTasksSynchronizingQueue, ^{
-                                      [self.runningDataTasks removeObject:request];
+                                      [self.activeTasks removeObject:request];
                                     });
                                     request.state = MKNKRequestStateCompleted;
                                   } else {
                                     
                                     dispatch_sync(self.runningTasksSynchronizingQueue, ^{
-                                      [self.runningDataTasks removeObject:request];
+                                      [self.activeTasks removeObject:request];
                                     });
                                     request.state = MKNKRequestStateError;
                                     NSLog(@"%@", request);
@@ -246,7 +252,7 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
   request.task = task;
   
   dispatch_sync(self.runningTasksSynchronizingQueue, ^{
-    [self.runningDataTasks addObject:request];
+    [self.activeTasks addObject:request];
   });
   
   request.state = MKNKRequestStateStarted;
@@ -353,7 +359,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
   }
   
   __block MKNetworkRequest *matchingRequest = nil;
-  [self.runningDataTasks enumerateObjectsUsingBlock:^(MKNetworkRequest *request, NSUInteger idx, BOOL *stop) {
+  [self.activeTasks enumerateObjectsUsingBlock:^(MKNetworkRequest *request, NSUInteger idx, BOOL *stop) {
     
     if([request.task isEqual:task]) {
       matchingRequest = request;
@@ -385,7 +391,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task
 didCompleteWithError:(NSError *)error {
   
-  [self.runningDataTasks enumerateObjectsUsingBlock:^(MKNetworkRequest *request, NSUInteger idx, BOOL *stop) {
+  [self.activeTasks enumerateObjectsUsingBlock:^(MKNetworkRequest *request, NSUInteger idx, BOOL *stop) {
     
     if([request.task isEqual:task]) {
       
@@ -404,7 +410,7 @@ didCompleteWithError:(NSError *)error {
 totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
   
   float progress = (float)(((float)totalBytesSent) / ((float)totalBytesExpectedToSend));
-  [self.runningDataTasks enumerateObjectsUsingBlock:^(MKNetworkRequest *request, NSUInteger idx, BOOL *stop) {
+  [self.activeTasks enumerateObjectsUsingBlock:^(MKNetworkRequest *request, NSUInteger idx, BOOL *stop) {
     
     if([request.task isEqual:task]) {
       [request setProgressValue:progress];
@@ -416,9 +422,9 @@ totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
 - (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask
 didFinishDownloadingToURL:(NSURL *)location {
   
-  [self.runningDataTasks enumerateObjectsUsingBlock:^(MKNetworkRequest *request, NSUInteger idx, BOOL *stop) {
+  [self.activeTasks enumerateObjectsUsingBlock:^(MKNetworkRequest *request, NSUInteger idx, BOOL *stop) {
     
-    if([request.task isEqual:downloadTask]) {
+    if([request.task.currentRequest.URL.absoluteString isEqualToString:downloadTask.currentRequest.URL.absoluteString]) {
       request.downloadedURL = location;
       request.state = MKNKRequestStateCompleted;
       *stop = YES;
@@ -431,10 +437,11 @@ didFinishDownloadingToURL:(NSURL *)location {
  totalBytesWritten:(int64_t)totalBytesWritten
 totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite {
   
-  float progress = (float)(((float)totalBytesWritten) / ((float)totalBytesExpectedToWrite));
-  [self.runningDataTasks enumerateObjectsUsingBlock:^(MKNetworkRequest *request, NSUInteger idx, BOOL *stop) {
+  float progress = (float)(((float)totalBytesWritten) / ((float)totalBytesExpectedToWrite));  
+  [self.activeTasks enumerateObjectsUsingBlock:^(MKNetworkRequest *request, NSUInteger idx, BOOL *stop) {
     
-    if([request.task isEqual:downloadTask]) {
+    if([request.task.currentRequest.URL.absoluteString isEqualToString:downloadTask.currentRequest.URL.absoluteString]) {
+      NSLog(@"Delegate: %f (%@)", progress, request.task.currentRequest.URL.absoluteString);
       [request setProgressValue:progress];
       *stop = YES;
     }

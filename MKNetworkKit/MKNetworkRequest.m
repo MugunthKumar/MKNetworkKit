@@ -43,7 +43,7 @@ static NSString * kBoundary = @"0xKhTmLbOuNdArY";
 @property (readwrite) NSData *responseData;
 @property (readwrite) NSError *error;
 @property (readwrite) NSURLSessionTask *task;
-@property (readwrite) double progress;
+@property (readwrite) CGFloat progress;
 
 @property NSMutableDictionary *parameters;
 @property NSMutableDictionary *headers;
@@ -166,15 +166,15 @@ static NSString * kBoundary = @"0xKhTmLbOuNdArY";
       @"multipart/form-data; charset=%@; boundary=%@",
       charset, kBoundary]
           forHTTPHeaderField:@"Content-Type"];
-
+    
     // HEAVY OPERATION!
-
+    
     [createdRequest setValue:
      [NSString stringWithFormat:@"%lu", (unsigned long) [self.multipartFormData length]]
           forHTTPHeaderField:@"Content-Length"];
-
+    
   }
-
+  
   return createdRequest;
 }
 
@@ -562,9 +562,10 @@ static NSString * kBoundary = @"0xKhTmLbOuNdArY";
   return string;
 }
 
--(void) setProgressValue:(CGFloat) updatedValue {
+-(void) setProgressValue:(CGFloat) progress {
   
-  self.progress = updatedValue;
+  NSLog(@"Request: %f (%@)", progress, self.request.URL.absoluteString);
+  self.progress = progress;
   
   [self.downloadProgressChangedHandlers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
     
