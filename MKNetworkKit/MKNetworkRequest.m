@@ -562,10 +562,9 @@ static NSString * kBoundary = @"0xKhTmLbOuNdArY";
   return string;
 }
 
--(void) setProgressValue:(CGFloat) progress {
+-(void) setProgressValue:(CGFloat) progressValue {
   
-  NSLog(@"Request: %f (%@)", progress, self.request.URL.absoluteString);
-  self.progress = progress;
+  self.progress = progressValue;
   
   [self.downloadProgressChangedHandlers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
     

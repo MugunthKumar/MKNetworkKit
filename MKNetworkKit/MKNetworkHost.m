@@ -44,7 +44,7 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
 @property (readwrite) NSError *error;
 @property (readwrite) MKNKRequestState state;
 @property (readwrite) NSURLSessionTask *task;
--(void) setProgressValue:(double) updatedValue;
+-(void) setProgressValue:(CGFloat) updatedValue;
 @end
 
 @interface MKNetworkHost (/*Private Methods*/) <NSURLSessionDelegate>
@@ -441,9 +441,7 @@ totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite {
   [self.activeTasks enumerateObjectsUsingBlock:^(MKNetworkRequest *request, NSUInteger idx, BOOL *stop) {
     
     if([request.task.currentRequest.URL.absoluteString isEqualToString:downloadTask.currentRequest.URL.absoluteString]) {
-      NSLog(@"Delegate: %f (%@)", progress, request.task.currentRequest.URL.absoluteString);
       [request setProgressValue:progress];
-      *stop = YES;
     }
   }];
 }
