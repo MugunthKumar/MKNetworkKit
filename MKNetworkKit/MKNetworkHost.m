@@ -352,10 +352,9 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
  completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential *credential))completionHandler {
   
   if([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]){
-    if([challenge.protectionSpace.host isEqualToString:self.hostName]){
-      NSURLCredential *credential = [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust];
-      completionHandler(NSURLSessionAuthChallengeUseCredential,credential);
-    }
+
+    NSURLCredential *credential = [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust];
+    completionHandler(NSURLSessionAuthChallengeUseCredential,credential);
   }
   
   __block MKNetworkRequest *matchingRequest = nil;
@@ -391,17 +390,26 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task
 didCompleteWithError:(NSError *)error {
   
+  __block MKNetworkRequest *matchingRequest = nil;
   [self.activeTasks enumerateObjectsUsingBlock:^(MKNetworkRequest *request, NSUInteger idx, BOOL *stop) {
     
     if([request.task isEqual:task]) {
       
-      request.responseData = nil; //FIX ME
+      request.responseData = nil;
       request.response = (NSHTTPURLResponse*) task.response;
       request.error = error;
-      request.state = MKNKRequestStateCompleted;
+      if(error) {
+        request.state = MKNKRequestStateError;
+      } else {
+        request.state = MKNKRequestStateCompleted;
+      }
       *stop = YES;
     }
   }];
+  
+  dispatch_sync(self.runningTasksSynchronizingQueue, ^{
+    [self.activeTasks removeObject:matchingRequest];
+  });
 }
 
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task
@@ -426,7 +434,6 @@ didFinishDownloadingToURL:(NSURL *)location {
     
     if([request.task.currentRequest.URL.absoluteString isEqualToString:downloadTask.currentRequest.URL.absoluteString]) {
       request.downloadedURL = location;
-      request.state = MKNKRequestStateCompleted;
       *stop = YES;
     }
   }];
