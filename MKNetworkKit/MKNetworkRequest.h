@@ -66,6 +66,8 @@ typedef enum {
 @property NSString *clientCertificate;
 @property NSString *clientCertificatePassword;
 
+@property NSString *downloadPath;
+
 @property (readonly) BOOL requiresAuthentication;
 @property (readonly) BOOL isSSL;
 
@@ -78,7 +80,6 @@ typedef enum {
 @property (readonly) BOOL responseAvailable;
 
 @property (readonly) NSData *multipartFormData;
-@property (readonly) NSURL *downloadedURL;
 @property (readonly) NSData *responseData;
 @property (readonly) NSError *error;
 @property (readonly) NSURLSessionTask *task;

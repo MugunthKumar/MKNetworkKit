@@ -39,7 +39,6 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
 
 @interface MKNetworkRequest (/*Private Methods*/)
 @property (readwrite) NSHTTPURLResponse *response;
-@property (readwrite) NSURL *downloadedURL;
 @property (readwrite) NSData *responseData;
 @property (readwrite) NSError *error;
 @property (readwrite) MKNKRequestState state;
@@ -433,7 +432,13 @@ didFinishDownloadingToURL:(NSURL *)location {
   [self.activeTasks enumerateObjectsUsingBlock:^(MKNetworkRequest *request, NSUInteger idx, BOOL *stop) {
     
     if([request.task.currentRequest.URL.absoluteString isEqualToString:downloadTask.currentRequest.URL.absoluteString]) {
-      request.downloadedURL = location;
+
+      NSError *error = nil;
+      if([[NSFileManager defaultManager] moveItemAtPath:location.path toPath:request.downloadPath error:&error]) {
+
+        NSLog(@"%@", error);
+      }
+      
       *stop = YES;
     }
   }];

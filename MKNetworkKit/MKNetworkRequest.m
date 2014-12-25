@@ -39,7 +39,6 @@ static NSString * kBoundary = @"0xKhTmLbOuNdArY";
 @property NSData *bodyData;
 
 @property (readwrite) NSHTTPURLResponse *response;
-@property (readwrite) NSURL *downloadedURL;
 @property (readwrite) NSData *responseData;
 @property (readwrite) NSError *error;
 @property (readwrite) NSURLSessionTask *task;
