@@ -434,9 +434,9 @@ didFinishDownloadingToURL:(NSURL *)location {
     if([request.task.currentRequest.URL.absoluteString isEqualToString:downloadTask.currentRequest.URL.absoluteString]) {
 
       NSError *error = nil;
-      if([[NSFileManager defaultManager] moveItemAtPath:location.path toPath:request.downloadPath error:&error]) {
+      if(![[NSFileManager defaultManager] moveItemAtPath:location.path toPath:request.downloadPath error:&error]) {
 
-        NSLog(@"%@", error);
+        NSLog(@"Failed to save downloaded file at requested path [%@] with error %@", request.downloadPath, error);
       }
       
       *stop = YES;
