@@ -28,9 +28,9 @@
 
 @implementation NSString (MKNKAdditions)
 
-- (NSString *) md5
++ (NSString *) md5StringFromData:(NSData*) data
 {
-    const char *cStr = [self UTF8String];
+    const char *cStr = data.bytes;
     unsigned char result[16];
     CC_MD5( cStr, (unsigned int) strlen(cStr), result);
     return [NSString stringWithFormat:
@@ -40,14 +40,6 @@
 			result[8], result[9], result[10], result[11],
 			result[12], result[13], result[14], result[15]
 			];      
-}
-
-+ (NSString*) uniqueString
-{
-	CFUUIDRef	uuidObj = CFUUIDCreate(nil);
-	NSString	*uuidString = (__bridge_transfer NSString*)CFUUIDCreateString(nil, uuidObj);
-	CFRelease(uuidObj);
-	return uuidString;
 }
 
 - (NSString*) mk_urlEncodedString { // mk_ prefix prevents a clash with a private api

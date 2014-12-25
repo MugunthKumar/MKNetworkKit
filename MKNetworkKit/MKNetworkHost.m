@@ -33,7 +33,7 @@
 
 #import "NSHTTPURLResponse+MKNKAdditions.h"
 
-NSUInteger const kMKNKDefaultCacheDuration = 60; // 60 seconds
+NSUInteger const kMKNKDefaultCacheDuration = 600; // 10 minutes
 NSUInteger const kMKNKDefaultImageCacheDuration = 3600*24*7; // 7 days
 NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
 
@@ -160,7 +160,7 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
       cachedResponse.hasRequiredRevalidationHeaders ? kMKNKDefaultCacheDuration : kMKNKDefaultImageCacheDuration;
     }
     
-    if(cachedResponse.hasDoNotCacheDirective) {
+    if(cachedResponse.hasDoNotCacheDirective || !cachedResponse.hasHTTPCacheHeaders) {
       
       expiryTimeFromNow = kMKNKDefaultCacheDuration;
     }
@@ -191,7 +191,6 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
     sessionToUse = self.secureSession;
   }
   
-  [self prepareRequest:request];
   NSURLSessionDataTask *task = [sessionToUse
                                 dataTaskWithRequest:request.request
                                 completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
@@ -237,6 +236,7 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
                                     dispatch_sync(self.runningTasksSynchronizingQueue, ^{
                                       [self.activeTasks removeObject:request];
                                     });
+                                    
                                     request.state = MKNKRequestStateCompleted;
                                   } else {
                                     
@@ -259,10 +259,12 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
 
 -(MKNetworkRequest*) requestWithURLString:(NSString*) urlString {
   
-  return [[MKNetworkRequest alloc] initWithURLString:urlString
-                                              params:nil
-                                            bodyData:nil
-                                          httpMethod:@"GET"];
+  MKNetworkRequest *request = [[MKNetworkRequest alloc] initWithURLString:urlString
+                                                                   params:nil
+                                                                 bodyData:nil
+                                                               httpMethod:@"GET"];
+  [self prepareRequest:request];
+  return request;
 }
 
 -(MKNetworkRequest*) requestWithPath:(NSString*) path {
@@ -319,6 +321,7 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
   
   request.parameterEncoding = self.defaultParameterEncoding;
   [request addHeaders:self.defaultHeaders];
+  [self prepareRequest:request];
   return request;
 }
 

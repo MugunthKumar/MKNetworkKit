@@ -12,5 +12,6 @@
 @property (readonly) BOOL isContentTypeImage;
 @property (readonly) BOOL hasDoNotCacheDirective;
 @property (readonly) BOOL hasRequiredRevalidationHeaders;
+@property (readonly) BOOL hasHTTPCacheHeaders;
 @property (readonly) NSDate* cacheExpiryDate;
 @end

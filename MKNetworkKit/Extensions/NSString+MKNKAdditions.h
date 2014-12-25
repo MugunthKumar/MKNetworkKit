@@ -27,8 +27,7 @@
 
 @interface NSString (MKNKAdditions)
 
-- (NSString *) md5;
-+ (NSString*) uniqueString;
++ (NSString *) md5StringFromData:(NSData*) data;
 - (NSString*) mk_urlEncodedString;
 - (NSString*) urlDecodedString;
 @end

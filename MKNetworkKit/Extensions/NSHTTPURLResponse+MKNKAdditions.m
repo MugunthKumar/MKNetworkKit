@@ -29,6 +29,16 @@
   return NO;
 }
 
+-(BOOL) hasHTTPCacheHeaders {
+  
+  NSString *cacheControl = [self.allHeaderFields objectForCaseInsensitiveKey:@"Cache-Control"];
+  NSString *eTag = [self.allHeaderFields objectForCaseInsensitiveKey:@"ETag"];
+  NSString *lastModified = [self.allHeaderFields objectForCaseInsensitiveKey:@"Last-Modified"];
+  
+  return (cacheControl || eTag || lastModified);
+}
+
+
 -(NSInteger) maxAge {
   
   __block NSInteger maxAge = 0;

@@ -27,6 +27,8 @@
 
 #import "MKNetworkRequest.h"
 
+#import "NSString+MKNKAdditions.h"
+
 @interface MKNetworkHost : NSObject
 
 /*!
@@ -53,7 +55,7 @@
 
 // You can override this method to tweak request creation
 // But ensure that you call super
--(void) prepareRequest: (MKNetworkRequest*) request;
+-(void) prepareRequest: (MKNetworkRequest*) networkRequest;
 -(NSError*) errorForCompletedRequest: (MKNetworkRequest*) completedRequest;
 
 -(MKNetworkRequest*) requestWithURLString:(NSString*) urlString;
