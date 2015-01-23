@@ -294,7 +294,9 @@
     
     if(!matched) {
       
-      self.unmappedEntries[key] = value;
+      if(value) {
+        self.unmappedEntries[key] = value;
+      }
     }
   }
 }
