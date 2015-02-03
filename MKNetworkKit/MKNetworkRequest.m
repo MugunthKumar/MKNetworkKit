@@ -35,6 +35,7 @@ static NSString * kBoundary = @"0xKhTmLbOuNdArY";
 
 @interface MKNetworkRequest (/*Private Methods*/)
 
+@property NSMutableArray *stateArray;
 @property NSString *urlString;
 @property NSData *bodyData;
 
@@ -67,6 +68,7 @@ static NSString * kBoundary = @"0xKhTmLbOuNdArY";
   
   if(self = [super init]) {
     
+    self.stateArray = [NSMutableArray array];
     self.urlString = aURLString;
     if(params) {
       self.parameters = params.mutableCopy;
@@ -441,11 +443,12 @@ static NSString * kBoundary = @"0xKhTmLbOuNdArY";
 #ifdef TARGET_OS_IPHONE
   dispatch_async(dispatch_get_main_queue(), ^{
     
+    NSLog(@"%@", self.stateArray);
     numberOfRunningOperations --;
     if(numberOfRunningOperations == 0)
       [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
     if(numberOfRunningOperations < 0) {
-      NSLog(@"Number of operations is below zero. Something wrong at %@ [%d]", self, self.state); // FIX ME
+      NSLog(@"Number of operations is below zero. State Changes [%@]", self.stateArray); // FIX ME
     }
     
   });
@@ -467,7 +470,10 @@ static NSString * kBoundary = @"0xKhTmLbOuNdArY";
 
 -(void) cancel {
   
-  if(self.state == MKNKRequestStateStarted) {
+  if(!(self.state == MKNKRequestStateCompleted ||
+     self.state == MKNKRequestStateError ||
+       self.state == MKNKRequestStateCancelled)) {
+
     [self.task cancel];
     self.state = MKNKRequestStateCancelled;
   }
@@ -475,31 +481,27 @@ static NSString * kBoundary = @"0xKhTmLbOuNdArY";
 
 -(void) setState:(MKNKRequestState)state {
   
-  _state = state;
-  switch (state) {
-    case MKNKRequestStateStarted: {
+  [self.stateArray addObject:@(state)];
+  
+  if(state == MKNKRequestStateStarted) {
+    
+    [self.task resume];
+    [self incrementRunningOperations];
+  }
+  
+  else if(state == MKNKRequestStateResponseAvailableFromCache ||
+     state == MKNKRequestStateStaleResponseAvailableFromCache) {
+    
+    [self.completionHandlers enumerateObjectsUsingBlock:^(MKNKHandler handler, NSUInteger idx, BOOL *stop) {
       
-      [self.task resume];
-      [self incrementRunningOperations];
-    }
-      break;
-      
-    case MKNKRequestStateCompleted:
-    case MKNKRequestStateCancelled:
-    case MKNKRequestStateError:
-      [self decrementRunningOperations];
-      
-    case MKNKRequestStateStaleResponseAvailableFromCache:
-    case MKNKRequestStateResponseAvailableFromCache: {
-      
-      [self.completionHandlers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        
-        MKNKHandler handler = obj;
-        handler(self);
-      }];
-    }
-      
-      break;
+      handler(self);
+    }];
+  } else if(state == MKNKRequestStateCancelled ||
+            state == MKNKRequestStateCompleted ||
+            state == MKNKRequestStateError) {
+
+    [self decrementRunningOperations];
+    NSLog(@"State Changes: %@", self.stateArray);
   }
 }
 
@@ -528,6 +530,18 @@ static NSString * kBoundary = @"0xKhTmLbOuNdArY";
     CGImageRelease(cgImage);
   
   return decompressedImage;
+}
+
+@synthesize responseData = _responseData;
+
+-(NSData*) responseData {
+ 
+  return _responseData;
+}
+
+-(void) setResponseData:(NSData *)responseData {
+  
+  _responseData = responseData;
 }
 
 #elif TARGET_OS_MAC

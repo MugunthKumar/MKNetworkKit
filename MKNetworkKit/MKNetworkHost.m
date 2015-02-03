@@ -148,42 +148,6 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
 
 -(void) startRequest:(MKNetworkRequest*) request forceReload:(BOOL) forceReload ignoreCache:(BOOL) ignoreCache {
   
-  if(request.cacheable && !ignoreCache) {
-    
-    NSHTTPURLResponse *cachedResponse = self.responseCache[@(request.hash)];
-    NSDate *cacheExpiryDate = cachedResponse.cacheExpiryDate;
-    NSTimeInterval expiryTimeFromNow = [cacheExpiryDate timeIntervalSinceNow];
-    
-    if(cachedResponse.isContentTypeImage && !cacheExpiryDate) {
-      
-      expiryTimeFromNow =
-      cachedResponse.hasRequiredRevalidationHeaders ? kMKNKDefaultCacheDuration : kMKNKDefaultImageCacheDuration;
-    }
-    
-    if(cachedResponse.hasDoNotCacheDirective || !cachedResponse.hasHTTPCacheHeaders) {
-      
-      expiryTimeFromNow = kMKNKDefaultCacheDuration;
-    }
-    
-    NSData *cachedData = self.dataCache[@(request.hash)];
-    
-    if(cachedData) {
-      request.responseData = cachedData;
-      request.response = cachedResponse;
-      
-      if(expiryTimeFromNow > 0 && !forceReload) {
-        
-        request.state = MKNKRequestStateResponseAvailableFromCache;
-        return; // don't make another request
-      } else {
-        
-        request.state = expiryTimeFromNow > 0 ? MKNKRequestStateResponseAvailableFromCache :
-        MKNKRequestStateStaleResponseAvailableFromCache;
-      }
-    }
-  }
-  
-  
   NSURLSession *sessionToUse = self.defaultSession;
   
   if(request.isSSL || request.requiresAuthentication) {
@@ -210,7 +174,11 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
                                     
                                     request.responseData = data;
                                     request.error = error;
-                                  } else {
+                                  } else if(request.response.statusCode == 304) {
+
+                                    // don't do anything
+
+                                  } else if(request.response.statusCode >= 400) {
                                     request.responseData = data;
                                     NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
                                     if(response) userInfo[@"response"] = response;
@@ -255,6 +223,41 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
   });
   
   request.state = MKNKRequestStateStarted;
+  
+  if(request.cacheable && !ignoreCache) {
+    
+    NSHTTPURLResponse *cachedResponse = self.responseCache[@(request.hash)];
+    NSDate *cacheExpiryDate = cachedResponse.cacheExpiryDate;
+    NSTimeInterval expiryTimeFromNow = [cacheExpiryDate timeIntervalSinceNow];
+    
+    if(cachedResponse.isContentTypeImage && !cacheExpiryDate) {
+      
+      expiryTimeFromNow =
+      cachedResponse.hasRequiredRevalidationHeaders ? kMKNKDefaultCacheDuration : kMKNKDefaultImageCacheDuration;
+    }
+    
+    if(cachedResponse.hasDoNotCacheDirective || !cachedResponse.hasHTTPCacheHeaders) {
+      
+      expiryTimeFromNow = kMKNKDefaultCacheDuration;
+    }
+    
+    NSData *cachedData = self.dataCache[@(request.hash)];
+    
+    if(cachedData) {
+      request.responseData = cachedData;
+      request.response = cachedResponse;
+      
+      if(expiryTimeFromNow > 0 && !forceReload) {
+        
+        request.state = MKNKRequestStateResponseAvailableFromCache;
+        return; // don't make another request
+      } else {
+        
+        request.state = expiryTimeFromNow > 0 ? MKNKRequestStateResponseAvailableFromCache :
+        MKNKRequestStateStaleResponseAvailableFromCache;
+      }
+    }
+  }  
 }
 
 -(MKNetworkRequest*) requestWithURLString:(NSString*) urlString {

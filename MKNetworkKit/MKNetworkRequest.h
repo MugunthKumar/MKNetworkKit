@@ -43,8 +43,8 @@ typedef enum {
   MKNKRequestStateStarted = 0, // default
   MKNKRequestStateResponseAvailableFromCache,
   MKNKRequestStateStaleResponseAvailableFromCache,
-  MKNKRequestStateCompleted,
   MKNKRequestStateCancelled,
+  MKNKRequestStateCompleted,
   MKNKRequestStateError
 } MKNKRequestState;
 
