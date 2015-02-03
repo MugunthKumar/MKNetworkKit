@@ -124,6 +124,12 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
 
 -(void) startUploadRequest:(MKNetworkRequest*) request {
   
+  if(request == nil) {
+    
+    NSLog(@"Request is nil, check your URL and other parameters you use to build your request");
+    return;
+  }
+
   request.task = [self.defaultSession uploadTaskWithRequest:request.request
                                                    fromData:request.multipartFormData];
   dispatch_sync(self.runningTasksSynchronizingQueue, ^{
@@ -134,6 +140,12 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
 
 -(void) startDownloadRequest:(MKNetworkRequest*) request {
   
+  if(request == nil) {
+    
+    NSLog(@"Request is nil, check your URL and other parameters you use to build your request");
+    return;
+  }
+
   request.task = [self.defaultSession downloadTaskWithRequest:request.request];
   dispatch_sync(self.runningTasksSynchronizingQueue, ^{
     [self.activeTasks addObject:request];
@@ -148,6 +160,46 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
 
 -(void) startRequest:(MKNetworkRequest*) request forceReload:(BOOL) forceReload ignoreCache:(BOOL) ignoreCache {
   
+  if(request == nil) {
+    
+    NSLog(@"Request is nil, check your URL and other parameters you use to build your request");
+    return;
+  }
+  if(request.cacheable && !ignoreCache) {
+    
+    NSHTTPURLResponse *cachedResponse = self.responseCache[@(request.hash)];
+    NSDate *cacheExpiryDate = cachedResponse.cacheExpiryDate;
+    NSTimeInterval expiryTimeFromNow = [cacheExpiryDate timeIntervalSinceNow];
+    
+    if(cachedResponse.isContentTypeImage && !cacheExpiryDate) {
+      
+      expiryTimeFromNow =
+      cachedResponse.hasRequiredRevalidationHeaders ? kMKNKDefaultCacheDuration : kMKNKDefaultImageCacheDuration;
+    }
+    
+    if(cachedResponse.hasDoNotCacheDirective || !cachedResponse.hasHTTPCacheHeaders) {
+      
+      expiryTimeFromNow = kMKNKDefaultCacheDuration;
+    }
+    
+    NSData *cachedData = self.dataCache[@(request.hash)];
+    
+    if(cachedData) {
+      request.responseData = cachedData;
+      request.response = cachedResponse;
+      
+      if(expiryTimeFromNow > 0 && !forceReload) {
+        
+        request.state = MKNKRequestStateResponseAvailableFromCache;
+        return; // don't make another request
+      } else {
+        
+        request.state = expiryTimeFromNow > 0 ? MKNKRequestStateResponseAvailableFromCache :
+        MKNKRequestStateStaleResponseAvailableFromCache;
+      }
+    }
+  }
+    
   NSURLSession *sessionToUse = self.defaultSession;
   
   if(request.isSSL || request.requiresAuthentication) {

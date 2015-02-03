@@ -103,7 +103,6 @@ typedef enum {
                        httpMethod:(NSString *)method;
 
 typedef void (^MKNKHandler)(MKNetworkRequest* completedRequest);
-typedef void (^MKNKHandler)(MKNetworkRequest* completedRequest);
 
 -(void) addParameters:(NSDictionary*) paramsDictionary;
 -(void) addHeaders:(NSDictionary*) headersDictionary;
