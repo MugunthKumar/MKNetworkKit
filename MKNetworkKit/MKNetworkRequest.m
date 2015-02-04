@@ -482,6 +482,7 @@ static NSString * kBoundary = @"0xKhTmLbOuNdArY";
 -(void) setState:(MKNKRequestState)state {
   
   [self.stateArray addObject:@(state)];
+  _state = state;
   
   if(state == MKNKRequestStateStarted) {
     
@@ -496,12 +497,18 @@ static NSString * kBoundary = @"0xKhTmLbOuNdArY";
       
       handler(self);
     }];
-  } else if(state == MKNKRequestStateCancelled ||
-            state == MKNKRequestStateCompleted ||
+  } else if(state == MKNKRequestStateCompleted ||
             state == MKNKRequestStateError) {
 
     [self decrementRunningOperations];
-    NSLog(@"State Changes: %@", self.stateArray);
+    [self.completionHandlers enumerateObjectsUsingBlock:^(MKNKHandler handler, NSUInteger idx, BOOL *stop) {
+      
+      handler(self);
+    }];
+    //NSLog(@"State Changes: %@", self.stateArray);
+  } else if(state == MKNKRequestStateCancelled) {
+    
+    [self decrementRunningOperations];
   }
 }
 
@@ -530,18 +537,6 @@ static NSString * kBoundary = @"0xKhTmLbOuNdArY";
     CGImageRelease(cgImage);
   
   return decompressedImage;
-}
-
-@synthesize responseData = _responseData;
-
--(NSData*) responseData {
- 
-  return _responseData;
-}
-
--(void) setResponseData:(NSData *)responseData {
-  
-  _responseData = responseData;
 }
 
 #elif TARGET_OS_MAC
