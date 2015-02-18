@@ -472,7 +472,8 @@ static NSString * kBoundary = @"0xKhTmLbOuNdArY";
   
   if(!(self.state == MKNKRequestStateCompleted ||
      self.state == MKNKRequestStateError ||
-       self.state == MKNKRequestStateCancelled)) {
+       self.state == MKNKRequestStateCancelled ||
+       self.state == MKNKRequestStateReady)) {
 
     [self.task cancel];
     self.state = MKNKRequestStateCancelled;

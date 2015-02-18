@@ -124,7 +124,7 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
 
 -(void) startUploadRequest:(MKNetworkRequest*) request {
   
-  if(request == nil) {
+  if(!request || !request.request) {
     
     NSLog(@"Request is nil, check your URL and other parameters you use to build your request");
     return;
@@ -140,7 +140,7 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
 
 -(void) startDownloadRequest:(MKNetworkRequest*) request {
   
-  if(request == nil) {
+  if(!request || !request.request) {
     
     NSLog(@"Request is nil, check your URL and other parameters you use to build your request");
     return;
@@ -155,17 +155,13 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
 
 -(void) startRequest:(MKNetworkRequest*) request {
   
-  [self startRequest:request forceReload:YES ignoreCache:YES];
-}
-
--(void) startRequest:(MKNetworkRequest*) request forceReload:(BOOL) forceReload ignoreCache:(BOOL) ignoreCache {
-  
-  if(request == nil) {
+  if(!request || !request.request) {
     
     NSLog(@"Request is nil, check your URL and other parameters you use to build your request");
     return;
   }
-  if(request.cacheable && !ignoreCache) {
+  
+  if(request.cacheable && !request.doNotCache) {
     
     NSHTTPURLResponse *cachedResponse = self.responseCache[@(request.hash)];
     NSDate *cacheExpiryDate = cachedResponse.cacheExpiryDate;
@@ -188,7 +184,7 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
       request.responseData = cachedData;
       request.response = cachedResponse;
       
-      if(expiryTimeFromNow > 0 && !forceReload) {
+      if(expiryTimeFromNow > 0 && !request.alwaysLoad) {
         
         request.state = MKNKRequestStateResponseAvailableFromCache;
         return; // don't make another request
@@ -275,41 +271,6 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
   });
   
   request.state = MKNKRequestStateStarted;
-  
-  if(request.cacheable && !ignoreCache) {
-    
-    NSHTTPURLResponse *cachedResponse = self.responseCache[@(request.hash)];
-    NSDate *cacheExpiryDate = cachedResponse.cacheExpiryDate;
-    NSTimeInterval expiryTimeFromNow = [cacheExpiryDate timeIntervalSinceNow];
-    
-    if(cachedResponse.isContentTypeImage && !cacheExpiryDate) {
-      
-      expiryTimeFromNow =
-      cachedResponse.hasRequiredRevalidationHeaders ? kMKNKDefaultCacheDuration : kMKNKDefaultImageCacheDuration;
-    }
-    
-    if(cachedResponse.hasDoNotCacheDirective || !cachedResponse.hasHTTPCacheHeaders) {
-      
-      expiryTimeFromNow = kMKNKDefaultCacheDuration;
-    }
-    
-    NSData *cachedData = self.dataCache[@(request.hash)];
-    
-    if(cachedData) {
-      request.responseData = cachedData;
-      request.response = cachedResponse;
-      
-      if(expiryTimeFromNow > 0 && !forceReload) {
-        
-        request.state = MKNKRequestStateResponseAvailableFromCache;
-        return; // don't make another request
-      } else {
-        
-        request.state = expiryTimeFromNow > 0 ? MKNKRequestStateResponseAvailableFromCache :
-        MKNKRequestStateStaleResponseAvailableFromCache;
-      }
-    }
-  }  
 }
 
 -(MKNetworkRequest*) requestWithURLString:(NSString*) urlString {
@@ -384,7 +345,8 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
 // But ensure that you call super
 -(void) prepareRequest: (MKNetworkRequest*) request {
   
-  if(!request.cacheable) return;
+  if(!request.cacheable || request.ignoreCache) return;
+  
   NSHTTPURLResponse *cachedResponse = self.responseCache[@(request.hash)];
   
   NSString *lastModified = [cachedResponse.allHeaderFields objectForCaseInsensitiveKey:@"Last-Modified"];

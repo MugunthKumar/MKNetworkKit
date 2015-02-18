@@ -96,7 +96,7 @@ const float kFreshLoadAnimationDuration = 0.25f;
     }
   }];
   
-  [imageHost startRequest:self.imageFetchRequest forceReload:NO ignoreCache:NO];
+  [imageHost startRequest:self.imageFetchRequest];
   
   return self.imageFetchRequest;
 }

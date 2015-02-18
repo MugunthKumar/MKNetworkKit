@@ -40,7 +40,8 @@ typedef enum {
 
 typedef enum {
   
-  MKNKRequestStateStarted = 0, // default
+  MKNKRequestStateReady = 0,
+  MKNKRequestStateStarted,
   MKNKRequestStateResponseAvailableFromCache,
   MKNKRequestStateStaleResponseAvailableFromCache,
   MKNKRequestStateCancelled,
@@ -73,6 +74,9 @@ typedef enum {
 
 @property BOOL doNotCache;
 @property BOOL alwaysCache;
+
+@property BOOL ignoreCache;
+@property BOOL alwaysLoad;
 
 @property NSString *httpMethod;
 
