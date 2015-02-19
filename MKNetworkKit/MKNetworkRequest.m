@@ -111,7 +111,9 @@ static NSString * kBoundary = @"0xKhTmLbOuNdArY";
   
   if(url == nil) {
     
-    NSLog(@"Unable to create request %@ %@ with parameters %@", self.httpMethod, self.urlString, self.parameters);
+    NSString *str = [NSString stringWithFormat:@"Unable to create request %@ %@ with parameters %@",
+                     self.httpMethod, self.urlString, self.parameters];
+    NSAssert(url, str);
     return nil;
   }
   
@@ -443,7 +445,7 @@ static NSString * kBoundary = @"0xKhTmLbOuNdArY";
 #ifdef TARGET_OS_IPHONE
   dispatch_async(dispatch_get_main_queue(), ^{
     
-    NSLog(@"%@", self.stateArray);
+    //NSLog(@"%@", self.stateArray);
     numberOfRunningOperations --;
     if(numberOfRunningOperations == 0)
       [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
@@ -470,10 +472,7 @@ static NSString * kBoundary = @"0xKhTmLbOuNdArY";
 
 -(void) cancel {
   
-  if(!(self.state == MKNKRequestStateCompleted ||
-     self.state == MKNKRequestStateError ||
-       self.state == MKNKRequestStateCancelled ||
-       self.state == MKNKRequestStateReady)) {
+  if(self.state == MKNKRequestStateStarted) {
 
     [self.task cancel];
     self.state = MKNKRequestStateCancelled;
@@ -506,7 +505,6 @@ static NSString * kBoundary = @"0xKhTmLbOuNdArY";
       
       handler(self);
     }];
-    //NSLog(@"State Changes: %@", self.stateArray);
   } else if(state == MKNKRequestStateCancelled) {
     
     [self decrementRunningOperations];

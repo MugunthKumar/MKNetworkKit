@@ -126,7 +126,8 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
   
   if(!request || !request.request) {
     
-    NSLog(@"Request is nil, check your URL and other parameters you use to build your request");
+    NSAssert((request && request.request),
+             @"Request is nil, check your URL and other parameters you use to build your request");
     return;
   }
 
