@@ -202,7 +202,7 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
     return;
   }
   
-  request.task = [self.backgroundSession downloadTaskWithRequest:request.request];
+  request.task = [self.defaultSession downloadTaskWithRequest:request.request];
   dispatch_sync(self.runningTasksSynchronizingQueue, ^{
     [self.activeTasks addObject:request];
   });

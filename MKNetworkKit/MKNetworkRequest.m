@@ -486,6 +486,7 @@ static NSString * kBoundary = @"0xKhTmLbOuNdArY";
   
   if(state == MKNKRequestStateStarted) {
     
+    NSAssert(self.task, @"Task missing");
     [self.task resume];
     [self incrementRunningOperations];
   }
