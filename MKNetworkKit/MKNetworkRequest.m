@@ -481,8 +481,8 @@ static NSString * kBoundary = @"0xKhTmLbOuNdArY";
 
 -(void) setState:(MKNKRequestState)state {
   
-  [self.stateArray addObject:@(state)];
   _state = state;
+  [self.stateArray addObject:@(state)];
   
   if(state == MKNKRequestStateStarted) {
     
