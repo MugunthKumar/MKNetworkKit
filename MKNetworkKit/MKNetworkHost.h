@@ -50,6 +50,7 @@
 @property NSString *path;
 @property NSUInteger portNumber;
 @property NSDictionary *defaultHeaders;
+@property (copy) void (^backgroundSessionCompletionHandler)(void);
 @property BOOL secureHost;
 @property MKNKParameterEncoding defaultParameterEncoding;
 

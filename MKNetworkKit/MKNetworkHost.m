@@ -71,6 +71,14 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
     self.defaultConfiguration = [NSURLSessionConfiguration defaultSessionConfiguration];
     self.secureConfiguration = [NSURLSessionConfiguration ephemeralSessionConfiguration];
     
+    self.defaultSession = [NSURLSession sessionWithConfiguration:self.defaultConfiguration
+                                                        delegate:self
+                                                   delegateQueue:[[NSOperationQueue alloc] init]];
+    
+    self.secureSession = [NSURLSession sessionWithConfiguration:self.secureConfiguration
+                                                       delegate:self
+                                                  delegateQueue:[[NSOperationQueue alloc] init]];
+    
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
 #if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED >= 80000) || (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED >= 1100)
@@ -81,19 +89,11 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
       self.backgroundConfiguration = [NSURLSessionConfiguration backgroundSessionConfiguration:
                                       [[NSBundle mainBundle] bundleIdentifier]];
 #endif
+      
+      self.backgroundSession = [NSURLSession sessionWithConfiguration:self.backgroundConfiguration
+                                                             delegate:self
+                                                        delegateQueue:[[NSOperationQueue alloc] init]];
     });
-    
-    self.defaultSession = [NSURLSession sessionWithConfiguration:self.defaultConfiguration
-                                                        delegate:self
-                                                   delegateQueue:[[NSOperationQueue alloc] init]];
-    
-    self.secureSession = [NSURLSession sessionWithConfiguration:self.secureConfiguration
-                                                       delegate:self
-                                                  delegateQueue:[[NSOperationQueue alloc] init]];
-    
-    self.backgroundSession = [NSURLSession sessionWithConfiguration:self.backgroundConfiguration
-                                                           delegate:self
-                                                      delegateQueue:[[NSOperationQueue alloc] init]];
     
     self.runningTasksSynchronizingQueue = dispatch_queue_create("com.mknetworkkit.cachequeue", DISPATCH_QUEUE_SERIAL);
     dispatch_async(self.runningTasksSynchronizingQueue, ^{
@@ -133,9 +133,9 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
              @"Request is nil, check your URL and other parameters you use to build your request");
     return;
   }
-
+  
   request.task = [self.backgroundSession uploadTaskWithRequest:request.request
-                                                   fromData:request.multipartFormData];
+                                                      fromData:request.multipartFormData];
   dispatch_sync(self.runningTasksSynchronizingQueue, ^{
     [self.activeTasks addObject:request];
   });
@@ -144,12 +144,25 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
 
 -(void) startDownloadRequest:(MKNetworkRequest*) request {
   
+  static dispatch_once_t onceToken;
+  static BOOL methodImplemented = YES;
+  dispatch_once(&onceToken, ^{
+    methodImplemented = [[[UIApplication sharedApplication] delegate]
+                         respondsToSelector:
+                         @selector(application:handleEventsForBackgroundURLSession:completionHandler:)];
+  });
+  
+  if(!methodImplemented) {
+    
+    NSLog(@"application:handleEventsForBackgroundURLSession:completionHandler: is not implemented in your application delegate. Download tasks might not work properly. Implement the method and set the completionHandler value to MKNetworkHost's backgroundSessionCompletionHandler");
+  }
+  
   if(!request || !request.request) {
     
     NSLog(@"Request is nil, check your URL and other parameters you use to build your request");
     return;
   }
-
+  
   request.task = [self.backgroundSession downloadTaskWithRequest:request.request];
   dispatch_sync(self.runningTasksSynchronizingQueue, ^{
     [self.activeTasks addObject:request];
@@ -199,7 +212,7 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
       }
     }
   }
-    
+  
   NSURLSession *sessionToUse = self.defaultSession;
   
   if(request.isSSL || request.requiresAuthentication) {
@@ -212,7 +225,7 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
                                 completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
                                   
                                   if(request.state == MKNKRequestStateCancelled) {
-
+                                    
                                     request.response = (NSHTTPURLResponse*) response;
                                     if(error) {
                                       request.error = error;
@@ -238,9 +251,9 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
                                     request.responseData = data;
                                     request.error = error;
                                   } else if(request.response.statusCode == 304) {
-
+                                    
                                     // don't do anything
-
+                                    
                                   } else if(request.response.statusCode >= 400) {
                                     request.responseData = data;
                                     NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
@@ -386,7 +399,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
  completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential *credential))completionHandler {
   
   if([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]){
-
+    
     NSURLCredential *credential = [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust];
     completionHandler(NSURLSessionAuthChallengeUseCredential,credential);
   }
@@ -467,14 +480,29 @@ didFinishDownloadingToURL:(NSURL *)location {
   [self.activeTasks enumerateObjectsUsingBlock:^(MKNetworkRequest *request, NSUInteger idx, BOOL *stop) {
     
     if([request.task.currentRequest.URL.absoluteString isEqualToString:downloadTask.currentRequest.URL.absoluteString]) {
-
+      
       NSError *error = nil;
       if(![[NSFileManager defaultManager] moveItemAtPath:location.path toPath:request.downloadPath error:&error]) {
-
+        
         NSLog(@"Failed to save downloaded file at requested path [%@] with error %@", request.downloadPath, error);
       }
       
       *stop = YES;
+    }
+  }];
+  
+  // call completion handler if the app was resumed and got connected again to our background session
+  [self.backgroundSession getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
+    NSUInteger count = dataTasks.count + uploadTasks.count + downloadTasks.count;
+    
+    if (count == 0) {
+      
+      void (^backgroundSessionCompletionHandlerCopy)() = self.backgroundSessionCompletionHandler;
+      
+      if (self.backgroundSessionCompletionHandler) {
+        self.backgroundSessionCompletionHandler = nil;
+        backgroundSessionCompletionHandlerCopy();
+      }
     }
   }];
 }
@@ -484,7 +512,7 @@ didFinishDownloadingToURL:(NSURL *)location {
  totalBytesWritten:(int64_t)totalBytesWritten
 totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite {
   
-  float progress = (float)(((float)totalBytesWritten) / ((float)totalBytesExpectedToWrite));  
+  float progress = (float)(((float)totalBytesWritten) / ((float)totalBytesExpectedToWrite));
   [self.activeTasks enumerateObjectsUsingBlock:^(MKNetworkRequest *request, NSUInteger idx, BOOL *stop) {
     
     if([request.task.currentRequest.URL.absoluteString isEqualToString:downloadTask.currentRequest.URL.absoluteString]) {
@@ -500,4 +528,5 @@ totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite {
     NSLog(@"Session became invalid with error: %@", error);
   }
 }
+
 @end
