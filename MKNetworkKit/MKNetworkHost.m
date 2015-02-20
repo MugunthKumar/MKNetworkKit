@@ -71,14 +71,17 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
     self.defaultConfiguration = [NSURLSessionConfiguration defaultSessionConfiguration];
     self.secureConfiguration = [NSURLSessionConfiguration ephemeralSessionConfiguration];
     
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
 #if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED >= 80000) || (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED >= 1100)
-    self.backgroundConfiguration =
-    [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:
-     [[NSBundle mainBundle] bundleIdentifier]];
+      self.backgroundConfiguration =
+      [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:
+       [[NSBundle mainBundle] bundleIdentifier]];
 #else
-    self.backgroundConfiguration = [NSURLSessionConfiguration backgroundSessionConfiguration:
-                                    [[NSBundle mainBundle] bundleIdentifier]];
+      self.backgroundConfiguration = [NSURLSessionConfiguration backgroundSessionConfiguration:
+                                      [[NSBundle mainBundle] bundleIdentifier]];
 #endif
+    });
     
     self.defaultSession = [NSURLSession sessionWithConfiguration:self.defaultConfiguration
                                                         delegate:self
@@ -131,7 +134,7 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
     return;
   }
 
-  request.task = [self.defaultSession uploadTaskWithRequest:request.request
+  request.task = [self.backgroundSession uploadTaskWithRequest:request.request
                                                    fromData:request.multipartFormData];
   dispatch_sync(self.runningTasksSynchronizingQueue, ^{
     [self.activeTasks addObject:request];
@@ -147,7 +150,7 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
     return;
   }
 
-  request.task = [self.defaultSession downloadTaskWithRequest:request.request];
+  request.task = [self.backgroundSession downloadTaskWithRequest:request.request];
   dispatch_sync(self.runningTasksSynchronizingQueue, ^{
     [self.activeTasks addObject:request];
   });
@@ -490,4 +493,11 @@ totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite {
   }];
 }
 
+- (void)URLSession:(NSURLSession *)session didBecomeInvalidWithError:(NSError *)error {
+  
+  if(session == self.backgroundSession) {
+    
+    NSLog(@"Session became invalid with error: %@", error);
+  }
+}
 @end
