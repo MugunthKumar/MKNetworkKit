@@ -47,13 +47,10 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
 @end
 
 @interface MKNetworkHost (/*Private Methods*/) <NSURLSessionDelegate>
-@property NSURLSessionConfiguration *defaultConfiguration;
-@property NSURLSessionConfiguration *secureConfiguration;
-@property NSURLSessionConfiguration *backgroundConfiguration;
 
-@property NSURLSession *defaultSession;
-@property NSURLSession *secureSession;
-@property NSURLSession *backgroundSession;
+@property (readonly) NSURLSession *defaultSession;
+@property (readonly) NSURLSession *ephemeralSession;
+@property (readonly) NSURLSession *backgroundSession;
 
 @property MKCache *dataCache;
 @property MKCache *responseCache;
@@ -64,36 +61,78 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
 
 @implementation MKNetworkHost
 
+-(NSURLSession*) backgroundSession {
+  
+  static dispatch_once_t onceToken;
+  static NSURLSessionConfiguration *backgroundSessionConfiguration;
+  static NSURLSession *backgroundSession;
+  dispatch_once(&onceToken, ^{
+#if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED >= 80000) || (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED >= 1100)
+    backgroundSessionConfiguration =
+    [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:
+     [[NSBundle mainBundle] bundleIdentifier]];
+#else
+    backgroundSessionConfiguration = [NSURLSessionConfiguration backgroundSessionConfiguration:
+                                    [[NSBundle mainBundle] bundleIdentifier]];
+#endif
+    
+    if([self.delegate respondsToSelector:@selector(networkHost:didCreateBackgroundSessionConfiguration:)]) {
+      [self.delegate networkHost:self didCreateBackgroundSessionConfiguration:backgroundSessionConfiguration];
+    }
+    
+    backgroundSession = [NSURLSession sessionWithConfiguration:backgroundSessionConfiguration
+                                                           delegate:self
+                                                      delegateQueue:[[NSOperationQueue alloc] init]];
+  });
+  
+  return backgroundSession;
+}
+
+-(NSURLSession*) defaultSession {
+  
+  static dispatch_once_t onceToken;
+  static NSURLSessionConfiguration *defaultSessionConfiguration;
+  static NSURLSession *defaultSession;
+  dispatch_once(&onceToken, ^{
+    
+    defaultSessionConfiguration = [NSURLSessionConfiguration defaultSessionConfiguration];
+
+    if([self.delegate respondsToSelector:@selector(networkHost:didCreateDefaultSessionConfiguration:)]) {
+      [self.delegate networkHost:self didCreateDefaultSessionConfiguration:defaultSessionConfiguration];
+    }
+    
+    defaultSession = [NSURLSession sessionWithConfiguration:defaultSessionConfiguration
+                                                      delegate:self
+                                                 delegateQueue:[NSOperationQueue mainQueue]];
+  });
+  
+  return defaultSession;
+}
+
+-(NSURLSession*) ephemeralSession {
+  
+  static dispatch_once_t onceToken;
+  static NSURLSessionConfiguration *ephemeralSessionConfiguration;
+  static NSURLSession *ephemeralSession;
+  dispatch_once(&onceToken, ^{
+    
+    ephemeralSessionConfiguration = [NSURLSessionConfiguration ephemeralSessionConfiguration];
+
+    if([self.delegate respondsToSelector:@selector(networkHost:didCreateEphemeralSessionConfiguration:)]) {
+      [self.delegate networkHost:self didCreateEphemeralSessionConfiguration:ephemeralSessionConfiguration];
+    }
+    
+    ephemeralSession = [NSURLSession sessionWithConfiguration:ephemeralSessionConfiguration
+                                                   delegate:self
+                                              delegateQueue:[NSOperationQueue mainQueue]];
+  });
+  
+  return ephemeralSession;
+}
+
 -(instancetype) init {
   
   if((self = [super init])) {
-    
-    self.defaultConfiguration = [NSURLSessionConfiguration defaultSessionConfiguration];
-    self.secureConfiguration = [NSURLSessionConfiguration ephemeralSessionConfiguration];
-    
-    self.defaultSession = [NSURLSession sessionWithConfiguration:self.defaultConfiguration
-                                                        delegate:self
-                                                   delegateQueue:[[NSOperationQueue alloc] init]];
-    
-    self.secureSession = [NSURLSession sessionWithConfiguration:self.secureConfiguration
-                                                       delegate:self
-                                                  delegateQueue:[[NSOperationQueue alloc] init]];
-    
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-#if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED >= 80000) || (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED >= 1100)
-      self.backgroundConfiguration =
-      [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:
-       [[NSBundle mainBundle] bundleIdentifier]];
-#else
-      self.backgroundConfiguration = [NSURLSessionConfiguration backgroundSessionConfiguration:
-                                      [[NSBundle mainBundle] bundleIdentifier]];
-#endif
-      
-      self.backgroundSession = [NSURLSession sessionWithConfiguration:self.backgroundConfiguration
-                                                             delegate:self
-                                                        delegateQueue:[[NSOperationQueue alloc] init]];
-    });
     
     self.runningTasksSynchronizingQueue = dispatch_queue_create("com.mknetworkkit.cachequeue", DISPATCH_QUEUE_SERIAL);
     dispatch_async(self.runningTasksSynchronizingQueue, ^{
@@ -217,7 +256,7 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
   
   if(request.isSSL || request.requiresAuthentication) {
     
-    sessionToUse = self.secureSession;
+    sessionToUse = self.ephemeralSession;
   }
   
   NSURLSessionDataTask *task = [sessionToUse

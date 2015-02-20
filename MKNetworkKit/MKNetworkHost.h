@@ -29,6 +29,17 @@
 
 #import "NSString+MKNKAdditions.h"
 
+@class MKNetworkHost;
+
+@protocol MKNetworkHostDelegate <NSObject>
+
+@optional
+
+-(void) networkHost:(MKNetworkHost*) networkHost didCreateDefaultSessionConfiguration:(NSURLSessionConfiguration*) configuration;
+-(void) networkHost:(MKNetworkHost*) networkHost didCreateEphemeralSessionConfiguration:(NSURLSessionConfiguration*) configuration;
+-(void) networkHost:(MKNetworkHost*) networkHost didCreateBackgroundSessionConfiguration:(NSURLSessionConfiguration*) configuration;
+
+@end
 @interface MKNetworkHost : NSObject
 
 /*!
@@ -50,9 +61,11 @@
 @property NSString *path;
 @property NSUInteger portNumber;
 @property NSDictionary *defaultHeaders;
-@property (copy) void (^backgroundSessionCompletionHandler)(void);
 @property BOOL secureHost;
 @property MKNKParameterEncoding defaultParameterEncoding;
+
+@property (weak) id <MKNetworkHostDelegate> delegate;
+@property (copy) void (^backgroundSessionCompletionHandler)(void);
 
 // You can override this method to tweak request creation
 // But ensure that you call super
