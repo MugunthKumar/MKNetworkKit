@@ -34,7 +34,6 @@ static NSInteger numberOfRunningOperations;
 static NSString * kBoundary = @"0xKhTmLbOuNdArY";
 
 @interface MKNetworkRequest (/*Private Methods*/)
-@property NSMutableArray *progressArray;
 @property NSMutableArray *stateArray;
 @property NSString *urlString;
 @property NSData *bodyData;
@@ -69,7 +68,6 @@ static NSString * kBoundary = @"0xKhTmLbOuNdArY";
   if(self = [super init]) {
     
     self.stateArray = [NSMutableArray array];
-    self.progressArray = [NSMutableArray array];
     self.urlString = aURLString;
     if(params) {
       self.parameters = params.mutableCopy;
@@ -571,30 +569,9 @@ static NSString * kBoundary = @"0xKhTmLbOuNdArY";
   return string;
 }
 
--(NSTimeInterval) estimatedTimeToComplete {
-
-  NSDictionary *firstObject = self.progressArray.firstObject;
-  NSDictionary *lastObject = self.progressArray.lastObject;
-  
-  NSTimeInterval t = [lastObject[@"time"] doubleValue] - [firstObject[@"time"] doubleValue];
-  NSTimeInterval progressChange = [lastObject[@"progress"] doubleValue] - [firstObject[@"progress"] doubleValue];
-  
-  NSTimeInterval estimatedT = (t/progressChange)*(1-progressChange);
-  
-  return estimatedT;
-}
-
 -(void) setProgressValue:(CGFloat) progressValue {
   
   self.progress = progressValue;
-  CFTimeInterval time = CACurrentMediaTime();
-  [self.progressArray addObject:@{@"time" : @(time),
-                                  @"progress" : @(progressValue)}];
-
-  if(self.progressArray.count > 300) {
-    
-    [self.progressArray removeObjectAtIndex:0];
-  }
   
   [self.downloadProgressChangedHandlers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
     
