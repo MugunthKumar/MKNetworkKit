@@ -110,9 +110,8 @@ static NSString * kBoundary = @"0xKhTmLbOuNdArY";
   
   if(url == nil) {
     
-    NSString *str = [NSString stringWithFormat:@"Unable to create request %@ %@ with parameters %@",
-                     self.httpMethod, self.urlString, self.parameters];
-    NSAssert(url, str);
+    NSAssert(@"Unable to create request %@ %@ with parameters %@",
+              self.httpMethod, self.urlString, self.parameters);
     return nil;
   }
   
