@@ -29,14 +29,14 @@
 #endif
 
 #if TARGET_OS_IPHONE
-#ifndef __IPHONE_7_0
-#error MKNetworkKit is supported only on iOS 7 and above
+#ifndef __IPHONE_8_0
+#error MKNetworkKit is supported only on iOS 8 and above
 #endif
 #endif
 
 #if TARGET_OS_MAC
-#ifndef __MAC_10_9
-#error MKNetworkKit is supported only on Mac OS X Mavericks and above
+#ifndef __MAC_10_10
+#error MKNetworkKit is supported only on Mac OS X Yosemite and above
 #endif
 #endif
 

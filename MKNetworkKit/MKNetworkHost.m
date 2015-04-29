@@ -67,14 +67,9 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
   static NSURLSessionConfiguration *backgroundSessionConfiguration;
   static NSURLSession *backgroundSession;
   dispatch_once(&onceToken, ^{
-#if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED >= 80000) || (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED >= 1100)
     backgroundSessionConfiguration =
     [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:
      [[NSBundle mainBundle] bundleIdentifier]];
-#else
-    backgroundSessionConfiguration = [NSURLSessionConfiguration backgroundSessionConfiguration:
-                                    [[NSBundle mainBundle] bundleIdentifier]];
-#endif
     
     if([self.delegate respondsToSelector:@selector(networkHost:didCreateBackgroundSessionConfiguration:)]) {
       [self.delegate networkHost:self didCreateBackgroundSessionConfiguration:backgroundSessionConfiguration];
@@ -202,7 +197,7 @@ NSString *const kMKCacheDefaultDirectoryName = @"com.mknetworkkit.mkcache";
     return;
   }
   
-  request.task = [self.defaultSession downloadTaskWithRequest:request.request];
+  request.task = [self.backgroundSession downloadTaskWithRequest:request.request];
   dispatch_sync(self.runningTasksSynchronizingQueue, ^{
     [self.activeTasks addObject:request];
   });
