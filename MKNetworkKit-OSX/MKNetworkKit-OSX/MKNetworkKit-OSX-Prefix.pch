@@ -1,8 +1,0 @@
-//
-// Prefix header for all source files of the 'MKNetworkKit-OSX' target in the 'MKNetworkKit-OSX' project
-//
-
-#ifdef __OBJC__
-    #import <Cocoa/Cocoa.h>
-    #import "MKNetworkKit.h"
-#endif
