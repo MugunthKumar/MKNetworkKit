@@ -1,5 +1,8 @@
-This is version 2.0 of MKNetworkKit.
+This is version 2.0 of MKNetworkKit. Version 2 is based on NSURLSession and NSURLConfiguration. 
 
+Version 1.x of MKNetworkKit is deprecated as NSURLConnection is deprecated in iOS 9 and is not available on tvOS.
+
+A Swift version is on the way.
 
 ###Why MKNetworkKit?
 
@@ -12,12 +15,14 @@ This is version 2.0 of MKNetworkKit.
 * cURL-able debug lines
 
 These are just a few of most interesting features on MKNetworkKit.
-
 ---
 
 ###Installation
+Drag the MKNetworkKit directory to your  project. 
+We will be supporting Carthage soon and have a demo app setup, so you can test the features.
 
 ###How to use
+WIP.
 
 ###Licensing
 
