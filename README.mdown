@@ -2,7 +2,7 @@ This is version 2.0 of MKNetworkKit. Version 2 is based on NSURLSession and NSUR
 
 Version 1.x of MKNetworkKit is deprecated as NSURLConnection is deprecated in iOS 9 and is not available on tvOS.
 
-A Swift version is on the way.
+A Swift version is available [here] (https://github.com/MugunthKumar/MKNetworkKit-Swift)
 
 ###Why MKNetworkKit?
 
